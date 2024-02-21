@@ -20,5 +20,5 @@ fpc %COMPILER_ROOT%/Compiler.pas -FEout ^
     -Fu%COMPILER_ROOT%/cpu/intel ^
     -Fu%COMPILER_ROOT%/cpu/Cpu.pas ^
     -Fu%COMPILER_ROOT%/os/win ^
-    -Fu%COMPILER_ROOT%/os/Os.pas ^
+    -Fu%COMPILER_ROOT%/os/ ^
     -oslang.exe
