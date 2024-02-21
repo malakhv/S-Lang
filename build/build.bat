@@ -8,15 +8,15 @@
 
 SET COMPILER_ROOT="./../compiler"
 
-IF EXIST build\ (
-    echo Clear build directory...
-    rd /s /q build\
+IF EXIST out\ (
+    echo Clear out directory...
+    rd /s /q out\
 ) ELSE (
-    echo The build directory not found...
+    echo The out directory not found...
 )
-mkdir build
+mkdir out
 
-fpc %COMPILER_ROOT%/Compiler.pas -FEbuild ^
+fpc %COMPILER_ROOT%/Compiler.pas -FEout ^
     -Fu%COMPILER_ROOT%/cpu/intel ^
     -Fu%COMPILER_ROOT%/cpu/Cpu.pas ^
     -Fu%COMPILER_ROOT%/os/win ^
