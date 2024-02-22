@@ -17,6 +17,7 @@ IF EXIST out\ (
 mkdir out
 
 fpc %COMPILER_ROOT%/Compiler.pas -FEout ^
+    -Fu%COMPILER_ROOT%/lang ^
     -Fu%COMPILER_ROOT%/cpu/intel ^
     -Fu%COMPILER_ROOT%/cpu/Cpu.pas ^
     -Fu%COMPILER_ROOT%/os/win ^
