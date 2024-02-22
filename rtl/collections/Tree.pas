@@ -24,16 +24,16 @@
 { working with it.                                                             }
 {                                                                              }
 { Project: S-Lang                                                              }
-{ Package: Mikhan.S-Lang                                                       }
-{ Types:   TBD                                                                 }
+{ Package: S-Lang.RTL.Collections                                              }
+{ Types:   Tree                                                                }
 {                                                                              }
 { Dependencies: No                                                             }
 {                                                                              }
-{ Created: 22.02.2024                                                          }
+{ Created: [DATE]                                                              }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
 {------------------------------------------------------------------------------}
 
-UNIT Types;                                                             { UNIT }
+UNIT Tree;                                                              { UNIT }
 
 {$MODE DELPHI}
 {$H+}
@@ -41,118 +41,107 @@ UNIT Types;                                                             { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-{
-    The kinds of data types.
-}
+Uses Collections;
+
 type
 
-    TTypeKind = (tkUnknown, tkByte, tkWord, tkInt, tkFloat, tkChar, tkString,
-        tkEnum, tkSet, tkArray, tkRecord, tkInterface, tkClass, tkMethod,
-        tkPointer);
-
-    TFloatKind = (fkSingle, fkDouble);
+    TTreeNode<V> = class (TNode<V>)
+    private
+        FParent: TTreeNode<V>;
+        FNodes: Array of TTreeNode<V>;
+    protected
+        function GetParent(): TTreeNode<V>;
+        //function GetChildNode(Index: Integer): TTreeNode<V>;
+        procedure SetParent(AParent: TTreeNode<V>);
+    public
+        property Parent: TTreeNode<V> read GetParent write SetParent;
+        //property Nodes[Integer]: Array of TTreeNode<V> read GetChildNode;
+        
+        function AddNode(ANode: TTreeNode<V>): TTreeNode<V>; virtual;
+        function AddValue(AValue: V): TTreeNode<V>; virtual;
+        
     
-    TMethodKind = (mkProcedure, mkFunction, mkConstructor, mkDestructor,
-        mkClassProcedure, mkClassFunction);
+        function GetParentValue(): V;
+        function HasParent(): Boolean;
+        
+        procedure Clear(); virtual;
+        
+        constructor Create(AValue: V); override;
+    end;
+    //TTreeNode = specialize TTreeNode<V>;
+    //PTreeNode = ^TTreeNode;
 
 type
 
-    TTypeInfo = record
-        Kind: TTypeKind;
-        function GetName(): String;
-        function IsNumeric(): Boolean;
-        function IsSimple(): Boolean;
-        function IsPointer(): Boolean;
-        function ToString(): String;
+    TTree<V> = class(TObject)
+    private
+        FRoot: TTreeNode<V>;
+    protected
+        //function Get(Index: Integer): 
+    public
+        //property Items[Index: Integer]: V read Get write Set; default;
     end;
-    PTypeInfo = ^TTypeInfo;
-
-function MakeTypeInfo(AName: String): TTypeInfo;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
 {------------------------------------------------------------------------------}
-{ TTypeInfo                                                                    }
+{ TTreeNode<V>                                                                 }
 {------------------------------------------------------------------------------}
 
-const
-    TK_NAME_BYTE    = 'Byte';
-    TK_NAME_WORD    = 'Word';
-    TK_NAME_INT     = 'Integer';
-    TK_NAME_FLOAT   = 'Float';
-
-    TK_NAME_CHAR    = 'Char';
-    TK_NAME_STRING  = 'String';
-    
-    TK_NAME_ENUM    = 'Enum';
-    TK_NAME_SET     = 'Set';
-    TK_NAME_ARRAY   = 'Array';
-    TK_NAME_RECORD  = 'Record';
-    
-    TK_NAME_POINTER = 'Pointer';
-    
-    TK_NAME_CLASS       = 'Class';
-    TK_NAME_INTERFACE   = 'Interface';
-    TK_NAME_METHOD      = 'Method';
-    
-    TK_NAME_UNKNOWN     = 'Unknown';
-
-    TYPE_KIND_NAMES: Array [TTypeKind] of String = ( TK_NAME_UNKNOWN,
-        TK_NAME_BYTE, TK_NAME_WORD, TK_NAME_INT, TK_NAME_FLOAT, TK_NAME_CHAR,
-        TK_NAME_STRING, TK_NAME_ENUM, TK_NAME_SET, TK_NAME_ARRAY,
-        TK_NAME_RECORD, TK_NAME_INTERFACE, TK_NAME_CLASS, TK_NAME_METHOD,
-        TK_NAME_POINTER
-    );
-
-function TypeKindToStr(AKind: TTypeKind): String;
+constructor TTreeNode<V>.Create(AValue: V);
 begin
-    Result := TYPE_KIND_NAMES[AKind];
+    inherited Create(V);
+    FParent := nil;
 end;
 
-function StrToTypeKind(AValue: String): TTypeKind;
-var I: TTypeKind;
+function TTreeNode<V>.AddNode(ANode: TTreeNode<V>): TTreeNode<V>;
+var L: Integer;
 begin
-    for I := Low(TYPE_KIND_NAMES) to High(TYPE_KIND_NAMES) do
-        if TYPE_KIND_NAMES[I] = AValue then
-        begin
-            Result := I; Exit;
-        end;
-    Result := tkUnknown;
+    L := Length(FNodes);
+    SetLength(FNodes, L + 1);
+    FNodes[L] := ANode;
+    Result := ANode;
 end;
 
-function TTypeInfo.GetName(): String;
+function TTreeNode<V>.AddValue(AValue: V): TTreeNode<V>;
+var N: TTreeNode<V>;
 begin
-    Result := TypeKindToStr(Self.Kind);
+    N := TTreeNode<V>.Create(V);
+    Result := Self.AddNode(N);
 end;
 
-function TTypeInfo.IsNumeric(): Boolean;
+function TTreeNode<V>.GetParent(): TTreeNode<V>;
 begin
-    Result := (Self.Kind > tkUnknown) and (Self.Kind <= tkFloat);
+    Result := FParent;
 end;
 
-function TTypeInfo.IsSimple(): Boolean;
+function TTreeNode<V>.GetParentValue(): V;
 begin
-    Result := (Self.Kind > tkUnknown) and (Self.Kind <= tkChar);
+    if Self.HasParent() then
+        Result := Self.Parent.Value
+    else
+        // TODO Exception?
+        Result := nil;
 end;
 
-function TTypeInfo.IsPointer(): Boolean;
+function TTreeNode<V>.HasParent(): Boolean;
 begin
-    Result := Self.Kind = tkPointer;
+    Result := FParent <> nil;
 end;
 
-function TTypeInfo.ToString(): String;
+procedure TTreeNode<V>.SetParent(AParent: TTreeNode<V>);
 begin
-    Result := Self.GetName();
+    Self.FParent := AParent;
+end;
+
+procedure TTreeNode<V>.Clear();
+begin
+
 end;
 
 {------------------------------------------------------------------------------}
-{ Unit Stuff                                                                   }
+{ Common Stuff                                                                 }
 {------------------------------------------------------------------------------}
-
-function MakeTypeInfo(AName: String): TTypeInfo;
-begin
-    Result.Kind := StrToTypeKind(AName);
-end;
 
 END.                                                                     { END }
 

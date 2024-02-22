@@ -1,10 +1,14 @@
 program slang;
 
-uses Types, Os;
+uses Types, Os, Collections, Tree;
+
+type
+    TTypeInfoNode = specialize TTreeNode<TTypeInfo>;
 
 var
     Items: Array [1..5] of TTypeInfo;
     I: Integer;
+    //Node: TTreeNode<TTypeInfo>;
 
 begin
     WriteLn('Welcome to S-Lang compiler. ','Target OS is ', Os.getTargetOS);

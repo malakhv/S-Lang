@@ -6,6 +6,7 @@
 
 @ECHO OFF
 
+SET RTL_ROOT="./../rtl"
 SET COMPILER_ROOT="./../compiler"
 
 IF EXIST out\ (
@@ -22,4 +23,5 @@ fpc %COMPILER_ROOT%/Compiler.pas -FEout ^
     -Fu%COMPILER_ROOT%/cpu/Cpu.pas ^
     -Fu%COMPILER_ROOT%/os/win ^
     -Fu%COMPILER_ROOT%/os/ ^
+    -Fu%RTL_ROOT%/collections ^
     -oslang.exe
