@@ -102,6 +102,7 @@ begin
     if Item = nil then Exit;
     if Item^.HasPrev() then Item^.Prev^.Next := Item^.Next;
     if Item^.HasNext() then Item^.Next^.Prev := Item^.Prev;
+    // Can we do it here?
     Delete(Item);
 end;
 
