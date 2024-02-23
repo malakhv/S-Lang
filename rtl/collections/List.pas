@@ -97,16 +97,12 @@ type
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
 { Removes specified Items from its Linked list. }
-procedure RemoveItem(var Item: PListItem; const DoClear: Boolean);
+procedure RemoveItem(var Item: PListItem);
 begin
     if Item = nil then Exit;
-    WriteLn('01');
     if Item^.HasPrev() then Item^.Prev^.Next := Item^.Next;
-    WriteLn('02');
     if Item^.HasNext() then Item^.Next^.Prev := Item^.Prev;
-    WriteLn('03');
-    if DoClear then Item^.Clear();
-    WriteLn('04');
+    Delete(Item);
 end;
 
 {------------------------------------------------------------------------------}
@@ -201,17 +197,18 @@ function TLinkedList.Remove(Value: Pointer): Boolean;
 var Item: PListItem;
 begin
     Item := Self.ItemOf(Value);
-    RemoveItem(Item, True);
     Result := Item <> nil;
+    if Result and (FHead = Item) then FHead = Item^.Next;
+    RemoveItem(Item);
 end;
 
 function TLinkedList.Remove(Index: Integer): Boolean;
 var Item: PListItem;
 begin
     Item := Self.ItemOf(Index);
-    WriteLn('Find? ', Item <> nil);
-    RemoveItem(Item, True);
     Result := Item <> nil;
+    if Result and (Index = 0) FHead = Item^.Next;
+    RemoveItem(Item, True);
 end;
 
 {------------------------------------------------------------------------------}
