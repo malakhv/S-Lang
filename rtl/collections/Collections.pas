@@ -105,7 +105,7 @@ type
     {
         The basic node with a value for all collections.
     }
-    generic TNode<V> = class(TObject)
+    TNode<V> = class(TObject)
     private
         FValue: V;
     protected
