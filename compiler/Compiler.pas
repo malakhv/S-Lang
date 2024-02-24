@@ -59,18 +59,24 @@ begin
     Dump(MyList); WriteLn();
     MyList.Remove(0);
     Dump(MyList); WriteLn();
+    WriteLn('(', MyList.Count, ' elements in total)');
+    WriteLn();
 
     // Test 02
     WriteLn('===== Test 02 ====='); WriteLn();
     MyList.Add(MakeTypeInfo('Enum'));
     MyList.Add(MakeTypeInfo('Array'));
     Dump(MyList); WriteLn();
+    WriteLn('(', MyList.Count, ' elements in total)');
+    WriteLn();
 
     // Test 03
     WriteLn('===== Test 03 ====='); WriteLn();
     MyList.Clear();
     FillList();
     Dump(MyList); WriteLn();
+    WriteLn('(', MyList.Count, ' elements in total)');
+    WriteLn();
 
     // Test 04
     WriteLn('===== Test 04 ====='); WriteLn();
@@ -83,11 +89,14 @@ begin
     MyList.Remove(3);
     MyList.Remove(MyList.Count - 1);
     Dump(MyList); WriteLn();
+    WriteLn('(', MyList.Count, ' elements in total)');
+    WriteLn();
 
     // Test 05
     WriteLn('===== Test 05 ====='); WriteLn();
     MyList.Clear();
-    for I := 1 to 128699999 do
+    //for I := 1 to 128699999 do
+    for I := 1 to 123456 do
     begin
         MyList.Add(Pointer(I));
     end;

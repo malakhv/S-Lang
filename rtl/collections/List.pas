@@ -71,6 +71,7 @@ type
     private
         FFirst: PListItem;
         FLast: PListItem;
+        FCount: Integer;
     protected
         {See Count property}
         function GetCount(): Integer;
@@ -80,23 +81,29 @@ type
         function ItemOf(Value: Pointer): PListItem; overload;
         { Finds an item by its index in this linked list. }
         function ItemOf(Index: Integer): PListItem; overload;
+        { Removes specified item from this linked list. }
+        procedure Remove(Item: PListItem); overload; virtual;
     public
         { The first element into this linked list. }
         property First: PListItem read FFirst;
         { The last element into this linked list. }
         property Last: PListItem read FLast;
         { The number of elements in this linked list. }
-        property Count: Integer read GetCount;
+        property Count: Integer read FCount;
         { Adds a new element to this linked list. }
         function Add(Value: Pointer): PListItem;
         { Inserts a new element to this linked list in specified position. }
         function Insert(Value: Pointer; Index: Integer): PListItem;
+        { Returns value from this linked list by index. }
+        function GetValue(Index: Integer): Pointer;
+        { Sets the new value for item into this linked list. }
+        procedure SetValue(Index: Integer; Value: Pointer);
         { Removes specified element from this linked list. }
         function Remove(Value: Pointer): Boolean; overload;
         { Removes an element from this linked list by its index. }
         function Remove(Index: Integer): Boolean; overload;
         { Returns value in this linked list by index. }
-        function ValueOf(Index: Integer): Pointer;
+        function ValueOf(Index: Integer): Pointer; virtual;
         { Returns True if this linked list is empty. }
         function IsEmpty(): Boolean;
         { Clears this linked list. }
@@ -235,6 +242,7 @@ begin
     end else
         FFirst := Result;
     FLast := Result;
+    Inc(FCount);
 end;
 
 function TLinkedList.Insert(Value: Pointer; Index: Integer): PListItem;
@@ -255,6 +263,7 @@ begin
         FFirst := Result;
     end;
     Item^.Prev := Result;
+    Inc(FCount);
 end;
 
 function TLinkedList.GetCount(): Integer;
@@ -269,6 +278,18 @@ begin
     until Item = nil;
 end;
 
+function TLinkedList.GetValue(Index: Integer): Pointer;
+begin
+    Result := ValueOf(Index);
+end;
+
+procedure TLinkedList.SetValue(Index: Integer; Value: Pointer);
+var Item: PListItem;
+begin
+    Item := Self.ItemOf(Index);
+    if Item <> nil then Item^.Value := Value
+end;
+
 function TLinkedList.Remove(Value: Pointer): Boolean;
 var Item: PListItem;
 begin
@@ -276,7 +297,7 @@ begin
     Result := Item <> nil;
     if Result and (FFirst = Item) then FFirst := Item^.Next;
     if Result and (FLast = Item) then FLast := Item^.Prev;
-    RemoveItem(Item);
+    Self.Remove(Item);
 end;
 
 function TLinkedList.Remove(Index: Integer): Boolean;
@@ -286,7 +307,13 @@ begin
     Result := Item <> nil;
     if Result and (FFirst = Item) then FFirst := Item^.Next;
     if Result and (FLast = Item) then FLast := Item^.Prev;
+    Self.Remove(Item);
+end;
+
+procedure TLinkedList.Remove(Item: PListItem);
+begin
     RemoveItem(Item);
+    Dec(FCount);
 end;
 
 function TLinkedList.ValueOf(Index: Integer): Pointer;
