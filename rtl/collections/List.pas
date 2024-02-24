@@ -70,6 +70,7 @@ type
     TLinkedList = class(TObject)
     private
         FFirst: PListItem;
+        FLast: PListItem;
     protected
         {See Count property}
         function GetCount(): Integer;
@@ -80,8 +81,10 @@ type
         { Finds an item by its index in this linked list. }
         function ItemOf(Index: Integer): PListItem; overload;
     public
-        { The first element in this linked list. }
+        { The first element into this linked list. }
         property First: PListItem read FFirst;
+        { The last element into this linked list. }
+        property Last: PListItem read FLast;
         { The number of elements in this linked list. }
         property Count: Integer read GetCount;
         { Adds a new element to this linked list. }
@@ -118,20 +121,33 @@ begin
     if Item^.HasPrev() then Item^.Prev^.Next := Item^.Next;
     if Item^.HasNext() then Item^.Next^.Prev := Item^.Prev;
     // Can we do it here?
-    //Item^.Clear();
     Dispose(Item);
+end;
+
+procedure PrintListItem(Item: PListItem);
+begin
+    if Item <> nil then
+    begin
+        WriteLn('   Item:  ', Integer(Item));
+        WriteLn('   Prev:  ', Integer(Item^.Prev));
+        WriteLn('   Next:  ', Integer(Item^.Next));
+        WriteLn('   Value: ', Integer(Item^.Value));
+    end else
+        WriteLn('   Item is NIL');
 end;
 
 procedure Dump(AList: TLinkedList);
 var Item: PListItem;
 begin
+    WriteLn('First:');
+    PrintListItem(AList.First);
+    WriteLn('Last:');
+    PrintListItem(AList.Last);
+    WriteLn('Items:');
     Item := AList.First;
     while Item <> nil do
     begin
-        WriteLn('Item:  ', Integer(Item));
-        WriteLn('Prev:  ', Integer(Item^.Prev));
-        WriteLn('Next:  ', Integer(Item^.Next));
-        WriteLn('Value: ', Integer(Item^.Value));
+        PrintListItem(Item);
         WriteLn();
         Item := Item^.Next;
     end;
@@ -177,10 +193,11 @@ end;
 
 function TLinkedList.GetLast(): PListItem;
 begin
-    if Self.IsEmpty then Exit;
+    Result := FLast;
+    {if Self.IsEmpty then Exit;
     Result := FFirst;
     while Result.Next <> nil do
-        Result := Result.Next;
+        Result := Result.Next;}
 end;
 
 function TLinkedList.ItemOf(Value: Pointer): PListItem;
@@ -217,6 +234,7 @@ begin
         Last^.Next := Result;
     end else
         FFirst := Result;
+    FLast := Result;
 end;
 
 function TLinkedList.Insert(Value: Pointer; Index: Integer): PListItem;
@@ -257,6 +275,7 @@ begin
     Item := Self.ItemOf(Value);
     Result := Item <> nil;
     if Result and (FFirst = Item) then FFirst := Item^.Next;
+    if Result and (FLast = Item) then FLast := Item^.Prev;
     RemoveItem(Item);
 end;
 
@@ -265,7 +284,8 @@ var Item: PListItem;
 begin
     Item := Self.ItemOf(Index);
     Result := Item <> nil;
-    if Result and (Index = 0) then FFirst := FFirst^.Next;
+    if Result and (FFirst = Item) then FFirst := Item^.Next;
+    if Result and (FLast = Item) then FLast := Item^.Prev;
     RemoveItem(Item);
 end;
 

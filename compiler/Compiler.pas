@@ -50,64 +50,54 @@ end;
 begin
     WriteLn('Welcome to S-Lang compiler. ','Target OS is ', Os.getTargetOS);
     MyList := TLinkedList.Create();
+    WriteLn();
 
+    // Test 01
+    WriteLn('===== Test 01 ====='); WriteLn();
+    Dump(MyList); WriteLn();
     MyList.Add(MakeTypeInfo('Set'));
-    MyList.Add(MakeTypeInfo('Method'));
-    DumpList();
+    Dump(MyList); WriteLn();
     MyList.Remove(0);
-    MyList.Remove(0);
-    DumpList();
+    Dump(MyList); WriteLn();
+
+    // Test 02
+    WriteLn('===== Test 02 ====='); WriteLn();
     MyList.Add(MakeTypeInfo('Enum'));
     MyList.Add(MakeTypeInfo('Array'));
-    DumpList();
+    Dump(MyList); WriteLn();
 
-    MyList.Clear();
-    DumpList();
-
-    MyList.Add(MakeTypeInfo('Class'));
-    MyList.Add(MakeTypeInfo('Set'));
-    DumpList();
-
+    // Test 03
+    WriteLn('===== Test 03 ====='); WriteLn();
     MyList.Clear();
     FillList();
-    DumpList();
-    WriteLn();
+    Dump(MyList); WriteLn();
 
-    // Added
-    MyList.Add(MakeTypeInfo('Set'));
-    MyList.Insert(MakeTypeInfo('Pointer'), MyList.Count - 1);
-    MyList.Insert(MakeTypeInfo('Array'), 0);
-    DumpList();
-    MyList.Add(MakeTypeInfo('Set'));
-    DumpList();
+    // Test 04
+    WriteLn('===== Test 04 ====='); WriteLn();
+    MyList.Remove(0);
+    MyList.Remove(0);
+    MyList.Remove(3);
+    MyList.Remove(5);
+    MyList.Remove(7);
+    MyList.Remove(9);
+    MyList.Remove(3);
+    MyList.Remove(MyList.Count - 1);
+    Dump(MyList); WriteLn();
 
-    //MyList.Clear();
-    //DumpList();
-
-    //MyList.Add(MakeTypeInfo('Set'));
-    //DumpList();
-    //Dump(MyList);
-
-    for I := 0 to 1000 do
+    // Test 05
+    WriteLn('===== Test 05 ====='); WriteLn();
+    MyList.Clear();
+    for I := 1 to 128699999 do
     begin
-        FillList();
-        //WriteLn ('Fill - ', I);
+        MyList.Add(Pointer(I));
     end;
-
+    WriteLn('(', MyList.Count, ' elements in total)');
     WriteLn();
-    WriteLn('Done!');
-
-    {WriteLn();
-    Item := MyList.First;
-    while Item <> nil do
-    begin
-        Info := PTypeInfo(Item^.Value)^;
-        Item := Item^.Next;
-        WriteLn('Name: ', Info.GetName());
-    end;}
+    WriteLn('Fill - done!');
     ReadLn();
     MyList.Clear();
-    WriteLn('Clear!');
+    WriteLn('Clear - done!');
+    WriteLn();
+    Dump(MyList); WriteLn();
     ReadLn();
-
 end.
