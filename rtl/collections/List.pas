@@ -281,15 +281,7 @@ end;
 
 procedure TLinkedList.Clear();
 begin
-    while FFirst <> nil do
-    begin
-        Self.Remove(0);
-    end;
-
-    {If FFirst <> nil then
-    begin
-        Self.Remove(0); Self.Clear();
-    end;}
+    while FFirst <> nil do Self.Remove(0);
 end;
 
 END.                                                                     { END }
