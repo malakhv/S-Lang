@@ -67,7 +67,7 @@ type
     end;
     PTypeInfo = ^TTypeInfo;
 
-function MakeTypeInfo(AName: String): TTypeInfo;
+function MakeTypeInfo(AName: String): PTypeInfo;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
@@ -149,9 +149,10 @@ end;
 { Unit Stuff                                                                   }
 {------------------------------------------------------------------------------}
 
-function MakeTypeInfo(AName: String): TTypeInfo;
+function MakeTypeInfo(AName: String): PTypeInfo;
 begin
-    Result.Kind := StrToTypeKind(AName);
+    New(Result);
+    Result^.Kind := StrToTypeKind(AName);
 end;
 
 END.                                                                     { END }

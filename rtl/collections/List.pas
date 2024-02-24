@@ -48,13 +48,13 @@ type
     }
     PListItem = ^TListItem;
     TListItem = record
-        { The pointer to a real value that stored into a linked list. }
+        { The pointer to a real data that stored into a linked list. }
         Value: Pointer;
         { A previous element in the linked list, or nil. }
         Prev: PListItem;
         { A next element in the linked list, or nil. }
         Next: PListItem;
-        { Returns True if this Item has link to a real value. }
+        { Returns True if this Item has link to a real data. }
         function HasData(): Boolean;
         { Returns True if this Item is not a last element into a linked list. }
         function HasNext(): Boolean;
@@ -65,11 +65,11 @@ type
     end;
 
     {
-        The linked list.
+        The double linked list.
     }
     TLinkedList = class(TObject)
     private
-        FHead: PListItem;
+        FFirst: PListItem;
     protected
         {See Count property}
         function GetCount(): Integer;
@@ -81,20 +81,35 @@ type
         function ItemOf(Index: Integer): PListItem; overload;
     public
         { The first element in this linked list. }
-        property First: PListItem read FHead;
+        property First: PListItem read FFirst;
         { The number of elements in this linked list. }
         property Count: Integer read GetCount;
-        { Adds a new element to this linked list by value. }
+        { Adds a new element to this linked list. }
         function Add(Value: Pointer): PListItem;
+        { Inserts a new element to this linked list in specified position. }
+        function Insert(Value: Pointer; Index: Integer): PListItem;
         { Removes specified element from this linked list. }
         function Remove(Value: Pointer): Boolean; overload;
         { Removes an element from this linked list by its index. }
         function Remove(Index: Integer): Boolean; overload;
+        { Returns value in this linked list by index. }
+        function ValueOf(Index: Integer): Pointer;
         { Returns True if this linked list is empty. }
         function IsEmpty(): Boolean;
+        { Clears this linked list. }
+        procedure Clear();
+        { Free all related resources. }
+        destructor Destroy(); override;
     end;
 
+{ Print all items from specified list. }
+procedure Dump(AList: TLinkedList);
+
 IMPLEMENTATION                                                { IMPLEMENTATION }
+
+{------------------------------------------------------------------------------}
+{ Common Stuff                                                                 }
+{------------------------------------------------------------------------------}
 
 { Removes specified Items from its Linked list. }
 procedure RemoveItem(var Item: PListItem);
@@ -103,7 +118,23 @@ begin
     if Item^.HasPrev() then Item^.Prev^.Next := Item^.Next;
     if Item^.HasNext() then Item^.Next^.Prev := Item^.Prev;
     // Can we do it here?
-    Delete(Item);
+    //Item^.Clear();
+    Dispose(Item);
+end;
+
+procedure Dump(AList: TLinkedList);
+var Item: PListItem;
+begin
+    Item := AList.First;
+    while Item <> nil do
+    begin
+        WriteLn('Item:  ', Integer(Item));
+        WriteLn('Prev:  ', Integer(Item^.Prev));
+        WriteLn('Next:  ', Integer(Item^.Next));
+        WriteLn('Value: ', Integer(Item^.Value));
+        WriteLn();
+        Item := Item^.Next;
+    end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -134,15 +165,20 @@ end;
 { TLinkedList                                                                  }
 {------------------------------------------------------------------------------}
 
+destructor TLinkedList.Destroy();
+begin
+    Clear; Inherited;
+end;
+
 function TLinkedList.IsEmpty(): Boolean;
 begin
-    Result := FHead = nil;
+    Result := FFirst = nil;
 end;
 
 function TLinkedList.GetLast(): PListItem;
 begin
     if Self.IsEmpty then Exit;
-    Result := FHead;
+    Result := FFirst;
     while Result.Next <> nil do
         Result := Result.Next;
 end;
@@ -150,7 +186,7 @@ end;
 function TLinkedList.ItemOf(Value: Pointer): PListItem;
 begin
     If Self.IsEmpty() then Exit;
-    Result := FHead;
+    Result := FFirst;
     while Result <> nil do
     begin
         if Result^.Value = Value then Exit;
@@ -161,7 +197,7 @@ end;
 function TLinkedList.ItemOf(Index: Integer): PListItem;
 begin
     If Self.IsEmpty() then Exit;
-    Result := FHead;
+    Result := FFirst;
     while (Result <> nil) and (Index > 0) do
     begin
         Result := Result^.Next; Dec(Index);
@@ -173,13 +209,34 @@ var Last: PListItem;
 begin
     New(Result);
     Result^.Value := Value;
+    Result^.Next := nil;
     Last := Self.GetLast();
     if Last <> nil then
     begin
         Result^.Prev := Last;
         Last^.Next := Result;
     end else
-        FHead := Result;
+        FFirst := Result;
+end;
+
+function TLinkedList.Insert(Value: Pointer; Index: Integer): PListItem;
+var Item: PListItem;
+begin
+    Item := Self.ItemOf(Index);
+    if Item = nil then Exit;
+    New(Result);
+    Result^.Value := Value;
+    Result^.Next := Item;
+    if Item^.HasPrev() then
+    begin
+        Result^.Prev := Item^.Prev;
+        Result^.Prev^.Next := Result;
+    end else
+    begin
+        Result^.Prev := nil;
+        FFirst := Result;
+    end;
+    Item^.Prev := Result;
 end;
 
 function TLinkedList.GetCount(): Integer;
@@ -187,7 +244,7 @@ var Item: PListItem;
 begin
     Result := 0;
     If Self.IsEmpty() then Exit;
-    Item := FHead;
+    Item := FFirst;
     repeat
         Inc(Result);
         Item := Item.Next;
@@ -199,7 +256,7 @@ var Item: PListItem;
 begin
     Item := Self.ItemOf(Value);
     Result := Item <> nil;
-    if Result and (FHead = Item) then FHead = Item^.Next;
+    if Result and (FFirst = Item) then FFirst := Item^.Next;
     RemoveItem(Item);
 end;
 
@@ -208,14 +265,32 @@ var Item: PListItem;
 begin
     Item := Self.ItemOf(Index);
     Result := Item <> nil;
-    if Result and (Index = 0) FHead = Item^.Next;
-    RemoveItem(Item, True);
+    if Result and (Index = 0) then FFirst := FFirst^.Next;
+    RemoveItem(Item);
 end;
 
-{------------------------------------------------------------------------------}
-{ Common Stuff                                                                 }
-{------------------------------------------------------------------------------}
+function TLinkedList.ValueOf(Index: Integer): Pointer;
+var Item: PListItem;
+begin
+    Item := Self.ItemOf(Index);
+    if Item <> nil then
+        Result := Item.Value
+    else
+        Result := nil;
+end;
 
+procedure TLinkedList.Clear();
+begin
+    while FFirst <> nil do
+    begin
+        Self.Remove(0);
+    end;
+
+    {If FFirst <> nil then
+    begin
+        Self.Remove(0); Self.Clear();
+    end;}
+end;
 
 END.                                                                     { END }
 
