@@ -92,6 +92,31 @@ begin
     WriteLn('(', MyList.Count, ' elements in total)');
     WriteLn();
 
+
+    // Test 05
+    WriteLn('===== Test 05 ====='); WriteLn();
+    MyList.Clear();
+    MyList.Add(Pointer(1));
+    MyList.Add(Pointer(2));
+    MyList.Add(Pointer(3));
+    MyList.AddFirst(Pointer(0));
+    MyList.AddFirst(Pointer(-3));
+    MyList.Update(0, Pointer(-5));
+    MyList.MoveToLast(0);
+    Dump(MyList); WriteLn();
+    WriteLn('(', MyList.Count, ' elements in total)');
+    WriteLn();
+
+    WriteLn('Index Of 2 is ', MyList.IndexOf(Pointer(2)));
+    WriteLn('Index Of First is ', MyList.IndexOf(MyList.First^.Value));
+    WriteLn('Index Of Last is ', MyList.IndexOf(MyList.Last^.Value));
+    WriteLn();
+
+
+
+    Exit;
+
+
     // Test 05
     WriteLn('===== Test 05 ====='); WriteLn();
     MyList.Clear();
