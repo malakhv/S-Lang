@@ -105,6 +105,7 @@ type
         function Remove(Index: Integer): Boolean; overload;
         function RemoveFirst(): Boolean;
         function RemoveLast(): Boolean;
+        function IndexOf(Value: Pointer): Integer;
         { Returns value in this linked list by index. }
         function ValueOf(Index: Integer): Pointer; virtual;
         { Returns True if this linked list is empty. }
