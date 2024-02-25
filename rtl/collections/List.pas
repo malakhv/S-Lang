@@ -92,6 +92,7 @@ type
         property Count: Integer read FCount;
         { Adds a new element to this linked list. }
         function Add(Value: Pointer): PListItem;
+        function AddFirst(Value: Pointer): PListItem;
         { Inserts a new element to this linked list in specified position. }
         function Insert(Value: Pointer; Index: Integer): PListItem;
         { Returns value from this linked list by index. }
@@ -102,10 +103,13 @@ type
         function Remove(Value: Pointer): Boolean; overload;
         { Removes an element from this linked list by its index. }
         function Remove(Index: Integer): Boolean; overload;
+        function RemoveFirst(): Boolean;
+        function RemoveLast(): Boolean;
         { Returns value in this linked list by index. }
         function ValueOf(Index: Integer): Pointer; virtual;
         { Returns True if this linked list is empty. }
         function IsEmpty(): Boolean;
+        procedure Revert();
         { Clears this linked list. }
         procedure Clear();
         { Free all related resources. }
