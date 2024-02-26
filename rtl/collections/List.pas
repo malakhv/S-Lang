@@ -75,9 +75,9 @@ type
         FUnique: Boolean;
     protected
         { Finds an item by its value in this list. }
-        function ItemOf(Value: Pointer): PListItem; overload;
+        function ItemOf(const Value: Pointer): PListItem; overload;
         { Finds an item by its index in this list. }
-        function ItemOf(Index: Integer): PListItem; overload;
+        function ItemOf(const Index: Integer): PListItem; overload;
         { Removes specified item from this list. }
         function Remove(Item: PListItem): Boolean; overload; virtual;
     public
@@ -98,12 +98,12 @@ type
         function AddFirst(const Value: Pointer): PListItem;
         { Inserts the specified element at the specified position in this
             list. }
-        function Insert(Index: Integer; const Value: Pointer): PListItem;
+        function Insert(const Index: Integer; const Value: Pointer): PListItem;
 
         { Removes specified element from this linked list. }
-        function Remove(Value: Pointer): Boolean; overload;
+        function Remove(const Value: Pointer): Boolean; overload;
         { Removes an element from this linked list by its index. }
-        function Remove(Index: Integer): Boolean; overload;
+        function Remove(const Index: Integer): Boolean; overload;
         { Removes the first element from this linked list. }
         function RemoveFirst(): Boolean;
         { Removes the last element from this linked list. }
@@ -113,14 +113,14 @@ type
             this list, or -1 if this list does not contain the element. }
         function IndexOf(const Value: Pointer): Integer;
         { Returns value in this linked list by index. }
-        function ValueOf(Index: Integer): Pointer; virtual;
+        function ValueOf(const Index: Integer): Pointer; virtual;
 
         { Moves element with specified index to a new position in this list. }
-        function Move(Index, NewIndex: Integer): Boolean; virtual;
+        function Move(const OldIndex, NewIndex: Integer): Boolean; virtual;
         { Moves element with specified index to the beginning of this list. }
-        function MoveToFirst(Index: Integer): Boolean;
+        function MoveToFirst(const Index: Integer): Boolean;
         { Moves element with specified index to the end of this list. }
-        function MoveToLast(Index: Integer): Boolean;
+        function MoveToLast(const Index: Integer): Boolean;
 
         { Replaces the element at the specified position in this list with the
             specified element. }
@@ -169,7 +169,7 @@ begin
     Dispose(Item);
 end;
 
-procedure PrintListItem(Item: PListItem);
+procedure PrintListItem(const Item: PListItem);
 begin
     if Item <> nil then
     begin
@@ -241,7 +241,7 @@ begin
     Result := FFirst = nil;
 end;
 
-function TLinkedList.ItemOf(Value: Pointer): PListItem;
+function TLinkedList.ItemOf(const Value: Pointer): PListItem;
 begin
     If Self.IsEmpty() then Exit;
     Result := FFirst;
@@ -252,7 +252,7 @@ begin
     end;
 end;
 
-function TLinkedList.ItemOf(Index: Integer): PListItem;
+function TLinkedList.ItemOf(const Index: Integer): PListItem;
 begin
     If Self.IsEmpty() or (Index >= FCount) then Exit;
     Result := FFirst;
@@ -282,7 +282,8 @@ begin
     Result := Self.Insert(0, Value);
 end;
 
-function TLinkedList.Insert(Index: Integer; const Value: Pointer): PListItem;
+function TLinkedList.Insert(const Index: Integer; const Value: Pointer):
+    PListItem;
 var Item: PListItem;
 begin
     Item := Self.ItemOf(Index);
@@ -313,12 +314,12 @@ begin
     Dec(FCount);
 end;
 
-function TLinkedList.Remove(Value: Pointer): Boolean;
+function TLinkedList.Remove(const Value: Pointer): Boolean;
 begin
     Result := Self.Remove(Self.ItemOf(Value));
 end;
 
-function TLinkedList.Remove(Index: Integer): Boolean;
+function TLinkedList.Remove(const Index: Integer): Boolean;
 begin
     Result := Self.Remove(Self.ItemOf(Index));
 end;
@@ -347,7 +348,7 @@ begin
     end;
 end;
 
-function TLinkedList.ValueOf(Index: Integer): Pointer;
+function TLinkedList.ValueOf(const Index: Integer): Pointer;
 var Item: PListItem;
 begin
     Item := Self.ItemOf(Index);
@@ -357,12 +358,12 @@ begin
         Result := nil;
 end;
 
-function TLinkedList.Move(Index, NewIndex: Integer): Boolean;
+function TLinkedList.Move(const OldIndex, NewIndex: Integer): Boolean;
 var Item: PListItem;
 begin
     Result := False;
-    If (Index = NewIndex) or (NewIndex >= FCount) then Exit;
-    Item := Self.ItemOf(Index);
+    If (OldIndex = NewIndex) or (NewIndex >= FCount) then Exit;
+    Item := Self.ItemOf(OldIndex);
     if Item = nil then Exit;
     if NewIndex < FCount - 1 then
         Result := Self.Insert(NewIndex, Item^.Value) <> nil
@@ -371,17 +372,18 @@ begin
     Self.Remove(Item);
 end;
 
-function TLinkedList.MoveToFirst(Index: Integer): Boolean;
+function TLinkedList.MoveToFirst(const Index: Integer): Boolean;
 begin
     Result := Self.Move(Index, 0);
 end;
 
-function TLinkedList.MoveToLast(Index: Integer): Boolean;
+function TLinkedList.MoveToLast(const Index: Integer): Boolean;
 begin
     Result := Self.Move(Index, FCount - 1);
 end;
 
-function TLinkedList.Update(Index: Integer; const Value: Pointer): Boolean;
+function TLinkedList.Update(const Index: Integer; const Value: Pointer):
+    Boolean;
 var Item: PListItem;
 begin
     Item := Self.ItemOf(Index);
