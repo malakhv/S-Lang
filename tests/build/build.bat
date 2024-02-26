@@ -24,6 +24,7 @@ fpc ./../Test.pas -FEout ^
     -Fu%COMPILER_ROOT%/cpu/Cpu.pas ^
     -Fu%COMPILER_ROOT%/os/win ^
     -Fu%COMPILER_ROOT%/os/ ^
+    -Fu%RTL_ROOT% ^
     -Fu%RTL_ROOT%/collections ^
     -Fu%TESTCASES_ROOT%/rtl/collections ^
     -otest.exe

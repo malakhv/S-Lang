@@ -48,9 +48,13 @@ procedure RunAll();
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
+uses Classes;
+
 {------------------------------------------------------------------------------}
 { Common Stuff                                                                 }
 {------------------------------------------------------------------------------}
+
+const TEST_ITEM_COUNT = 10000;
 
 var
     ListCase: TTestCase;
@@ -66,7 +70,6 @@ begin
 end;
 
 function FillTest(const Input: Pointer; var Output: Pointer): Boolean;
-const TEST_COUNT = 10000;
 var Count: Integer;
     Item: PListItem;
     TestList: TLinkedList;
@@ -74,13 +77,13 @@ begin
     TestList := TLinkedList(Input);
     TestList.Clear();
     Count := 0;
-    FillList(TEST_COUNT, TestList);
+    FillList(TEST_ITEM_COUNT, TestList);
     Item := TestList.First;
     repeat
         Inc(Count);
         Item := Item^.Next;
     until Item = nil;
-    Result := (Count = TEST_COUNT) and (Count = TestList.Count);
+    Result := (Count = TEST_ITEM_COUNT) and (Count = TestList.Count);
     Output := Input;
 end;
 
@@ -113,6 +116,25 @@ begin
     Output := Input;
 end;
 
+function ArrayTest(const Input: Pointer; var Output: Pointer): Boolean;
+var I: Integer;
+    TestList: TLinkedList;
+    Pointers: TPointers;
+begin
+    TestList := TLinkedList(Input);
+    TestList.Clear();
+    FillList(TEST_ITEM_COUNT, TestList);
+    Pointers := TestList.ToArray();
+    Result := True;
+    for I := Low(Pointers) to High(Pointers) do
+        if I <> Cardinal(Pointers[I]) then
+        begin
+            Result := False;
+            Break;
+        end;
+    Output := Input;
+end;
+
 {------------------------------------------------------------------------------}
 { External test actions                                                        }
 {------------------------------------------------------------------------------}
@@ -139,6 +161,7 @@ INITIALIZATION
     ListCase.Add('InsertTest', InsertTest);
     ListCase.Add('RemoveTest', RemoveTest);
     ListCase.Add('MoveTest', MoveTest);
+    ListCase.Add('ArryaTest', ArrayTest);
 
 FINALIZATION
     ListCase.Clear();
