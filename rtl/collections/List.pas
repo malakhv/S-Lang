@@ -44,15 +44,15 @@ INTERFACE                                                          { INTERFACE }
 type
 
     {
-        The Item into a linked list.
+        The Item into a linked list with specified value (element).
     }
     PListItem = ^TListItem;
     TListItem = record
-        { The pointer to a real data that stored into a linked list. }
+        { The pointer to a real element that stored into a linked list. }
         Value: Pointer;
-        { A previous element in the linked list, or nil. }
+        { A previous item in the linked list, or nil. }
         Prev: PListItem;
-        { A next element in the linked list, or nil. }
+        { A next item in the linked list, or nil. }
         Next: PListItem;
         { Returns True if this Item has link to a real data. }
         function HasData(): Boolean;
@@ -69,10 +69,10 @@ type
     }
     TLinkedList = class(TObject)
     private
-        FFirst: PListItem;
-        FLast: PListItem;
-        FCount: Integer;
-        FUnique: Boolean;
+        FFirst: PListItem;  // See First property
+        FLast: PListItem;   // See Last property
+        FCount: Integer;    // See Count property
+        FUnique: Boolean;   // See Unique property
     protected
         { Finds an item by its value in this list. }
         function ItemOf(const Value: Pointer): PListItem; overload;
@@ -82,11 +82,11 @@ type
         function Remove(Item: PListItem): Boolean; overload; virtual;
     public
 
-        { The first element into this list. }
+        { The first item into this list. }
         property First: PListItem read FFirst;
-        { The last element into this list. }
+        { The last item into this list. }
         property Last: PListItem read FLast;
-        { The number of elements in this list. }
+        { The number of items into this list. }
         property Count: Integer read FCount;
 
         { Allows (by default) to have duplicate elements in the list. }
@@ -100,9 +100,9 @@ type
             list. }
         function Insert(const Index: Integer; const Value: Pointer): PListItem;
 
-        { Removes specified element from this linked list. }
+        { Removes specified element from this list. }
         function Remove(const Value: Pointer): Boolean; overload;
-        { Removes an element from this linked list by its index. }
+        { Removes an element from this list by its index. }
         function Remove(const Index: Integer): Boolean; overload;
         { Removes the first element from this linked list. }
         function RemoveFirst(): Boolean;
