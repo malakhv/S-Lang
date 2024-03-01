@@ -22,15 +22,15 @@ var
 
 procedure DumpList();
 var Item: PListItem;
-    Info: TTypeInfo;
+    Info: Integer;
 begin
     WriteLn();
     Item := MyList.First;
     while Item <> nil do
     begin
-        Info := PTypeInfo(Item^.Value)^;
+        Info := Integer(Item^.Value);
         Item := Item^.Next;
-        WriteLn('Name: ', Info.GetName());
+        WriteLn('Val: ', Info);
     end;
     WriteLn('(', MyList.Count, ' elements in total)');
 end;
@@ -114,24 +114,28 @@ begin
 
 
 
-    Exit;
+    //Exit;
 
 
     // Test 05
-    WriteLn('===== Test 05 ====='); WriteLn();
+    WriteLn('===== Test 06 ====='); WriteLn();
     MyList.Clear();
     //for I := 1 to 128699999 do
-    for I := 1 to 123456 do
+    for I := 1 to 100 do
     begin
         MyList.Add(Pointer(I));
     end;
-    WriteLn('(', MyList.Count, ' elements in total)');
+    //WriteLn('(', MyList.Count, ' elements in total)');
     WriteLn();
-    WriteLn('Fill - done!');
-    ReadLn();
-    MyList.Clear();
-    WriteLn('Clear - done!');
-    WriteLn();
-    Dump(MyList); WriteLn();
-    ReadLn();
+    DumpList();
+    MyList.Reverse();
+    DumpList();
+    Dump(MyList);
+    //WriteLn('Fill - done!');
+    //ReadLn();
+    //MyList.Clear();
+    //WriteLn('Clear - done!');
+    //WriteLn();
+    //Dump(MyList); WriteLn();
+    //ReadLn();
 end.

@@ -140,6 +140,9 @@ type
             sequence (from first to last element). }
         function ToArray(): TPointers;
 
+        { Reverses this list. }
+        procedure Reverse();
+
         { Clears this linked list. }
         procedure Clear(); virtual;
         { Free all related resources. }
@@ -415,6 +418,22 @@ begin
         Result[I] := Item^.Value;
         Item := Item^.Next;
         Inc(I);
+    end;
+end;
+
+procedure TLinkedList.Reverse();
+var Item, Tmp: PListItem;
+begin
+    Item := Self.FFirst;
+    Tmp := Self.FLast;
+    Self.FLast := Self.FFirst;
+    Self.FFirst := Tmp;
+    while Item <> nil do
+    begin
+        Tmp := Item^.Next;
+        Item^.Next := Item^.Prev;
+        Item^.Prev := Tmp;
+        Item := Tmp;
     end;
 end;
 
