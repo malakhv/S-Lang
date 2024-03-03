@@ -76,12 +76,18 @@ type
         FCount: Integer;    // See Count property
         FUnique: Boolean;   // See Unique property
     protected
+        { Appends the specified element to the end of this list. }
+        function AddItem(const Value: Pointer): PListItem; virtual;
+        { Inserts the specified element at the specified position in this
+            list. }
+        function InsertItem(Index: Integer; const Value: Pointer):
+            PListItem; virtual;
         { Finds an item by its value in this list. }
         function ItemOf(const Value: Pointer): PListItem; overload;
         { Finds an item by its index in this list. }
         function ItemOf(Index: Integer): PListItem; overload;
         { Removes specified item from this list. }
-        function Remove(Item: PListItem): Boolean; overload; virtual;
+        function RemoveItem(Item: PListItem): Boolean; virtual;
     public
 
         { The first item into this list. }
@@ -95,12 +101,12 @@ type
         property Unique: Boolean read FUnique;
 
         { Appends the specified element to the end of this list. }
-        function Add(const Value: Pointer): PListItem;
+        function Add(const Value: Pointer): Boolean;
         { Inserts the specified element at the beginning of this list. }
-        function AddFirst(const Value: Pointer): PListItem;
+        function AddFirst(const Value: Pointer): Boolean;
         { Inserts the specified element at the specified position in this
             list. }
-        function Insert(Index: Integer; const Value: Pointer): PListItem;
+        function Insert(Index: Integer; const Value: Pointer): Boolean;
 
         { Returns true if this list contains the specified element. More
             formally, returns true if and only if this list contains at least
@@ -136,8 +142,8 @@ type
         { Returns True if this linked list is empty. }
         function IsEmpty(): Boolean;
 
-        { Returns an array containing all of the elements in this list in proper
-            sequence (from first to last element). }
+        { Returns an array containing all of the elements in this list in
+            proper sequence (from first to last element). }
         function ToArray(): TPointers;
 
         { Reverses this list. }
@@ -173,7 +179,7 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 {------------------------------------------------------------------------------}
 
 { Removes specified Items from its Linked list. }
-procedure RemoveItem(var Item: PListItem);
+procedure RemoveItemFromList(var Item: PListItem);
 begin
     if Item = nil then Exit;
     if Item^.HasPrev() then Item^.Prev^.Next := Item^.Next;
@@ -275,7 +281,7 @@ begin
     end;
 end;
 
-function TLinkedList.Add(const Value: Pointer): PListItem;
+function TLinkedList.AddItem(const Value: Pointer): PListItem;
 begin
     New(Result);
     Result^.Value := Value;
@@ -290,12 +296,18 @@ begin
     Inc(FCount);
 end;
 
-function TLinkedList.AddFirst(const Value: Pointer): PListItem;
+function TLinkedList.Add(const Value: Pointer): Boolean;
+begin
+    Result := Self.AddItem(Value) <> nil;
+end;
+
+function TLinkedList.AddFirst(const Value: Pointer): Boolean;
 begin
     Result := Self.Insert(0, Value);
 end;
 
-function TLinkedList.Insert(Index: Integer; const Value: Pointer): PListItem;
+function TLinkedList.InsertItem(Index: Integer; const Value: Pointer):
+    PListItem;
 var Item: PListItem;
 begin
     Item := Self.ItemOf(Index);
@@ -316,39 +328,44 @@ begin
     Inc(FCount);
 end;
 
+function TLinkedList.Insert(Index: Integer; const Value: Pointer): Boolean;
+begin
+    Result := Self.InsertItem(Index, Value) <> nil;
+end;
+
 function TLinkedList.Contains(const Value: Pointer): Boolean;
 begin
     Result := Self.ItemOf(Value) <> nil;
 end;
 
-function TLinkedList.Remove(Item: PListItem): Boolean;
+function TLinkedList.RemoveItem(Item: PListItem): Boolean;
 begin
     Result := Item <> nil;
     if not Result then Exit;
     if FFirst = Item then FFirst := Item^.Next;
     if FLast = Item then FLast := Item^.Prev;
-    RemoveItem(Item);
+    RemoveItemFromList(Item);
     Dec(FCount);
 end;
 
 function TLinkedList.Remove(const Value: Pointer): Boolean;
 begin
-    Result := Self.Remove(Self.ItemOf(Value));
+    Result := Self.RemoveItem(Self.ItemOf(Value));
 end;
 
 function TLinkedList.Remove(Index: Integer): Boolean;
 begin
-    Result := Self.Remove(Self.ItemOf(Index));
+    Result := Self.RemoveItem(Self.ItemOf(Index));
 end;
 
 function TLinkedList.RemoveFirst(): Boolean;
 begin
-    Result := Self.Remove(FFirst);
+    Result := Self.RemoveItem(FFirst);
 end;
 
 function TLinkedList.RemoveLast(): Boolean;
 begin
-    Result := Self.Remove(FLast);
+    Result := Self.RemoveItem(FLast);
 end;
 
 function TLinkedList.IndexOf(const Value: Pointer): Integer;
@@ -383,9 +400,9 @@ begin
     Item := Self.ItemOf(OldIndex);
     if Item = nil then Exit;
     if NewIndex < FCount - 1 then
-        Result := Self.Insert(NewIndex, Item^.Value) <> nil
+        Result := Self.Insert(NewIndex, Item^.Value)
     else
-        Result := Add(Item^.Value) <> nil;
+        Result := Self.Add(Item^.Value);
     Self.Remove(Item);
 end;
 
