@@ -54,11 +54,11 @@ begin
 
     // Test 01
     WriteLn('===== Test 01 ====='); WriteLn();
-    Dump(MyList); WriteLn();
+    //Dump(MyList); WriteLn();
     MyList.Add(MakeTypeInfo('Set'));
-    Dump(MyList); WriteLn();
+    //Dump(MyList); WriteLn();
     MyList.Remove(0);
-    Dump(MyList); WriteLn();
+    //Dump(MyList); WriteLn();
     WriteLn('(', MyList.Count, ' elements in total)');
     WriteLn();
 
@@ -66,7 +66,7 @@ begin
     WriteLn('===== Test 02 ====='); WriteLn();
     MyList.Add(MakeTypeInfo('Enum'));
     MyList.Add(MakeTypeInfo('Array'));
-    Dump(MyList); WriteLn();
+    //Dump(MyList); WriteLn();
     WriteLn('(', MyList.Count, ' elements in total)');
     WriteLn();
 
@@ -74,7 +74,7 @@ begin
     WriteLn('===== Test 03 ====='); WriteLn();
     MyList.Clear();
     FillList();
-    Dump(MyList); WriteLn();
+    //Dump(MyList); WriteLn();
     WriteLn('(', MyList.Count, ' elements in total)');
     WriteLn();
 
@@ -88,7 +88,7 @@ begin
     MyList.Remove(9);
     MyList.Remove(3);
     MyList.Remove(MyList.Count - 1);
-    Dump(MyList); WriteLn();
+    //Dump(MyList); WriteLn();
     WriteLn('(', MyList.Count, ' elements in total)');
     WriteLn();
 
@@ -103,7 +103,7 @@ begin
     MyList.AddFirst(Pointer(-3));
     MyList.Update(0, Pointer(-5));
     MyList.MoveToLast(0);
-    Dump(MyList); WriteLn();
+    //Dump(MyList); WriteLn();
     WriteLn('(', MyList.Count, ' elements in total)');
     WriteLn();
 
@@ -130,7 +130,7 @@ begin
     DumpList();
     MyList.Reverse();
     DumpList();
-    Dump(MyList);
+    //Dump(MyList);
     //WriteLn('Fill - done!');
     //ReadLn();
     //MyList.Clear();

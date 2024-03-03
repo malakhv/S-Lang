@@ -58,6 +58,35 @@ const TEST_ITEM_COUNT = 10000;
 var
     ListCase: TTestCase;
 
+procedure PrintListItem(const Item: PListItem);
+begin
+    if Item <> nil then
+    begin
+        WriteLn('   Item:  ', Integer(Item));
+        WriteLn('   Prev:  ', Integer(Item^.Prev));
+        WriteLn('   Next:  ', Integer(Item^.Next));
+        WriteLn('   Value: ', Integer(Item^.Value));
+    end else
+        WriteLn('   Item is NIL');
+end;
+
+procedure Dump(AList: TLinkedList);
+var Item: PListItem;
+begin
+    WriteLn('First:');
+    PrintListItem(AList.First);
+    WriteLn('Last:');
+    PrintListItem(AList.Last);
+    WriteLn('Items:');
+    Item := AList.First;
+    while Item <> nil do
+    begin
+        PrintListItem(Item);
+        WriteLn();
+        Item := Item^.Next;
+    end;
+end;
+
 procedure FillList(Count: Integer; var L: TLinkedList);
 var I: Integer;
 begin

@@ -168,10 +168,6 @@ type
 
     end;
 
-
-{ Print all items from specified list. }
-procedure Dump(AList: TLinkedList);
-
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
 {------------------------------------------------------------------------------}
@@ -186,35 +182,6 @@ begin
     if Item^.HasNext() then Item^.Next^.Prev := Item^.Prev;
     // Can we do it here?
     Dispose(Item);
-end;
-
-procedure PrintListItem(const Item: PListItem);
-begin
-    if Item <> nil then
-    begin
-        WriteLn('   Item:  ', Integer(Item));
-        WriteLn('   Prev:  ', Integer(Item^.Prev));
-        WriteLn('   Next:  ', Integer(Item^.Next));
-        WriteLn('   Value: ', Integer(Item^.Value));
-    end else
-        WriteLn('   Item is NIL');
-end;
-
-procedure Dump(AList: TLinkedList);
-var Item: PListItem;
-begin
-    WriteLn('First:');
-    PrintListItem(AList.First);
-    WriteLn('Last:');
-    PrintListItem(AList.Last);
-    WriteLn('Items:');
-    Item := AList.First;
-    while Item <> nil do
-    begin
-        PrintListItem(Item);
-        WriteLn();
-        Item := Item^.Next;
-    end;
 end;
 
 {------------------------------------------------------------------------------}
