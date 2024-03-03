@@ -20,14 +20,13 @@
 {------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------}
-{ This Unit includes basic data types' definitions and common routines to      }
-{ working with it.                                                             }
+{ This Unit includes test cases for RTL List data structures.                  }
 {                                                                              }
 { Project: S-Lang                                                              }
 { Package: S-Lang.Testing                                                      }
-{ Types:   TBD                                                                 }
+{ Types:   Not Applicable                                                      }
 {                                                                              }
-{ Dependencies: List                                                           }
+{ Dependencies: Testing, List                                                  }
 {                                                                              }
 { Created: 25.02.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
