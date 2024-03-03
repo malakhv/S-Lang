@@ -33,7 +33,7 @@
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
 {------------------------------------------------------------------------------}
 
-UNIT ListTest;                                                           { UNIT }
+UNIT ListTest;                                                          { UNIT }
 
 {$MODE DELPHI}
 {$H+}
@@ -59,15 +59,29 @@ const TEST_ITEM_COUNT = 10000;
 var
     ListCase: TTestCase;
 
-{------------------------------------------------------------------------------}
-{ Tests                                                                        }
-{------------------------------------------------------------------------------}
-
 procedure FillList(Count: Integer; var L: TLinkedList);
 var I: Integer;
 begin
     for I := 0 to Count - 1 do L.Add(Pointer(I));
 end;
+
+function CheckCount(const L: TLinkedList): Boolean;
+var C: Integer;
+    Item: PListItem;
+begin
+    Item := L.First;
+    C := 0;
+    while Item <> nil do
+    begin
+        Inc(C);
+        Item := Item^.Next;
+    end;
+    Result := C = L.Count;
+end;
+
+{------------------------------------------------------------------------------}
+{ Tests                                                                        }
+{------------------------------------------------------------------------------}
 
 function FillTest(const Input: Pointer; var Output: Pointer): Boolean;
 var Count: Integer;
@@ -135,6 +149,69 @@ begin
     Output := Input;
 end;
 
+function ReverseTestOne(const Input: Pointer; var Output: Pointer): Boolean;
+var I, V: Pointer;
+    TestList: TLinkedList;
+begin
+    Result := False;
+    TestList := TLinkedList(Input);
+    TestList.Clear();
+    V := Pointer(1);
+    TestList.Add(V);
+    TestList.Reverse();
+
+    if not CheckCount(TestList) then Exit;
+    Result := (TestList.Count = 1) and (TestList.First = TestList.Last)
+        and (TestList.Last^.Value = V);
+end;
+
+function ReverseTestTwo(const Input: Pointer; var Output: Pointer): Boolean;
+var I, V1, V2: Pointer;
+    TestList: TLinkedList;
+    First, Last: PListItem;
+begin
+    Result := False;
+
+    TestList := TLinkedList(Input);
+    TestList.Clear();
+    V1 := Pointer(1);
+    V2 := Pointer(2);
+    TestList.Add(V1);
+    TestList.Add(V2);
+    TestList.Reverse();
+
+    if not CheckCount(TestList) then Exit;
+    First := TestList.First;
+    Last := TestList.Last;
+    Result := (TestList.Count = 2)
+        and (First^.Value = V2) and (Last^.Value = V1)
+        and (First^.Prev = nil) and (First^.Next = Last)
+        and (Last^.Prev = First) and (Last^.Next = nil);
+end;
+
+function ReverseTestMany(const Input: Pointer; var Output: Pointer): Boolean;
+var I, V: Pointer;
+    Item: PListItem;
+    TestList: TLinkedList;
+begin
+    Result := False;
+    TestList := TLinkedList(Input);
+    TestList.Clear();
+    FillList(TEST_ITEM_COUNT, TestList);
+    TestList.Reverse();
+
+    Item := TestList.First;
+    V := Pointer(TEST_ITEM_COUNT - 1);
+    while Item <> nil do
+    begin
+        if Item^.Value <> V then Exit;
+        Dec(V);
+        Item := Item^.Next;
+    end;
+    Result := CheckCount(TestList);
+end;
+
+
 {------------------------------------------------------------------------------}
 { External test actions                                                        }
 {------------------------------------------------------------------------------}
@@ -162,6 +239,9 @@ INITIALIZATION
     ListCase.Add('RemoveTest', RemoveTest);
     ListCase.Add('MoveTest', MoveTest);
     ListCase.Add('ArryaTest', ArrayTest);
+    ListCase.Add('ReverseTest One', ReverseTestOne);
+    ListCase.Add('ReverseTest Two', ReverseTestTwo);
+    ListCase.Add('ReverseTest Many', ReverseTestMany);
 
 FINALIZATION
     ListCase.Clear();
