@@ -41,64 +41,136 @@ UNIT Collections;                                                       { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
+uses Classes;
+
+
 {
-
-    https://wiki.freepascal.org/Generics_proposals
-
-  type
-    TListItem<T> = record
-      Data: T;
-      Next: TListItem;
-    end;
-    PListItem = ^TListItem;
- 
-    TList<T> = class
-    private
-      fHead: PListItem<T>;
-      fTail: PListItem<T>;
-    published
-      procedure Add(Item: T);
-    end;
- 
-  procedure TList<T>.Add(Item: T);
-  var
-    node: PListItem<T>;
-  begin
-    New(node);
-    node^.Data := Item;
-    node^.Next := nil;
-  
-    if Assigned(fTail) then begin
-      fTail^.Next := node;
-    end else begin
-      fHead := node;
-    end;
-  
-    fTail := node;
-  end;
-  
-  type
-    TApple = class
-    end;
-    TOrange = class
-    end;
-  
-    TAppleList = TList<TApple>;
-  
-  var
-    apples: TAppleList;
-    apple: TApple;
-  begin
-    apples.Add(TApple.Create); // works
-    apples.Add(TOrange.Create); // compile error
-  
-    apple := apples[0]; // works
-    apple := apples[1]; // not applicable
-    apple := apples[0] as TApple; // works, but unneccessary
-    apple := apples[1] as TApple; // not applicable
-  end;
-
+    The basic interfaces for all collections
 }
+type
+
+    {
+        The root interface in the collection hierarchy. A collection represents
+        a group of objects, known as its elements. Some collections allow
+        duplicate elements and others do not. Some are ordered and others
+        unordered.
+    }
+    ICollection = interface(IInterface)
+        ['{30A60589-647B-46F5-BBB3-0F589D8F9928}']
+
+        { Ensures that this collection contains the specified element.
+  
+          Returns True if this collection changed as a result of the call,
+          otherwise False (if this collection does not permit duplicates and
+          already contains the specified element, for exemple).
+
+          Collections that support this operation may place limitations on what
+          elements may be added to this collection - some collections will
+          refuse to add Nil elements and others will impose restrictions on the
+          type of elements that may be added. Collection classes should clearly
+          specify in their documentation any restrictions on what elements may
+          be added. }
+        function Add(const Element: Pointer): Boolean;
+
+        { Returns True if this collection contains the specified element.
+
+          More formally, returns true if and only if this collection contains
+          at least one specified element. }
+        function Contains(const Element: Pointer): Boolean;
+
+        { Returns the number of elements in this collection. }
+        function GetCount(): Integer;
+
+        { Removes a single instance of the specified element from this
+          collection, if it is present.
+
+          Returns true if this collection contained the specified element (or
+          equivalently, if this collection changed as a result of the call). }
+        function Remove(const Element: Pointer): Boolean;
+
+        { Returns True if this collection contains no elements. }
+        function IsEmpty(): Boolean;
+
+        { Returns an array containing all of the elements in this collection.
+
+          If this collection makes any guarantees as to what order its
+          elements, this method must return the elements in the same order. }
+        function ToArray(): TPointers;
+
+        { Removes all of the elements from this collection. The collection will
+          be empty after this method returns. }
+        procedure Clear();
+
+    end;
+
+    {
+        An ordered collection (also known as a sequence). This collection
+        allows to precise control over where in the list each element is
+        inserted. Also it allows to access elements by their integer index
+        (position in the list), and search for elements in the list.
+
+        See also: TList, TLinkedList, TArrayList, TStack
+    }
+    IList = interface(ICollection)
+        ['{ABDF916A-8CA6-47B8-945F-0E08F5A1330E}']
+
+        { Returns the element at the specified position in this list. }
+        function Get(Index: Integer): Pointer;
+
+        { Returns the index of the first occurrence of the specified element in
+          this list, or -1 if this list does not contain the element. }
+        function IndexOf(const Element: Pointer): Integer;
+
+        { Inserts the specified element at the specified position in this list.
+          Shifts the element currently at that position (if any) and any
+          subsequent elements to the right (adds one to their indices).
+
+          Returns True if this list changed as a result of the call, otherwise
+          False (if Index is invalid, for exemple). }
+        function Insert(Index: Integer; const Element: Pointer): Boolean;
+
+        { Moves element with specified index to a new position in this list.
+
+          Returns True if this list changed as a result of the call, otherwise
+          False (if FromIndex or ToIndex is invalid, for exemple).
+        }
+        function Move(FromIndex, ToIndex: Integer): Boolean;
+
+        { Removes the element at the specified position in this list. Shifts
+          any subsequent elements to the left (subtracts one from their
+          indices).
+
+          Returns True if this list contained the specified element (or
+          equivalently, if this list changed as a result of the call). }
+        function Remove(Index: Integer): Boolean;
+
+        { Replaces the element at the specified position in this list.
+
+          Returns True if this list changed as a result of the call, otherwise
+          False (if Index is invalid, for exemple).
+        }
+        function Update(Index: Integer; const Element: Pointer): Boolean;
+
+    end;
+
+    {
+        An unordered collection that contains no duplicate elements (and at
+        most one Nil element). As implied by its name, this interface models
+        the mathematical set abstraction. Basically, this interface repeats
+        the ICollection interface.
+
+        Note: Pascal has a special language construction Set. We want to have
+        yet another set structure to work with it the same as abstract
+        collection.
+
+        See also: TSet, THashSet, TTreeSet.
+    }
+    ISet = interface(ICollection)
+        ['{C870930D-333B-4CC1-834B-9426477F22C6}']
+        // TODO Set Operations: difference, intersection, subset, superset,
+        // equality, inequality, union
+        // See https://docwiki.embarcadero.com/RADStudio/Alexandria/en/Expressions_(Delphi)#Set_Operators
+    end;
 
 type
 

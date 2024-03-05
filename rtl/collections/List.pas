@@ -41,7 +41,7 @@ UNIT List;                                                              { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses Classes;
+uses Classes, Collections;
 
 type
 
@@ -69,7 +69,7 @@ type
     {
         The double linked list.
     }
-    TLinkedList = class(TObject)
+    TLinkedList = class(TInterfacedObject, IList)
     private
         FFirst: PListItem;  // See First property
         FLast: PListItem;   // See Last property
@@ -88,6 +88,8 @@ type
         function ItemOf(Index: Integer): PListItem; overload;
         { Removes specified item from this list. }
         function RemoveItem(Item: PListItem): Boolean; virtual;
+        { From IList interface. }
+        function GetCount(): Integer;
     public
 
         { The first item into this list. }
@@ -112,6 +114,9 @@ type
             formally, returns true if and only if this list contains at least
             one specified element. }
         function Contains(const Value: Pointer): Boolean;
+
+        { From IList interface. }
+        function Get(Index: Integer): Pointer;
 
         { Removes specified element from this list. }
         function Remove(const Value: Pointer): Boolean; overload;
@@ -238,6 +243,11 @@ begin
     end;
 end;
 
+function TLinkedList.GetCount(): Integer;
+begin
+    Result := FCount;
+end;
+
 function TLinkedList.ItemOf(Index: Integer): PListItem;
 begin
     If Self.IsEmpty() or (Index >= FCount) then Exit;
@@ -303,6 +313,11 @@ end;
 function TLinkedList.Contains(const Value: Pointer): Boolean;
 begin
     Result := Self.ItemOf(Value) <> nil;
+end;
+
+function TLinkedList.Get(Index: Integer): Pointer;
+begin
+    Result := Self.ValueOf(Index);
 end;
 
 function TLinkedList.RemoveItem(Item: PListItem): Boolean;
