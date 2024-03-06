@@ -21,19 +21,30 @@
 
 {------------------------------------------------------------------------------}
 { This Unit includes basic data types' definitions and common routines to      }
-{ working with it.                                                             }
+{ working with collections. This is a part of S-Lang Collections Framework.    }
 {                                                                              }
-{ Project: S-Lang - RTL                                                        }
-{ Package: S-Lang.Rtl.Collections                                              }
-{ Types:   TBD                                                                 }
+{ Project: S-Lang RTL                                                          }
+{ Package: S-Lang.Collections                                                  }
+{ Types:   ICollection, IList, ISet                                            }
 {                                                                              }
-{ Dependencies: No                                                             }
+{ Dependencies: SLang.Classes                                                  }
 {                                                                              }
 { Created: 22.02.24                                                            }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
 {------------------------------------------------------------------------------}
 
-UNIT SLang.Collections;                                                       { UNIT }
+{------------------------------------------------------------------------------}
+{                                 Collections                                  }
+{                                                                              }
+{ The S-Lang RTL includes a collections framework. A collection is an object   }
+{ that represents a group of objects (such as the classic TLinkedList class).  }
+{ A collections framework is a unified architecture for representing and ma-   }
+{ nipulating collections, enabling collections to be manipulated independently }
+{ of implementation details.                                                   }
+{                                                                              }
+{------------------------------------------------------------------------------}
+
+UNIT SLang.Collections;                                                 { UNIT }
 
 {$MODE DELPHI}
 {$H+}

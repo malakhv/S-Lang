@@ -23,7 +23,7 @@
 { This Unit includes basic data types' definitions and common routines to      }
 { working with it.                                                             }
 {                                                                              }
-{ Project: S-Lang                                                              }
+{ Project: S-Lang RTL                                                          }
 { Package: SLang.Classes                                                       }
 {                                                                              }
 { Dependencies: No                                                             }

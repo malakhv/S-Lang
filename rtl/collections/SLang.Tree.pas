@@ -23,8 +23,8 @@
 { This Unit includes basic data types' definitions and common routines to      }
 { working with it.                                                             }
 {                                                                              }
-{ Project: S-Lang                                                              }
-{ Package: S-Lang.RTL.Collections                                              }
+{ Project: S-Lang RTL                                                          }
+{ Package: S-Lang.Collections                                                  }
 { Types:   Tree                                                                }
 {                                                                              }
 { Dependencies: No                                                             }
@@ -33,7 +33,7 @@
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
 {------------------------------------------------------------------------------}
 
-UNIT Tree;                                                              { UNIT }
+UNIT SLang.Tree;                                                        { UNIT }
 
 {$MODE DELPHI}
 {$H+}

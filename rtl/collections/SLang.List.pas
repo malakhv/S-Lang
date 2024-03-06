@@ -21,19 +21,19 @@
 
 {------------------------------------------------------------------------------}
 { This Unit includes basic data types' definitions and common routines to      }
-{ working with it.                                                             }
+{ working with lists. This is a part of S-Lang Collections Framework.          }
 {                                                                              }
-{ Project: S-Lang                                                              }
-{ Package: S-Lang.RTL.Collections                                              }
-{ Types:   List                                                                }
+{ Project: S-Lang RTL                                                          }
+{ Package: S-Lang.Collections                                                  }
+{ Types:   TLinkedList, TArrayList, TStack                                     }
 {                                                                              }
-{ Dependencies: No                                                             }
+{ Dependencies: SLang.Classes, SLang.Collections                               }
 {                                                                              }
-{ Created: [DATE]                                                              }
+{ Created: 22.02.24                                                            }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
 {------------------------------------------------------------------------------}
 
-UNIT SLang.List;                                                              { UNIT }
+UNIT SLang.List;                                                        { UNIT }
 
 {$MODE DELPHI}
 {$H+}
