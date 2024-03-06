@@ -1,14 +1,14 @@
 #!/bin/sh
 
-RTL_ROOT="./../../rtl"
-COMPILER_ROOT="./../../compiler"
-TESTCASES_ROOT="./../cases"
+RTL_ROOT="./../rtl"
+COMPILER_ROOT="./../compiler"
+TESTCASES_ROOT="./cases"
 
 # Clear build (out) dir
-rm -R -f ./out
-mkdir -p out
+rm -R -f ./build
+mkdir -p build
 
-fpc ./../Test.pas -FEout \
+fpc ./Test.pas -FEbuild \
     -Fu$COMPILER_ROOT/lang \
     -Fu$COMPILER_ROOT/cpu/intel \
     -Fu$COMPILER_ROOT/cpu/Cpu.pas \
@@ -17,4 +17,4 @@ fpc ./../Test.pas -FEout \
     -Fu$RTL_ROOT \
     -Fu$RTL_ROOT/collections \
     -Fu$TESTCASES_ROOT/rtl/collections \
-    -otest.exe
+    -otest
