@@ -1,14 +1,14 @@
 #!/bin/sh
 
-RTL_ROOT="./../rtl"
-COMPILER_ROOT="./../compiler"
+RTL_ROOT="./rtl"
+COMPILER_ROOT="./compiler"
 
 # Clear build (out) dir
-rm -R -f ./out
-mkdir -p out
+rm -R -f ./build
+mkdir -p build
 
 # Compile programm
-fpc $COMPILER_ROOT/Compiler.pas -FEout \
+fpc $COMPILER_ROOT/Compiler.pas -FEbuild \
     -Fu$COMPILER_ROOT/lang \
     -Fu$COMPILER_ROOT/cpu/intel \
     -Fu$COMPILER_ROOT/cpu/Cpu.pas \

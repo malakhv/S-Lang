@@ -6,18 +6,18 @@
 
 @ECHO OFF
 
-SET RTL_ROOT="./../rtl"
-SET COMPILER_ROOT="./../compiler"
+SET RTL_ROOT="./rtl"
+SET COMPILER_ROOT="./compiler"
 
-IF EXIST out\ (
-    echo Clear out directory...
-    rd /s /q out\
+IF EXIST build\ (
+    echo Clear build directory...
+    rd /s /q build\
 ) ELSE (
-    echo The out directory not found...
+    echo The build directory not found...
 )
-mkdir out
+mkdir build
 
-fpc %COMPILER_ROOT%/Compiler.pas -FEout ^
+fpc %COMPILER_ROOT%/Compiler.pas -FEbuild ^
     -Fu%COMPILER_ROOT%/lang ^
     -Fu%COMPILER_ROOT%/cpu/intel ^
     -Fu%COMPILER_ROOT%/cpu/Cpu.pas ^
