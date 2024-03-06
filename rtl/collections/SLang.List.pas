@@ -170,7 +170,7 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 {------------------------------------------------------------------------------}
 
 { Removes specified Items from its Linked list. }
-procedure RemoveItemFromList(var Item: PListItem);
+procedure RemoveFromList(var Item: PListItem);
 begin
     if Item = nil then Exit;
     if Item^.HasPrev() then Item^.Prev^.Next := Item^.Next;
@@ -212,42 +212,6 @@ begin
     Clear; Inherited;
 end;
 
-procedure TLinkedList.Clear();
-begin
-    while FFirst <> nil do Self.RemoveFirst();
-end;
-
-function TLinkedList.IsEmpty(): Boolean;
-begin
-    Result := FFirst = nil;
-end;
-
-function TLinkedList.ItemOf(const Element: Pointer): PListItem;
-begin
-    If Self.IsEmpty() then Exit;
-    Result := FFirst;
-    while Result <> nil do
-    begin
-        if Result^.Element = Element then Exit;
-        Result := Result^.Next;
-    end;
-end;
-
-function TLinkedList.GetCount(): Integer;
-begin
-    Result := FCount;
-end;
-
-function TLinkedList.ItemOf(Index: Integer): PListItem;
-begin
-    If Self.IsEmpty() or (Index >= FCount) then Exit;
-    Result := FFirst;
-    while (Result <> nil) and (Index > 0) do
-    begin
-        Result := Result^.Next; Dec(Index);
-    end;
-end;
-
 function TLinkedList.AddItem(const Element: Pointer): PListItem;
 begin
     New(Result);
@@ -261,16 +225,6 @@ begin
         FFirst := Result;
     FLast := Result;
     Inc(FCount);
-end;
-
-function TLinkedList.Add(const Element: Pointer): Boolean;
-begin
-    Result := Self.AddItem(Element) <> nil;
-end;
-
-function TLinkedList.AddFirst(const Element: Pointer): Boolean;
-begin
-    Result := Self.Insert(0, Element);
 end;
 
 function TLinkedList.InsertItem(Index: Integer; const Element: Pointer):
@@ -295,6 +249,62 @@ begin
     Inc(FCount);
 end;
 
+function TLinkedList.RemoveItem(Item: PListItem): Boolean;
+begin
+    Result := Item <> nil;
+    if not Result then Exit;
+    if FFirst = Item then FFirst := Item^.Next;
+    if FLast = Item then FLast := Item^.Prev;
+    RemoveFromList(Item);
+    Dec(FCount);
+end;
+
+function TLinkedList.ItemOf(const Element: Pointer): PListItem;
+begin
+    If Self.IsEmpty() then Exit;
+    Result := FFirst;
+    while Result <> nil do
+    begin
+        if Result^.Element = Element then Exit;
+        Result := Result^.Next;
+    end;
+end;
+
+function TLinkedList.ItemOf(Index: Integer): PListItem;
+begin
+    If Self.IsEmpty() or (Index < 0) or (Index >= FCount) then Exit;
+    Result := FFirst;
+    while (Result <> nil) and (Index > 0) do
+    begin
+        Result := Result^.Next; Dec(Index);
+    end;
+end;
+
+procedure TLinkedList.Clear();
+begin
+    while FFirst <> nil do Self.RemoveFirst();
+end;
+
+function TLinkedList.IsEmpty(): Boolean;
+begin
+    Result := FFirst = nil;
+end;
+
+function TLinkedList.GetCount(): Integer;
+begin
+    Result := FCount;
+end;
+
+function TLinkedList.Add(const Element: Pointer): Boolean;
+begin
+    Result := Self.AddItem(Element) <> nil;
+end;
+
+function TLinkedList.AddFirst(const Element: Pointer): Boolean;
+begin
+    Result := Self.Insert(0, Element);
+end;
+
 function TLinkedList.Insert(Index: Integer; const Element: Pointer): Boolean;
 begin
     Result := Self.InsertItem(Index, Element) <> nil;
@@ -313,16 +323,6 @@ begin
         Result := Item^.Element
     else
         Result := nil;
-end;
-
-function TLinkedList.RemoveItem(Item: PListItem): Boolean;
-begin
-    Result := Item <> nil;
-    if not Result then Exit;
-    if FFirst = Item then FFirst := Item^.Next;
-    if FLast = Item then FLast := Item^.Prev;
-    RemoveItemFromList(Item);
-    Dec(FCount);
 end;
 
 function TLinkedList.Remove(const Element: Pointer): Boolean;
@@ -348,6 +348,7 @@ end;
 function TLinkedList.IndexOf(const Element: Pointer): Integer;
 var Item: PListItem;
 begin
+    // TODO Need to use ItemOf...
     Result := -1;
     If Self.IsEmpty() then Exit;
     Item := FFirst;
