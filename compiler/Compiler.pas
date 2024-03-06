@@ -28,7 +28,7 @@ begin
     Item := MyList.First;
     while Item <> nil do
     begin
-        Info := Integer(Item^.Value);
+        Info := Integer(Item^.Element);
         Item := Item^.Next;
         WriteLn('Val: ', Info);
     end;
@@ -108,8 +108,8 @@ begin
     WriteLn();
 
     WriteLn('Index Of 2 is ', MyList.IndexOf(Pointer(2)));
-    WriteLn('Index Of First is ', MyList.IndexOf(MyList.First^.Value));
-    WriteLn('Index Of Last is ', MyList.IndexOf(MyList.Last^.Value));
+    WriteLn('Index Of First is ', MyList.IndexOf(MyList.First^.Element));
+    WriteLn('Index Of Last is ', MyList.IndexOf(MyList.Last^.Element));
     WriteLn();
 
 

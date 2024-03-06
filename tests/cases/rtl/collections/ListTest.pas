@@ -65,7 +65,7 @@ begin
         WriteLn('   Item:  ', Integer(Item));
         WriteLn('   Prev:  ', Integer(Item^.Prev));
         WriteLn('   Next:  ', Integer(Item^.Next));
-        WriteLn('   Value: ', Integer(Item^.Value));
+        WriteLn('   Value: ', Integer(Item^.Element));
     end else
         WriteLn('   Item is NIL');
 end;
@@ -190,7 +190,7 @@ begin
 
     if not CheckCount(TestList) then Exit;
     Result := (TestList.Count = 1) and (TestList.First = TestList.Last)
-        and (TestList.Last^.Value = V);
+        and (TestList.Last^.Element = V);
 end;
 
 function ReverseTestTwo(const Input: Pointer; var Output: Pointer): Boolean;
@@ -212,7 +212,7 @@ begin
     First := TestList.First;
     Last := TestList.Last;
     Result := (TestList.Count = 2)
-        and (First^.Value = V2) and (Last^.Value = V1)
+        and (First^.Element = V2) and (Last^.Element = V1)
         and (First^.Prev = nil) and (First^.Next = Last)
         and (Last^.Prev = First) and (Last^.Next = nil);
 end;
@@ -232,7 +232,7 @@ begin
     V := Pointer(TEST_ITEM_COUNT - 1);
     while Item <> nil do
     begin
-        if Item^.Value <> V then Exit;
+        if Item^.Element <> V then Exit;
         Dec(V);
         Item := Item^.Next;
     end;

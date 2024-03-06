@@ -24,8 +24,7 @@
 { working with it.                                                             }
 {                                                                              }
 { Project: S-Lang                                                              }
-{ Package: S-Lang.Classes                                                      }
-{ Types:   TBD                                                                 }
+{ Package: SLang.Classes                                                       }
 {                                                                              }
 { Dependencies: No                                                             }
 {                                                                              }
@@ -33,7 +32,7 @@
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
 {------------------------------------------------------------------------------}
 
-UNIT SLang.Classes;                                                           { UNIT }
+UNIT SLang.Classes;                                                     { UNIT }
 
 {$MODE DELPHI}
 {$H+}
@@ -46,20 +45,81 @@ INTERFACE                                                          { INTERFACE }
 }
 type
 
+    { An array of bytes. }
     TBytes = Array of Byte;
     PBytes = ^TBytes;
-    
+
+    { An array of integers. }
     TIntegers = Array of Integer;
     PIntegers = ^TIntegers;
 
+    { An array of pointers. }
     TPointers = Array of Pointer;
     PPointers = ^TPointers;
+
+type
+
+    {
+        Container to ease passing around a tuple of two objects.
+    }
+    PPair = ^TPair;
+    TPair = record
+        { Pair's data. }
+        First, Second: Pointer;
+        { Indicates whether some other pair is "equal to" this one. }
+        function Equals(const Pair: PPair): Boolean;
+        { Returns True if this pair has no data. }
+        function IsEmpty(): Boolean;
+        { Swaps data into this pair. }
+        procedure Swap();
+        { Clears data in this pair. }
+        procedure Clear();
+    end;
+
+    { An array of TPairs. }
+    TPairs = Array of TPair;
+    PPairs = ^TPairs;
+
+    function ToPair(const First, Second: Pointer): PPair;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
 {------------------------------------------------------------------------------}
 { Common Stuff                                                                 }
 {------------------------------------------------------------------------------}
+
+{------------------------------------------------------------------------------}
+{ TPair                                                                        }
+{------------------------------------------------------------------------------}
+
+function ToPair(const First, Second: Pointer): PPair;
+begin
+    New(Result);
+    Result^.First := First;
+    Result^.Second := Second;
+end;
+
+function TPair.Equals(const Pair: PPair): Boolean;
+begin
+    Result := (Pair <> nil) and (Self.First = Pair^.First)
+        and (Self.Second = Pair^.Second);
+end;
+
+function TPair.IsEmpty(): Boolean;
+begin
+    Result := (Self.First <> nil) and (Self.Second <> nil);
+end;
+
+procedure TPair.Swap();
+var Tmp: Pointer;
+begin
+    Tmp := Self.First; Self.First := Self.Second; Self.Second := Self.First;
+end;
+
+procedure TPair.Clear();
+begin
+    Self.First := nil; Self.Second := nil;
+end;
 
 END.                                                                     { END }
 

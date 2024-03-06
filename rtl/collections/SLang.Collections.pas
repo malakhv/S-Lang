@@ -81,15 +81,15 @@ type
         { Returns the number of elements in this collection. }
         function GetCount(): Integer;
 
+        { Returns True if this collection contains no elements. }
+        function IsEmpty(): Boolean;
+
         { Removes a single instance of the specified element from this
           collection, if it is present.
 
           Returns true if this collection contained the specified element (or
           equivalently, if this collection changed as a result of the call). }
         function Remove(const Element: Pointer): Boolean;
-
-        { Returns True if this collection contains no elements. }
-        function IsEmpty(): Boolean;
 
         { Returns an array containing all of the elements in this collection.
 

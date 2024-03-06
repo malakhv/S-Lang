@@ -135,7 +135,7 @@ end;
 
 function TTestCase.Get(Index: Integer): PTestStep;
 begin
-    Result := PTestStep(FSteps.ValueOf(Index));
+    Result := PTestStep(FSteps.Get(Index));
 end;
 
 function TTestCase.Remove(Index: Integer): Boolean;
