@@ -40,14 +40,14 @@ UNIT ListTest;                                                          { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses List, Testing;
+uses SLang.List, Testing;
 
 { Executes all existing test cases. }
 procedure RunAll();
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
-uses Classes;
+uses SLang.Classes;
 
 {------------------------------------------------------------------------------}
 { Common Stuff                                                                 }

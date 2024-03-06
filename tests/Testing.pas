@@ -41,7 +41,7 @@ UNIT Testing;                                                           { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses List;
+uses SLang.List;
 
 const
     PASS = 'PASS';

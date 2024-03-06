@@ -33,7 +33,7 @@
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
 {------------------------------------------------------------------------------}
 
-UNIT Collections;                                                       { UNIT }
+UNIT SLang.Collections;                                                       { UNIT }
 
 {$MODE DELPHI}
 {$H+}
@@ -41,7 +41,7 @@ UNIT Collections;                                                       { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses Classes;
+uses SLang.Classes;
 
 
 {
