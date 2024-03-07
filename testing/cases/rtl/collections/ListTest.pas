@@ -40,7 +40,7 @@ UNIT ListTest;                                                          { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.List, Testing;
+uses SLang.System, SLang.List, Testing;
 
 { Executes all existing test cases. }
 procedure RunAll();
@@ -114,59 +114,102 @@ end;
 function FillTest(const Input: Pointer; var Output: Pointer): Boolean;
 var Count: Integer;
     Item: PListItem;
-    TestList: TLinkedList;
+    List: TLinkedList;
 begin
-    TestList := TLinkedList(Input);
-    TestList.Clear();
+    List := TLinkedList(Input);
+    List.Clear();
     Count := 0;
-    FillList(TEST_ITEM_COUNT, TestList);
-    Item := TestList.First;
+    FillList(TEST_ITEM_COUNT, List);
+    Item := List.First;
     repeat
         Inc(Count);
         Item := Item^.Next;
     until Item = nil;
-    Result := (Count = TEST_ITEM_COUNT) and (Count = TestList.Count);
-    Output := Input;
+    Result := (Count = TEST_ITEM_COUNT) and (Count = List.Count);
+    Output := List;
 end;
 
 function AddTest(const Input: Pointer; var Output: Pointer): Boolean;
-var Item: PListItem;
-    TestList: TLinkedList;
+var I: Integer;
+    List: TLinkedList;
 begin
-    Result := False;
-    Output := Input;
+    List := TLinkedList(Input);
+    List.Clear();
+
+    List.Add(Pointer(3));
+    List.Add(Pointer(4));
+    List.Add(Pointer(5));
+    List.Add(Pointer(6));
+    List.AddFirst(Pointer(2));
+    List.AddFirst(Pointer(1));
+    List.Add(Pointer(7));
+    List.Add(Pointer(8));
+    List.Add(Pointer(9));
+    List.AddFirst(Pointer(0));
+
+    Result := CheckCount(List);
+    if not Result then Exit;
+    for I := 0 to List.Count - 1 do
+    begin
+        Result := Pointer(I) = List.Get(I);
+        if not Result then Break;
+    end;
+
+    Output := List;
 end;
 
 function InsertTest(const Input: Pointer; var Output: Pointer): Boolean;
-var L: TLinkedList;
+var I: Integer;
+    List: TLinkedList;
 begin
-    Result := False;
-    Output := Input;
+    List := TLinkedList(Input);
+    List.Clear();
+
+    List.Add(Pointer(7));                   // 7
+    List.Insert(0, Pointer(0));             // 0 7
+    List.Insert(1, Pointer(6));             // 0 6 7
+    List.Insert(1, Pointer(4));             // 0 4 6 7
+    List.Insert(2, Pointer(5));             // 0 4 5 6 7
+    List.Add(Pointer(9));                   // 0 4 5 6 7 9
+    List.Insert(List.Count -1, Pointer(8)); // 0 4 5 6 7 8 9
+    List.Insert(1, Pointer(1));             // 0 1 4 5 6 7 8 9
+    List.Insert(2, Pointer(2));             // 0 1 2 4 5 6 7 8 9
+    List.Insert(3, Pointer(3));             // 0 1 2 3 4 5 6 7 8 9
+
+    Result := CheckCount(List);
+    if not Result then Exit;
+    for I := 0 to List.Count - 1 do
+    begin
+        Result := Pointer(I) = List.Get(I);
+        if not Result then Break;
+    end;
+
+    Output := List;
 end;
 
 function RemoveTest(const Input: Pointer; var Output: Pointer): Boolean;
-var L: TLinkedList;
+var List: TLinkedList;
 begin
     Result := False;
-    Output := Input;
+    Output := List;
 end;
 
 function MoveTest(const Input: Pointer; var Output: Pointer): Boolean;
-var L: TLinkedList;
+var List: TLinkedList;
 begin
     Result := False;
-    Output := Input;
+    Output := List;
 end;
 
 function ArrayTest(const Input: Pointer; var Output: Pointer): Boolean;
 var I: Integer;
-    TestList: TLinkedList;
+    List: TLinkedList;
     Pointers: TPointers;
 begin
-    TestList := TLinkedList(Input);
-    TestList.Clear();
-    FillList(TEST_ITEM_COUNT, TestList);
-    Pointers := TestList.ToArray();
+    List := TLinkedList(Input);
+    List.Clear();
+    FillList(TEST_ITEM_COUNT, List);
+    Pointers := List.ToArray();
     Result := True;
     for I := Low(Pointers) to High(Pointers) do
         if I <> Cardinal(Pointers[I]) then
@@ -174,61 +217,63 @@ begin
             Result := False;
             Break;
         end;
-    Output := Input;
+    Output := List;
 end;
 
 function ReverseTestOne(const Input: Pointer; var Output: Pointer): Boolean;
-var I, V: Pointer;
-    TestList: TLinkedList;
+var V: Pointer;
+    List: TLinkedList;
 begin
     Result := False;
-    TestList := TLinkedList(Input);
-    TestList.Clear();
+    List := TLinkedList(Input);
+    List.Clear();
     V := Pointer(1);
-    TestList.Add(V);
-    TestList.Reverse();
+    List.Add(V);
+    List.Reverse();
 
-    if not CheckCount(TestList) then Exit;
-    Result := (TestList.Count = 1) and (TestList.First = TestList.Last)
-        and (TestList.Last^.Element = V);
+    if not CheckCount(List) then Exit;
+    Result := (List.Count = 1) and (List.First = List.Last)
+        and (List.Last^.Element = V);
+
+    Output := List;
 end;
 
 function ReverseTestTwo(const Input: Pointer; var Output: Pointer): Boolean;
-var I, V1, V2: Pointer;
-    TestList: TLinkedList;
+var V1, V2: Pointer;
+    List: TLinkedList;
     First, Last: PListItem;
 begin
     Result := False;
 
-    TestList := TLinkedList(Input);
-    TestList.Clear();
+    List := TLinkedList(Input);
+    List.Clear();
     V1 := Pointer(1);
     V2 := Pointer(2);
-    TestList.Add(V1);
-    TestList.Add(V2);
-    TestList.Reverse();
+    List.Add(V1);
+    List.Add(V2);
+    List.Reverse();
 
-    if not CheckCount(TestList) then Exit;
-    First := TestList.First;
-    Last := TestList.Last;
-    Result := (TestList.Count = 2)
+    if not CheckCount(List) then Exit;
+    First := List.First;
+    Last := List.Last;
+    Result := (List.Count = 2)
         and (First^.Element = V2) and (Last^.Element = V1)
         and (First^.Prev = nil) and (First^.Next = Last)
         and (Last^.Prev = First) and (Last^.Next = nil);
 end;
 
 function ReverseTestMany(const Input: Pointer; var Output: Pointer): Boolean;
-var I, V: Pointer;
+var V: Pointer;
     Item: PListItem;
-    TestList: TLinkedList;
+    List: TLinkedList;
 begin
     Result := False;
-    TestList := TLinkedList(Input);
-    TestList.Clear();
-    FillList(TEST_ITEM_COUNT, TestList);
-    TestList.Reverse();
+    List := TLinkedList(Input);
+    List.Clear();
+    FillList(TEST_ITEM_COUNT, List);
+    List.Reverse();
 
-    Item := TestList.First;
+    Item := List.First;
     V := Pointer(TEST_ITEM_COUNT - 1);
     while Item <> nil do
     begin
@@ -236,7 +281,7 @@ begin
         Dec(V);
         Item := Item^.Next;
     end;
-    Result := CheckCount(TestList);
+    Result := CheckCount(List);
 end;
 
 {------------------------------------------------------------------------------}
@@ -245,20 +290,20 @@ end;
 
 procedure RunAll();
 var I: Integer;
-    TestList: TLinkedList;
+    List: TLinkedList;
     Step: PTestStep;
-    Pass: Boolean;
     Output: Pointer;
 begin
-    TestList := TLinkedList.Create();
+    List := TLinkedList.Create();
     for I := 0 to ListCase.Count - 1 do
     begin
         Step := ListCase.Get(I);
-        WriteLn('Test: ', Step^.Name, ' - ', Step^.Execute(TestList, Output));
+        WriteLn('Test: ', Step^.Name, ' - ', Step^.Execute(List, Output));
     end;
 end;
 
 INITIALIZATION
+
     ListCase := TTestCase.Create('LinkedList');
     ListCase.Add('FillTest', FillTest);
     ListCase.Add('AddTest', AddTest);
@@ -271,6 +316,7 @@ INITIALIZATION
     ListCase.Add('ReverseTest Many', ReverseTestMany);
 
 FINALIZATION
+
     ListCase.Clear();
 
 END.                                                                     { END }
