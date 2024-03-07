@@ -40,23 +40,6 @@ UNIT SLang.Classes;                                                     { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-{
-    Some Arrays.
-}
-type
-
-    { An array of bytes. }
-    TBytes = Array of Byte;
-    PBytes = ^TBytes;
-
-    { An array of integers. }
-    TIntegers = Array of Integer;
-    PIntegers = ^TIntegers;
-
-    { An array of pointers. }
-    TPointers = Array of Pointer;
-    PPointers = ^TPointers;
-
 type
 
     {

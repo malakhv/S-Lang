@@ -41,7 +41,7 @@ UNIT SLang.List;                                                        { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.Classes, SLang.Collections;
+uses SLang.System, SLang.Classes, SLang.Collections;
 
 type
 
@@ -153,13 +153,27 @@ type
 
 type
 
+    {
+        The Stack class represents a last-in-first-out (LIFO) stack of elements.
+        The usual push and pop operations are provided, as well as a method to
+        peek at the top item on the stack, a method to test for whether the
+        stack is empty, and a method to search the stack for an item and
+        discover how far it is from the top. When a stack is first created, it
+        contains no items.
+    }
     TStack = class(TLinkedList)
-    private
-
-    protected
-        //function Remove(Item: PListItem): Boolean; override;
     public
 
+        { Looks at the element at the top of this stack without removing it
+          from the stack. If this stack is empty, returns Nil. }
+        function Peek(): Pointer;
+
+        { Removes the element at the top of this stack and returns that element
+          as the value of this function. If this stack is empty, returns Nil. }
+        function Pop(): Pointer;
+
+        { Pushes an element onto the top of this stack. }
+        procedure Push(const Element: Pointer);
 
     end;
 
@@ -348,7 +362,6 @@ end;
 function TLinkedList.IndexOf(const Element: Pointer): Integer;
 var Item: PListItem;
 begin
-    // TODO Need to use ItemOf...
     Result := -1;
     If Self.IsEmpty() then Exit;
     Item := FFirst;
@@ -420,6 +433,25 @@ begin
         Item^.Prev := Tmp;
         Item := Tmp;
     end;
+end;
+
+{------------------------------------------------------------------------------}
+{ TStack                                                                       }
+{------------------------------------------------------------------------------}
+
+function TStack.Peek(): Pointer;
+begin
+    Result := Self.Get(0);
+end;
+
+function TStack.Pop(): Pointer;
+begin
+    Result := Self.Peek(); Self.RemoveFirst();
+end;
+
+procedure TStack.Push(const Element: Pointer);
+begin
+    Self.AddFirst(Element);
 end;
 
 END.                                                                     { END }

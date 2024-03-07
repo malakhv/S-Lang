@@ -52,7 +52,7 @@ UNIT SLang.Collections;                                                 { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.Classes;
+uses SLang.System, SLang.Classes;
 
 
 {

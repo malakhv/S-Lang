@@ -20,8 +20,8 @@
 {------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------}
-{ This Unit includes basic data types' definitions and common routines to      }
-{ working with it.                                                             }
+{ This Unit includes common definitions and routines for all applications, and }
+{ this unit will use by default.                                               }
 {                                                                              }
 { Project: S-Lang RTL                                                          }
 { Package: SLang                                                               }
@@ -40,13 +40,36 @@ UNIT SLang.System;                                                      { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-const
+//const
 
     { The version of S-Lang RTL. }
     //RTLVersion = 0.0.1;
 
     //CompilerVersion = 0.0.1;
 
+{ Some Arrays }
+type
+
+    { An array of bytes. }
+    TBytes = Array of Byte;
+    PBytes = ^TBytes;
+
+    { An array of integers. }
+    TIntegers = Array of Integer;
+    PIntegers = ^TIntegers;
+
+    { An array of pointers. }
+    TPointers = Array of Pointer;
+    PPointers = ^TPointers;
+
+{ Aliases for classical data types. }
+type
+
+    { Unsigned Double Word. }
+    DWord = LongWord;
+
+    { Unsigned Quad Word. }
+    QWord = UInt64;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
