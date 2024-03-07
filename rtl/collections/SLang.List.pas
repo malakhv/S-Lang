@@ -161,6 +161,7 @@ type
         discover how far it is from the top. When a stack is first created, it
         contains no items.
     }
+    // Maybe need to move it to SLang.Stack.pas ?
     TStack = class(TLinkedList)
     public
 
