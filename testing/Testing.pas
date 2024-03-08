@@ -63,7 +63,7 @@ type
     PTestStep = ^TTestStep;
 
     { The one test case with several test steps. }
-    TTestCase = class(TObject)
+    TTestCase = class (TObject)
     private
         FName: String;
         FSteps: TLinkedList;
@@ -72,11 +72,12 @@ type
         function GetCount(): Integer;
     public
         property Count: Integer read GetCount;
+        property AbortOnFail: Boolean read FAbortOnFail;
         function Add(Name: String; const Action: PTestAction): PTestStep;
         function Get(Index: Integer): PTestStep;
         function Remove(Index: Integer): Boolean;
-        procedure Run();
-        procedure Clear();
+        function Run(): Boolean; virtual; abstract;
+        procedure Clear(); virtual;
         constructor Create(AName: String); virtual;
         destructor Destroy; override;
     end;
@@ -141,11 +142,6 @@ end;
 function TTestCase.Remove(Index: Integer): Boolean;
 begin
     Result := False;
-end;
-
-procedure TTestCase.Run();
-begin
-
 end;
 
 procedure TTestCase.Clear();

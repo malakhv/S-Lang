@@ -8,5 +8,5 @@ uses Os, ListTest;
 
 begin
     WriteLn('Welcome to S-Lang testing. ','Target OS is ', Os.getTargetOS);
-    ListTest.RunAll();
+    ListCase.Run();
 end.

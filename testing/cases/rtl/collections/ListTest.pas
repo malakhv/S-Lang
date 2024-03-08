@@ -42,8 +42,17 @@ INTERFACE                                                          { INTERFACE }
 
 uses SLang.System, SLang.List, Testing;
 
-{ Executes all existing test cases. }
-procedure RunAll();
+type
+    TListCase = class (TTestCase)
+    private
+        FItems: Integer;
+    public
+        function Run(): Boolean; override;
+        constructor Create(AName: String); override; overload;
+        constructor Create(AName: String; Items: Integer); overload; virtual;
+    end;
+
+var ListCase: TListCase;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
@@ -54,9 +63,6 @@ uses SLang.Classes;
 {------------------------------------------------------------------------------}
 
 const TEST_ITEM_COUNT = 10000;
-
-var
-    ListCase: TTestCase;
 
 procedure PrintListItem(const Item: PListItem);
 begin
@@ -335,26 +341,43 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{ External test actions                                                        }
+{ TListCase                                                                    }
 {------------------------------------------------------------------------------}
 
-procedure RunAll();
+constructor TListCase.Create(AName: String);
+begin
+    Inherited Create(AName);
+    FItems := 100;
+end;
+
+constructor TListCase.Create(AName: String; Items: Integer);
+begin
+    Inherited Create(AName);
+    FItems := Items;
+end;
+
+function TListCase.Run(): Boolean;
 var I: Integer;
     List: TLinkedList;
     Step: PTestStep;
-    Output: Pointer;
+    Ignore: Pointer;
+    Pass: Boolean;
 begin
+    Result := True;
     List := TLinkedList.Create();
     for I := 0 to ListCase.Count - 1 do
     begin
         Step := ListCase.Get(I);
-        WriteLn('Test: ', Step^.Name, ' - ', Step^.Execute(List, Output));
+        Pass := Step^.Execute(List, Ignore);
+        WriteLn('Test: ', Step^.Name, ' - ', Pass);
+        Result := Result and Pass;
+        if not Result and Self.AbortOnFail then Break;
     end;
 end;
 
-INITIALIZATION
+INITIALIZATION                                                { INITIALIZATION }
 
-    ListCase := TTestCase.Create('LinkedList');
+    ListCase := TListCase.Create('LinkedList', 100);
     ListCase.Add('FillTest', FillTest);
     ListCase.Add('AddTest', AddTest);
     ListCase.Add('InsertTest', InsertTest);
@@ -366,7 +389,7 @@ INITIALIZATION
     ListCase.Add('ReverseTest Two', ReverseTestTwo);
     ListCase.Add('ReverseTest Many', ReverseTestMany);
 
-FINALIZATION
+FINALIZATION                                                    { FINALIZATION }
 
     ListCase.Clear();
 
