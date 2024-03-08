@@ -385,7 +385,7 @@ begin
         Result := Self.Insert(ToIndex, Item^.Element)
     else
         Result := Self.Add(Item^.Element);
-    Self.Remove(Item);
+    Self.RemoveItem(Item);
 end;
 
 function TLinkedList.MoveToFirst(FromIndex: Integer): Boolean;

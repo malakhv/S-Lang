@@ -62,10 +62,10 @@ procedure PrintListItem(const Item: PListItem);
 begin
     if Item <> nil then
     begin
-        WriteLn('   Item:  ', Integer(Item));
-        WriteLn('   Prev:  ', Integer(Item^.Prev));
-        WriteLn('   Next:  ', Integer(Item^.Next));
-        WriteLn('   Value: ', Integer(Item^.Element));
+        WriteLn('   Item:    ', Integer(Item));
+        WriteLn('   Prev:    ', Integer(Item^.Prev));
+        WriteLn('   Next:    ', Integer(Item^.Next));
+        WriteLn('   Element: ', Integer(Item^.Element));
     end else
         WriteLn('   Item is NIL');
 end;
@@ -190,14 +190,64 @@ end;
 function RemoveTest(const Input: Pointer; var Output: Pointer): Boolean;
 var List: TLinkedList;
 begin
-    Result := False;
+    List := TLinkedList(Input);
+    List.Clear();
+
+    FillList(10, List);
+    List.RemoveLast();
+    List.RemoveFirst();
+    List.Remove(Pointer(2));
+    List.Remove(Pointer(5));
+    List.Remove(2);
+    List.Remove(3);
+    List.Remove(3);
+    List.Remove(1);
+
+    Result := CheckCount(List);
+    Result := Result and (List.Count = 2)
+        and (List.First^.Element = Pointer(1))
+        and (List.Last^.Element = Pointer(6));
+
     Output := List;
 end;
 
-function MoveTest(const Input: Pointer; var Output: Pointer): Boolean;
+function MoveTestTwo(const Input: Pointer; var Output: Pointer): Boolean;
 var List: TLinkedList;
 begin
-    Result := False;
+    List := TLinkedList(Input);
+    List.Clear();
+
+    List.Add(Pointer(1));
+    List.Add(Pointer(5));
+    List.MoveToLast(0);
+
+    Result := (List.Get(0) = Pointer(5)) and (List.Last^.Element = Pointer(1));
+    Output := List;
+end;
+
+function MoveTestMany(const Input: Pointer; var Output: Pointer): Boolean;
+var I: Integer;
+    List: TLinkedList;
+begin
+    List := TLinkedList(Input);
+
+    List.AddFirst(Pointer(3));          // 3 5 1
+    List.Add(Pointer(0));               // 3 5 1 0
+
+    List.MoveToFirst(List.Count - 1);   // 0 3 5 1
+    List.MoveToLast(2);                 // 0 3 1 5
+    List.Insert(1, Pointer(2));         // 0 2 3 1 5
+    List.Move(3, 1);                    // 0 1 2 3 5
+    List.Insert(4, Pointer(4));         // 0 1 2 3 4 5
+
+    Result := CheckCount(List);
+    if not Result then Exit;
+    for I := 0 to List.Count - 1 do
+    begin
+        Result := Pointer(I) = List.Get(I);
+        if not Result then Break;
+    end;
+
     Output := List;
 end;
 
@@ -309,7 +359,8 @@ INITIALIZATION
     ListCase.Add('AddTest', AddTest);
     ListCase.Add('InsertTest', InsertTest);
     ListCase.Add('RemoveTest', RemoveTest);
-    ListCase.Add('MoveTest', MoveTest);
+    ListCase.Add('MoveTestTwo', MoveTestTwo);
+    ListCase.Add('MoveTestMany', MoveTestMany);
     ListCase.Add('ArryaTest', ArrayTest);
     ListCase.Add('ReverseTest One', ReverseTestOne);
     ListCase.Add('ReverseTest Two', ReverseTestTwo);
