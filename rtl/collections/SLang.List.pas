@@ -141,16 +141,12 @@ type
 
         { From IList interface. }
         function Swap(Index1, Index2: Integer): Boolean;
-
         { Reverses this list. }
         procedure Reverse();
-
         { From ICollection interface. }
         function ToArray(): TPointers;
-
         { From IList interface. }
         procedure Clear(); virtual;
-
         { Free all related resources. }
         destructor Destroy(); override;
 
@@ -244,8 +240,8 @@ begin
     Result^.Next := nil;
     if FLast <> nil then
     begin
-        Result^.Prev := Last;
-        Last^.Next := Result;
+        Result^.Prev := FLast;
+        FLast^.Next := Result;
     end else
         FFirst := Result;
     FLast := Result;
