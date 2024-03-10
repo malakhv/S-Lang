@@ -13,12 +13,15 @@ begin
     WriteLn();
     if Node = nil then WriteLn('NIL');
     //WriteLn(Node);
-    D := Node.Deep();
-    Write('':D*3); WriteLn('Deep: ', D);
-    Write('':D*3); WriteLn('Count: ', Integer(Node.Count));
-    Write('':D*3); WriteLn('Element: ', Integer(Node.Element));
+    D := Node.Deep;
+    Write('':D*4); WriteLn('Node: ', Integer(Node));
+    Write('':D*4); WriteLn('Parent: ', Integer(Node.Parent));
+    Write('':D*4); WriteLn('Deep: ', D);
+    Write('':D*4); WriteLn('Height: ', Node.Height);
+    Write('':D*4); WriteLn('Count: ', Integer(Node.ChildCount));
+    Write('':D*4); WriteLn('Element: ', Integer(Node.Element));
 
-    for I := 0 to Node.Count - 1 do
+    for I := 0 to Node.ChildCount - 1 do
         DumpNode(Node[i]);
     //WriteLn('Element: ', Integer(Node.Element));
 end;
@@ -32,7 +35,7 @@ begin
     WriteLn('Welcome to S-Lang compiler. ','Target OS is ', Os.getTargetOS);
     WriteLn();
 
-    MyNode := TTreeNode.Create(Pointer(5));
+    MyNode := TTreeNode.Create(Pointer(0));
     MyNode.Add(Pointer(1));
     MyNode.Add(Pointer(3));
     MyNode.Add(Pointer(2));
@@ -63,5 +66,9 @@ begin
     MyNode.Left.Right.Add(Pointer(111));
     DumpNode(MyNode);
     WriteLn();
+
+    MyNode.Clear();
+    MyNode.Add(Pointer(1)).Add(Pointer(2)).Add(Pointer(3));
+    DumpNode(MyNode);
 
 end.
