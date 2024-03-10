@@ -75,6 +75,8 @@ type
         FLast: PListItem;   // See Last property
         FCount: Integer;    // See Count property
         FUnique: Boolean;   // See Unique property
+        { Returns True if specified index is correct for this list. }
+        function CheckIndex(Index: Integer): Boolean;
     protected
         { Appends the specified element to the end of this list. }
         function AddItem(const Element: Pointer): PListItem; virtual;
@@ -136,6 +138,9 @@ type
         function RemoveFirst(): Boolean;
         { Removes the last element from this linked list. }
         function RemoveLast(): Boolean;
+
+        { From IList interface. }
+        function Swap(Index1, Index2: Integer): Boolean;
 
         { Reverses this list. }
         procedure Reverse();
@@ -225,6 +230,11 @@ end;
 destructor TLinkedList.Destroy();
 begin
     Clear; Inherited;
+end;
+
+function TLinkedList.CheckIndex(Index: Integer): Boolean;
+begin
+    Result := (Index >= 0) and (Index < Self.FCount);
 end;
 
 function TLinkedList.AddItem(const Element: Pointer): PListItem;
@@ -396,6 +406,20 @@ end;
 function TLinkedList.MoveToLast(FromIndex: Integer): Boolean;
 begin
     Result := Self.Move(FromIndex, FCount - 1);
+end;
+
+function TLinkedList.Swap(Index1, Index2: Integer): Boolean;
+var Item1, Item2: PListItem;
+    Tmp: Pointer;
+begin
+    Result := (Index1 <> Index2) and Self.CheckIndex(Index1)
+        and Self.CheckIndex(Index2);
+    if not Result then Exit;
+    Item1 := Self.ItemOf(Index1);
+    Item2 := Self.ItemOf(Index2);
+    Tmp := Item1^.Element;
+    Item1^.Element := Item2^.Element;
+    Item2^.Element := Tmp;
 end;
 
 function TLinkedList.Update(Index: Integer; const Element: Pointer): Boolean;

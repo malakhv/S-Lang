@@ -155,6 +155,12 @@ type
           equivalently, if this list changed as a result of the call). }
         function Remove(Index: Integer): Boolean;
 
+        { Swaps two elements in this collection.
+
+          Returns True if this list changed as a result of the call, otherwise
+          False (if Index1 or Index2 is invalid, for exemple). }
+        function Swap(Index1, Index2: Integer): Boolean;
+
         { Replaces the element at the specified position in this list.
 
           Returns True if this list changed as a result of the call, otherwise

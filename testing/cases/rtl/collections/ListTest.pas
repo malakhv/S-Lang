@@ -340,6 +340,35 @@ begin
     Result := CheckCount(List);
 end;
 
+function SwapTest(const Input: Pointer; var Output: Pointer): Boolean;
+var I, K: Integer;
+    List: TLinkedList;
+begin
+    Result := False;
+    List := TLinkedList(Input);
+    List.Clear();
+    FillList(10, List);
+
+    K := List.Count - 1;
+    for I := 0 to K div 2 do
+    begin
+        List.Swap(I, K);
+        Dec(K);
+    end;
+
+    Result := CheckCount(List);
+    if not Result then Exit;
+    K := 0;
+    for I := List.Count - 1 downto 0 do
+    begin
+        Result := Pointer(I) = List.Get(K);
+        Inc(K);
+        if not Result then Break;
+    end;
+
+    Output := List;
+end;
+
 {------------------------------------------------------------------------------}
 { TListCase                                                                    }
 {------------------------------------------------------------------------------}
@@ -384,6 +413,7 @@ INITIALIZATION                                                { INITIALIZATION }
     ListCase.Add('RemoveTest', RemoveTest);
     ListCase.Add('MoveTestTwo', MoveTestTwo);
     ListCase.Add('MoveTestMany', MoveTestMany);
+    ListCase.Add('SwapTest', SwapTest);
     ListCase.Add('ArryaTest', ArrayTest);
     ListCase.Add('ReverseTest One', ReverseTestOne);
     ListCase.Add('ReverseTest Two', ReverseTestTwo);
