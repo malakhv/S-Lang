@@ -45,18 +45,45 @@ uses SLang.Collections, SLang.List;
 
 type
 
-    PTreeNode = ^TTreeNode;
+    {PTreeNode = ^TTreeNode;
     TTreeNode = record // Shold be a class?
         Element: Pointer;
         Parent: PTreeNode;
         Nodes: TLinkedList;
         function Add(Element: Pointer): Boolean;
-        function Remove(Element: Pointer): Boolean;
         function IsEmpty(): Boolean;
         function HasNodes(): Boolean;
         function HasParent(): Boolean;
         function Deep(): Integer;
         procedure Clear();
+    end;}
+
+
+    //TTree = class;
+    TTreeNode = class (TObject)
+    private
+        //FOwner: TTree;
+        FElement: Pointer;
+        FParent: TTreeNode;
+        FNodes: TLinkedList;
+    protected
+        function GetCount(): Integer;
+        function GetNode(Index: Integer): TTreeNode;
+        function GetLeftNode(): TTreeNode;
+        function GetRightNode(): TTreeNode;
+    public
+        property Element: Pointer read FElement write FElement;
+        property Parent: TTreeNode read FParent;
+        //property Owner: read FOwner;
+        property Left: TTreeNode read GetLeftNode;
+        property Right: TTreeNode read GetRightNode;
+        property Count: Integer read GetCount;
+        property Nodes[Index: Integer]: TTreeNode read GetNode; default;
+        function Add(AElement: Pointer): Boolean;
+        function Deep(): Integer;
+        procedure Clear();
+        constructor Create(AElement: Pointer); virtual;
+        destructor Destroy; override;
     end;
 
 //type
@@ -104,6 +131,66 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 { TTreeNode                                                                    }
 {------------------------------------------------------------------------------}
 
+constructor TTreeNode.Create(AElement: Pointer);
+begin
+    inherited Create();
+    FElement := AElement;
+    FNodes := TLinkedList.Create;
+end;
+
+destructor TTreeNode.Destroy();
+begin
+    Clear();
+    FNodes.Free();
+end;
+
+procedure TTreeNode.Clear();
+var I: Integer;
+    Node: TTreeNode;
+begin
+    for I := 0 to Self.Count -1 do Self[I].Free();
+    FNodes.Clear();
+end;
+
+function TTreeNode.Add(AElement: Pointer): Boolean;
+var Node: TTreeNode;
+begin
+    Node := TTreeNode.Create(AElement);
+    Node.FParent := Self;
+    Result := FNodes.Add(Node);
+end;
+
+function TTreeNode.Deep(): Integer;
+begin
+    Result := 0;
+    if Self.Parent <> nil then
+        Result := Self.Parent.Deep() + 1;
+end;
+
+function TTreeNode.GetCount(): Integer;
+begin
+    Result := FNodes.Count;
+end;
+
+function TTreeNode.GetNode(Index: Integer): TTreeNode;
+begin
+    Result := TTreeNode(FNodes.Get(Index));
+end;
+
+function TTreeNode.GetLeftNode(): TTreeNode;
+begin
+    Result := TTreeNode(FNodes.First^.Element);
+end;
+
+function TTreeNode.GetRightNode(): TTreeNode;
+begin
+    Result := TTreeNode(FNodes.Last^.Element);
+end;
+
+{------------------------------------------------------------------------------}
+{ TTreeNode                                                                    }
+{------------------------------------------------------------------------------}
+{
 function TTreeNode.Add(Element: Pointer): Boolean;
 begin
     if Self.Nodes = nil then Self.Nodes := TLinkedList.Create();
@@ -149,7 +236,7 @@ begin
     Self.Nodes.Clear();
     Self.Nodes.Free();
 end;
-
+}
 {------------------------------------------------------------------------------}
 { TTreeNode<V>                                                                 }
 {------------------------------------------------------------------------------}
