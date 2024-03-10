@@ -4,7 +4,7 @@ program slang;
 {$H+}
 {$T+}
 
-uses Types, Os, SLang.Collections, SLang.List;
+uses Types, Os, SLang.Collections, SLang.List, SLang.Tree;
 
 //type
     //TTypeInfoNode = specialize TTreeNode<TTypeInfo>;

@@ -41,11 +41,27 @@ UNIT SLang.Tree;                                                        { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-Uses SLang.Collections;
+uses SLang.Collections, SLang.List;
 
 type
 
-    TTreeNode<V> = class (TNode<V>)
+    PTreeNode = ^TTreeNode;
+    TTreeNode = record // Shold be a class?
+        Element: Pointer;
+        Parent: PTreeNode;
+        Nodes: TLinkedList;
+        function Add(Element: Pointer): Boolean;
+        function Remove(Element: Pointer): Boolean;
+        function IsEmpty(): Boolean;
+        function HasNodes(): Boolean;
+        function HasParent(): Boolean;
+        function Deep(): Integer;
+        procedure Clear();
+    end;
+
+//type
+
+    {TTreeNode<V> = class (TNode<V>)
     private
         FParent: TTreeNode<V>;
         FNodes: Array of TTreeNode<V>;
@@ -69,9 +85,9 @@ type
         constructor Create(AValue: V); override;
     end;
     //TTreeNode = specialize TTreeNode<V>;
-    //PTreeNode = ^TTreeNode;
+    //PTreeNode = ^TTreeNode;}
 
-type
+{type
 
     TTree<V> = class(TObject)
     private
@@ -80,15 +96,65 @@ type
         //function Get(Index: Integer): 
     public
         //property Items[Index: Integer]: V read Get write Set; default;
-    end;
+    end; }
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
+
+{------------------------------------------------------------------------------}
+{ TTreeNode                                                                    }
+{------------------------------------------------------------------------------}
+
+function TTreeNode.Add(Element: Pointer): Boolean;
+begin
+    if Self.Nodes = nil then Self.Nodes := TLinkedList.Create();
+    Result := Self.Nodes.Add(Element);
+end;
+
+function TTreeNode.Remove(Element: Pointer): Boolean;
+begin
+    Result := (Self.Nodes <> nil) and (Self.Nodes.Remove(Element));
+end;
+
+function TTreeNode.IsEmpty(): Boolean;
+begin
+    Result := Self.Element = nil;
+end;
+
+function TTreeNode.HasNodes(): Boolean;
+begin
+    Result := (Self.Nodes <> nil) and not Nodes.IsEmpty();
+end;
+
+function TTreeNode.HasParent(): Boolean;
+begin
+    Result := Self.Parent <> nil;
+end;
+
+function TTreeNode.Deep(): Integer;
+var Node: PTreeNode;
+begin
+    Result := 0;
+    Node := Self.Parent;
+    while Node <> nil do
+    begin
+        Inc(Result);
+        Node := Node^.Parent;
+    end;
+end;
+
+procedure TTreeNode.Clear();
+begin
+    Self.Element := nil;
+    Self.Parent := nil;
+    Self.Nodes.Clear();
+    Self.Nodes.Free();
+end;
 
 {------------------------------------------------------------------------------}
 { TTreeNode<V>                                                                 }
 {------------------------------------------------------------------------------}
 
-constructor TTreeNode<V>.Create(AValue: V);
+{constructor TTreeNode<V>.Create(AValue: V);
 begin
     inherited Create(V);
     FParent := nil;
@@ -137,7 +203,7 @@ end;
 procedure TTreeNode<V>.Clear();
 begin
 
-end;
+end;}
 
 {------------------------------------------------------------------------------}
 { Common Stuff                                                                 }
