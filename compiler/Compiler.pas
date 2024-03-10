@@ -29,7 +29,7 @@ end;
 
 var
     I: Integer;
-    MyNode: TTreeNode;
+    MyNode, TmpNode: TTreeNode;
 
 begin
     WriteLn('Welcome to S-Lang compiler. ','Target OS is ', Os.getTargetOS);
@@ -68,7 +68,14 @@ begin
     WriteLn();
 
     MyNode.Clear();
-    MyNode.Add(Pointer(1)).Add(Pointer(2)).Add(Pointer(3));
+    TmpNode := MyNode.Add(Pointer(1)).Add(Pointer(2)).Add(Pointer(3));
+    TmpNode.Add(Pointer(5)).Add(Pointer(7));
+    TmpNode.Add(Pointer(6));
+    MyNode.Add(Pointer(8)).Add(Pointer(9));
+    DumpNode(MyNode);
+    WriteLn();
+
+    TmpNode.Remove();
     DumpNode(MyNode);
 
 end.

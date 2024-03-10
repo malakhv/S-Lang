@@ -58,13 +58,14 @@ type
         procedure Clear();
     end;}
 
+    { https://en.wikipedia.org/wiki/Tree_(data_structure) }
     //TTree = class;
     TTreeNode = class (TObject)
     private
         //FOwner: TTree;
         FElement: Pointer;
         FParent: TTreeNode;
-        FNodes: TLinkedList;
+        FChildren: TLinkedList;
     protected
         function GetHeight(): Integer;
         function GetDeep(): Integer;
@@ -82,6 +83,8 @@ type
         property ChildCount: Integer read GetChildCount;
         property Children[Index: Integer]: TTreeNode read GetChild; default;
         function Add(AElement: Pointer): TTreeNode;
+        function Remove(): Pointer; overload;
+        function Remove(Index: Integer): Pointer; overload;
         function IsLeaf(): Boolean;
         function IsSibling(Node: TTreeNode): Boolean;
         procedure Clear();
@@ -99,13 +102,13 @@ constructor TTreeNode.Create(AElement: Pointer);
 begin
     inherited Create();
     FElement := AElement;
-    FNodes := TLinkedList.Create;
+    FChildren := TLinkedList.Create;
 end;
 
 destructor TTreeNode.Destroy();
 begin
     Clear();
-    FNodes.Free();
+    FChildren.Free();
 end;
 
 procedure TTreeNode.Clear();
@@ -113,7 +116,7 @@ var I: Integer;
     Node: TTreeNode;
 begin
     for I := 0 to Self.ChildCount -1 do Self[I].Free();
-    FNodes.Clear();
+    FChildren.Clear();
 end;
 
 function TTreeNode.Add(AElement: Pointer): TTreeNode;
@@ -121,10 +124,30 @@ var Node: TTreeNode;
 begin
     Node := TTreeNode.Create(AElement);
     Node.FParent := Self;
-    if FNodes.Add(Node) then
+    if FChildren.Add(Node) then
         Result := Node
     else
         Node.Free();
+end;
+
+function TTreeNode.Remove(Index: Integer): Pointer;
+var Node: TTreeNode;
+begin
+    Result := nil;
+    Node := Self[Index];
+    if Node = nil then Exit;
+    Result := Node.Element;
+    Node.Clear();
+    Node.Free();
+    FChildren.Remove(Index);
+end;
+
+function TTreeNode.Remove(): Pointer;
+begin
+    Result := Self.Element;
+    if Self.Parent <> nil then Self.Parent.FChildren.Remove(Self);
+    Self.Clear();
+    Self.Free();
 end;
 
 function TTreeNode.GetDeep(): Integer;
@@ -148,22 +171,22 @@ end;
 
 function TTreeNode.GetChildCount(): Integer;
 begin
-    Result := FNodes.Count;
+    Result := FChildren.Count;
 end;
 
 function TTreeNode.GetChild(Index: Integer): TTreeNode;
 begin
-    Result := TTreeNode(FNodes.Get(Index));
+    Result := TTreeNode(FChildren.Get(Index));
 end;
 
 function TTreeNode.GetLeftChild(): TTreeNode;
 begin
-    Result := TTreeNode(FNodes.First^.Element);
+    Result := TTreeNode(FChildren.First^.Element);
 end;
 
 function TTreeNode.GetRightChild(): TTreeNode;
 begin
-    Result := TTreeNode(FNodes.Last^.Element);
+    Result := TTreeNode(FChildren.Last^.Element);
 end;
 
 function TTreeNode.IsLeaf(): Boolean;
