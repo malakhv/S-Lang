@@ -151,9 +151,8 @@ type
           any subsequent elements to the left (subtracts one from their
           indices).
 
-          Returns True if this list contained the specified element (or
-          equivalently, if this list changed as a result of the call). }
-        function Remove(Index: Integer): Boolean;
+          Returns the element that was removed from the list. }
+        function Remove(Index: Integer): Pointer;
 
         { Swaps two elements in this collection.
 

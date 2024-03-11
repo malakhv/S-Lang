@@ -88,7 +88,7 @@ type
         { Finds an item by its index in this list. }
         function ItemOf(Index: Integer): PListItem; overload;
         { Removes specified item from this list. }
-        function RemoveItem(Item: PListItem): Boolean; virtual;
+        function RemoveItem(Item: PListItem): Pointer; virtual;
         { From IList interface. }
         //function GetCount(): Integer;
     public
@@ -133,11 +133,11 @@ type
         { From ICollection interface. }
         function Remove(const Element: Pointer): Boolean; overload;
         { From IList interface. }
-        function Remove(Index: Integer): Boolean; overload;
+        function Remove(Index: Integer): Pointer; overload;
         { Removes the first element from this linked list. }
-        function RemoveFirst(): Boolean;
+        function RemoveFirst(): Pointer;
         { Removes the last element from this linked list. }
-        function RemoveLast(): Boolean;
+        function RemoveLast(): Pointer;
 
         { From IList interface. }
         function Swap(Index1, Index2: Integer): Boolean;
@@ -270,10 +270,13 @@ begin
     Inc(FCount);
 end;
 
-function TLinkedList.RemoveItem(Item: PListItem): Boolean;
+function TLinkedList.RemoveItem(Item: PListItem): Pointer;
 begin
-    Result := Item <> nil;
-    if not Result then Exit;
+    if Item = nil then
+    begin
+        Result := nil; Exit;
+    end else
+        Result := Item^.Element;
     if FFirst = Item then FFirst := Item^.Next;
     if FLast = Item then FLast := Item^.Prev;
     RemoveFromList(Item);
@@ -348,20 +351,20 @@ end;
 
 function TLinkedList.Remove(const Element: Pointer): Boolean;
 begin
-    Result := Self.RemoveItem(Self.ItemOf(Element));
+    Result := Self.RemoveItem(Self.ItemOf(Element)) <> nil;
 end;
 
-function TLinkedList.Remove(Index: Integer): Boolean;
+function TLinkedList.Remove(Index: Integer): Pointer;
 begin
     Result := Self.RemoveItem(Self.ItemOf(Index));
 end;
 
-function TLinkedList.RemoveFirst(): Boolean;
+function TLinkedList.RemoveFirst(): Pointer;
 begin
     Result := Self.RemoveItem(FFirst);
 end;
 
-function TLinkedList.RemoveLast(): Boolean;
+function TLinkedList.RemoveLast(): Pointer;
 begin
     Result := Self.RemoveItem(FLast);
 end;
