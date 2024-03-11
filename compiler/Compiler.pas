@@ -26,6 +26,11 @@ begin
     //WriteLn('Element: ', Integer(Node.Element));
 end;
 
+procedure Inc(var Val: Integer);
+asm
+    INC Val
+end;
+
 
 var
     I: Integer;
