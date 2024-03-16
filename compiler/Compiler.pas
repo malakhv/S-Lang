@@ -35,10 +35,13 @@ end;
 var
     I: Integer;
     MyNode, TmpNode: TTreeNode;
+    Rec: TTreeNodeRect;
 
 begin
     WriteLn('Welcome to S-Lang compiler. ','Target OS is ', Os.getTargetOS);
     WriteLn();
+
+    //Rec.X := 0;
 
     MyNode := TTreeNode.Create(Pointer(0));
     MyNode.Add(Pointer(1));

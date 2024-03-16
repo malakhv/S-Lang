@@ -151,6 +151,7 @@ type
         destructor Destroy(); override;
 
     end;
+    PLinkedList = ^TLinkedList;
 
 type
 
