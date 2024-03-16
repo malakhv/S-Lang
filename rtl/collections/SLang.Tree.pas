@@ -45,78 +45,93 @@ uses SLang.Collections, SLang.List;
 
 type
 
-    {PTreeNode = ^TTreeNode;
-    TTreeNode = record // Shold be a class?
-        Element: Pointer;
-        Parent: PTreeNode;
-        Nodes: TLinkedList;
-        function Add(Element: Pointer): Boolean;
-        function IsEmpty(): Boolean;
-        function HasNodes(): Boolean;
-        function HasParent(): Boolean;
-        function Deep(): Integer;
-        procedure Clear();
-    end;}
-
-    PTreeNodeRect = ^TTreeNodeRect;
-    TTreeNodeRect = record
+    {
+        The node of tree with specified element. For more details about tree
+        data structure, please see
+        https://en.wikipedia.org/wiki/Tree_(data_structure).
+    }
+    PTreeNode = ^TTreeNode;
+    TTreeNode = record              // In fact, this record is 12 bytes in size.
     private
-        FElement: Pointer;
-        FParent: PTreeNodeRect;
-        FChildren: PLinkedList;
+        FElement: Pointer;          // See Element property.
+        FParent: PTreeNode;         // See Parent property.
+        FChildren: PLinkedList;     // See Children property.
+        { See Height property. }
         function GetHeight(): Integer;
-        function GetDeep(): Integer;
+        { See Deep property. }
+        function GetDepth(): Integer;
+        { See ChildCount property. }
         function GetChildCount(): Integer;
-        function GetLeftChild(): PTreeNodeRect;
-        function GetRightChild(): PTreeNodeRect;
-        function GetChild(Index: Integer): PTreeNodeRect;
+        { See Left property. }
+        function GetLeftChild(): PTreeNode;
+        { See Right property. }
+        function GetRightChild(): PTreeNode;
+        { See Children property. }
+        function GetChild(Index: Integer): PTreeNode;
     public
+        { The pointer to a real element that stored into this tree node. }
         property Element: Pointer read FElement write FElement;
-        property Parent: PTreeNodeRect read FParent;
-
-        function Add(AElement: Pointer): PTreeNodeRect;
-
-        property Children[Index: Integer]: PTreeNodeRect read GetChild; default;
+        { A parent of this tree node, or nil (for root node). }
+        property Parent: PTreeNode read FParent;
+        { The number of child nodes for this tree node. }
         property ChildCount: Integer read GetChildCount;
-        property Left: PTreeNodeRect read GetLeftChild;
-        property Right: PTreeNodeRect read GetRightChild;
-
+        { The list of child nodes of this tree node. }
+        property Children[Index: Integer]: PTreeNode read GetChild; default;
+        { The first child node for this tree node. }
+        property Left: PTreeNode read GetLeftChild;
+        { The last child node for this tree node. }
+        property Right: PTreeNode read GetRightChild;
+        { The length of the path to root from this tree node. Thus the root
+          node has depth zero. This is the same as level. }
+        property Depth: Integer read GetDepth;
+        { The length of the longest downward path to a leaf from this tree
+          node. The height of the root is the height of the tree. }
         property Height: Integer read GetHeight;
-        property Deep: Integer read GetDeep;
 
+
+
+
+        function Add(AElement: Pointer): PTreeNode;
+        
+        { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
+        { Returns True, if this tree node has the same parent as specified
+          node. }
+        function IsSibling(Node: PTreeNode): Boolean;
+        
+        { Removes all children nodes from this tree node. }
         procedure Clear();
     end;
 
     { https://en.wikipedia.org/wiki/Tree_(data_structure) }
     //TTree = class;
-    TTreeNode = class (TObject)
+    TTreeNodeC = class (TObject)
     private
         //FOwner: TTree;
         FElement: Pointer;
-        FParent: TTreeNode;
+        FParent: TTreeNodeC;
         FChildren: TLinkedList;
     protected
         function GetHeight(): Integer;
         function GetDeep(): Integer;
         function GetChildCount(): Integer;
-        function GetLeftChild(): TTreeNode;
-        function GetRightChild(): TTreeNode;
-        function GetChild(Index: Integer): TTreeNode;
+        function GetLeftChild(): TTreeNodeC;
+        function GetRightChild(): TTreeNodeC;
+        function GetChild(Index: Integer): TTreeNodeC;
     public
         property Element: Pointer read FElement write FElement;
-        property Parent: TTreeNode read FParent;
+        property Parent: TTreeNodeC read FParent;
         property Height: Integer read GetHeight;
         property Deep: Integer read GetDeep;
-        property Left: TTreeNode read GetLeftChild;
-        property Right: TTreeNode read GetRightChild;
+        property Left: TTreeNodeC read GetLeftChild;
+        property Right: TTreeNodeC read GetRightChild;
         property ChildCount: Integer read GetChildCount;
-        property Children[Index: Integer]: TTreeNode read GetChild; default;
-        function Add(AElement: Pointer): TTreeNode;
+        property Children[Index: Integer]: TTreeNodeC read GetChild; default;
+        function Add(AElement: Pointer): TTreeNodeC;
         function Remove(): Pointer; overload;
         function Remove(Index: Integer): Pointer; overload;
         function IsLeaf(): Boolean;
-        function IsSibling(Node: TTreeNode): Boolean;
+        function IsSibling(Node: TTreeNodeC): Boolean;
         procedure Clear();
         constructor Create(AElement: Pointer); virtual;
         destructor Destroy; override;
@@ -128,7 +143,7 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 { TTreeNode                                                                    }
 {------------------------------------------------------------------------------}
 
-function RemoveNode(Node: PTreeNodeRect): Pointer;
+function RemoveNode(Node: PTreeNode): Pointer;
 begin
     if Node = nil then Exit;
     Result := Node^.Element;
@@ -138,14 +153,14 @@ begin
     Dispose(Node);
 end;
 
-procedure TTreeNodeRect.Clear();
+procedure TTreeNode.Clear();
 var I: Integer;
 begin
     for I := 0 to Self.ChildCount -1 do Self[I]^.Clear;
     FChildren.Clear();
 end;
 
-function TTreeNodeRect.Add(AElement: Pointer): PTreeNodeRect;
+function TTreeNode.Add(AElement: Pointer): PTreeNode;
 var List: TLinkedList;
 begin
     New(Result);
@@ -164,34 +179,35 @@ begin
     end;
 end;
 
-function TTreeNodeRect.GetChildCount(): Integer;
+function TTreeNode.GetChildCount(): Integer;
 begin
     Result := FChildren^.Count;
 end;
 
-function TTreeNodeRect.GetChild(Index: Integer): PTreeNodeRect;
+function TTreeNode.GetChild(Index: Integer): PTreeNode;
 begin
-    Result := PTreeNodeRect(FChildren^.Get(Index));
+    Result := PTreeNode(FChildren^.Get(Index));
 end;
 
-function TTreeNodeRect.GetLeftChild(): PTreeNodeRect;
+function TTreeNode.GetLeftChild(): PTreeNode;
 begin
-    Result := PTreeNodeRect(FChildren^.First^.Element);
+    Result := PTreeNode(FChildren^.First^.Element);
 end;
 
-function TTreeNodeRect.GetRightChild(): PTreeNodeRect;
+function TTreeNode.GetRightChild(): PTreeNode;
 begin
-    Result := PTreeNodeRect(FChildren^.Last^.Element);
+    Result := PTreeNode(FChildren^.Last^.Element);
 end;
 
-function TTreeNodeRect.GetDeep(): Integer;
+function TTreeNode.GetDepth(): Integer;
 begin
-    Result := 0;
     if Self.FParent <> nil then
-        Result := Self.FParent^.Deep + 1;
+        Result := Self.FParent^.Depth + 1
+    else
+        Result := 0
 end;
 
-function TTreeNodeRect.GetHeight(): Integer;
+function TTreeNode.GetHeight(): Integer;
 var I, H: Integer;
 begin
     Result := 0;
@@ -203,7 +219,7 @@ begin
     end;
 end;
 
-function TTreeNodeRect.IsLeaf(): Boolean;
+function TTreeNode.IsLeaf(): Boolean;
 begin
     Result := Self.ChildCount = 0;
 end;
@@ -212,31 +228,30 @@ end;
 { TTreeNode                                                                    }
 {------------------------------------------------------------------------------}
 
-constructor TTreeNode.Create(AElement: Pointer);
+constructor TTreeNodeC.Create(AElement: Pointer);
 begin
     inherited Create();
     FElement := AElement;
     FChildren := TLinkedList.Create;
 end;
 
-destructor TTreeNode.Destroy();
+destructor TTreeNodeC.Destroy();
 begin
     Clear();
     FChildren.Free();
 end;
 
-procedure TTreeNode.Clear();
+procedure TTreeNodeC.Clear();
 var I: Integer;
-    Node: TTreeNode;
 begin
     for I := 0 to Self.ChildCount -1 do Self[I].Free();
     FChildren.Clear();
 end;
 
-function TTreeNode.Add(AElement: Pointer): TTreeNode;
-var Node: TTreeNode;
+function TTreeNodeC.Add(AElement: Pointer): TTreeNodeC;
+var Node: TTreeNodeC;
 begin
-    Node := TTreeNode.Create(AElement);
+    Node := TTreeNodeC.Create(AElement);
     Node.FParent := Self;
     if FChildren.Add(Node) then
         Result := Node
@@ -244,8 +259,8 @@ begin
         Node.Free();
 end;
 
-function TTreeNode.Remove(Index: Integer): Pointer;
-var Node: TTreeNode;
+function TTreeNodeC.Remove(Index: Integer): Pointer;
+var Node: TTreeNodeC;
 begin
     Result := nil;
     Node := Self[Index];
@@ -256,7 +271,7 @@ begin
     FChildren.Remove(Index);
 end;
 
-function TTreeNode.Remove(): Pointer;
+function TTreeNodeC.Remove(): Pointer;
 begin
     Result := Self.Element;
     if Self.Parent <> nil then Self.Parent.FChildren.Remove(Self);
@@ -264,14 +279,14 @@ begin
     Self.Free();
 end;
 
-function TTreeNode.GetDeep(): Integer;
+function TTreeNodeC.GetDeep(): Integer;
 begin
     Result := 0;
     if Self.Parent <> nil then
         Result := Self.Parent.Deep + 1;
 end;
 
-function TTreeNode.GetHeight(): Integer;
+function TTreeNodeC.GetHeight(): Integer;
 var I, H: Integer;
 begin
     Result := 0;
@@ -283,32 +298,32 @@ begin
     end;
 end;
 
-function TTreeNode.GetChildCount(): Integer;
+function TTreeNodeC.GetChildCount(): Integer;
 begin
     Result := FChildren.Count;
 end;
 
-function TTreeNode.GetChild(Index: Integer): TTreeNode;
+function TTreeNodeC.GetChild(Index: Integer): TTreeNodeC;
 begin
-    Result := TTreeNode(FChildren.Get(Index));
+    Result := TTreeNodeC(FChildren.Get(Index));
 end;
 
-function TTreeNode.GetLeftChild(): TTreeNode;
+function TTreeNodeC.GetLeftChild(): TTreeNodeC;
 begin
-    Result := TTreeNode(FChildren.First^.Element);
+    Result := TTreeNodeC(FChildren.First^.Element);
 end;
 
-function TTreeNode.GetRightChild(): TTreeNode;
+function TTreeNodeC.GetRightChild(): TTreeNodeC;
 begin
-    Result := TTreeNode(FChildren.Last^.Element);
+    Result := TTreeNodeC(FChildren.Last^.Element);
 end;
 
-function TTreeNode.IsLeaf(): Boolean;
+function TTreeNodeC.IsLeaf(): Boolean;
 begin
     Result := Self.ChildCount = 0;
 end;
 
-function TTreeNode.IsSibling(Node: TTreeNode): Boolean;
+function TTreeNodeC.IsSibling(Node: TTreeNodeC): Boolean;
 begin
     Result := Self.Parent = Node.Parent;
 end;

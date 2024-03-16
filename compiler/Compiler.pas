@@ -7,7 +7,7 @@ program slang;
 uses Types, Os, SLang.Collections, SLang.List, SLang.Tree;
 
 
-procedure DumpNode(Node: TTreeNode);
+procedure DumpNode(Node: TTreeNodeC);
 var I, D: Integer;
 begin
     WriteLn();
@@ -34,16 +34,17 @@ end;
 
 var
     I: Integer;
-    MyNode, TmpNode: TTreeNode;
-    Rec: TTreeNodeRect;
+    MyNode, TmpNode: TTreeNodeC;
+    Rec: TTreeNode;
 
 begin
     WriteLn('Welcome to S-Lang compiler. ','Target OS is ', Os.getTargetOS);
     WriteLn();
+    WriteLn(SizeOf(Rec));
 
     //Rec.X := 0;
 
-    MyNode := TTreeNode.Create(Pointer(0));
+    MyNode := TTreeNodeC.Create(Pointer(0));
     MyNode.Add(Pointer(1));
     MyNode.Add(Pointer(3));
     MyNode.Add(Pointer(2));
