@@ -55,7 +55,7 @@ type
     private
         FElement: Pointer;          // See Element property.
         FParent: PTreeNode;         // See Parent property.
-        FChildren: PLinkedList;     // See Children property.
+        FChildren: TLinkedList;     // See Children property.
         { See Height property. }
         function GetHeight(): Integer;
         { See Deep property. }
@@ -87,18 +87,12 @@ type
         { The length of the longest downward path to a leaf from this tree
           node. The height of the root is the height of the tree. }
         property Height: Integer read GetHeight;
-
-
-
-
         function Add(AElement: Pointer): PTreeNode;
-        
         { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
         { Returns True, if this tree node has the same parent as specified
           node. }
         function IsSibling(Node: PTreeNode): Boolean;
-        
         { Removes all children nodes from this tree node. }
         procedure Clear();
     end;
@@ -137,7 +131,14 @@ type
         destructor Destroy; override;
     end;
 
+function MakeRootNode(): PTreeNode;
+
 IMPLEMENTATION                                                { IMPLEMENTATION }
+
+function MakeRootNode(): PTreeNode;
+begin
+    New(Result); Result^.FParent := nil;
+end;
 
 {------------------------------------------------------------------------------}
 { TTreeNode                                                                    }
@@ -148,7 +149,7 @@ begin
     if Node = nil then Exit;
     Result := Node^.Element;
     if Node^.Parent <> nil then
-        Node^.Parent^.FChildren^.Remove(Node);
+        Node^.Parent^.FChildren.Remove(Node);
     Node^.Clear();
     Dispose(Node);
 end;
@@ -156,24 +157,21 @@ end;
 procedure TTreeNode.Clear();
 var I: Integer;
 begin
+    if FChildren = nil then Exit;
     for I := 0 to Self.ChildCount -1 do Self[I]^.Clear;
     FChildren.Clear();
 end;
 
 function TTreeNode.Add(AElement: Pointer): PTreeNode;
-var List: TLinkedList;
 begin
     New(Result);
     Result^.Element := AElement;
     Result^.FParent := @Self;
 
     if Self.FChildren = nil then
-    begin
-        List := TLinkedList.Create();
-        Self.FChildren := @(List);
-    end;
+        Self.FChildren := TLinkedList.Create();
 
-    if not FChildren.Add(Result) then
+    if not Self.FChildren.Add(Result) then
     begin
         Dispose(Result); Result := nil;
     end;
@@ -181,22 +179,23 @@ end;
 
 function TTreeNode.GetChildCount(): Integer;
 begin
-    Result := FChildren^.Count;
+    if FChildren = nil then Result := 0
+    else Result := FChildren.Count;
 end;
 
 function TTreeNode.GetChild(Index: Integer): PTreeNode;
 begin
-    Result := PTreeNode(FChildren^.Get(Index));
+    Result := PTreeNode(FChildren.Get(Index));
 end;
 
 function TTreeNode.GetLeftChild(): PTreeNode;
 begin
-    Result := PTreeNode(FChildren^.First^.Element);
+    Result := PTreeNode(FChildren.First^.Element);
 end;
 
 function TTreeNode.GetRightChild(): PTreeNode;
 begin
-    Result := PTreeNode(FChildren^.Last^.Element);
+    Result := PTreeNode(FChildren.Last^.Element);
 end;
 
 function TTreeNode.GetDepth(): Integer;
@@ -222,6 +221,11 @@ end;
 function TTreeNode.IsLeaf(): Boolean;
 begin
     Result := Self.ChildCount = 0;
+end;
+
+function TTreeNode.IsSibling(Node: PTreeNode): Boolean;
+begin
+    Result := Self.Parent = Node^.Parent;
 end;
 
 {------------------------------------------------------------------------------}
