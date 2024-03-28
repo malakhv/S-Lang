@@ -1,6 +1,6 @@
 # Small Programming Language
 
-S-Lang - a small, pascal-like programming language. This is my experiments with programming languages and compilers.
+S-Lang (Small Language) - a small, pascal-like programming language. This is my experiments with programming languages and compilers.
 
 ### Compiler
 The source code of compiler, without build system. This repository should have no any external dependency (except RTL and compiler for this compiler).
