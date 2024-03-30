@@ -167,7 +167,7 @@ type
           indices).
 
           Returns the element that was removed from the list. }
-        function Remove(Index: Integer): Pointer;
+        function Remove(Index: Integer): Pointer; overload;
 
         { Swaps two elements in this collection.
 
