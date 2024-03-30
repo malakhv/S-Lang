@@ -60,6 +60,21 @@ uses SLang.System, SLang.Classes;
 }
 type
 
+    { An item in collection with real element. }
+    ICollectionItem = interface(IInterface)
+        ['{1C609401-B669-4938-8959-6AB4394B6EE5}']
+
+        { Returns True if this Item contains no element. }
+        function IsEmpty(): Boolean;
+
+        { Removes itself from its collection. }
+        function Remove(): Pointer;
+
+        { Clears this Item (remove element and related data). }
+        procedure Clear();
+
+    end;
+
     {
         The root interface in the collection hierarchy. A collection represents
         a group of objects, known as its elements. Some collections allow
