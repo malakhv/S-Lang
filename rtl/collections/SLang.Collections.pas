@@ -67,11 +67,11 @@ type
         { Returns True if this Item contains no element. }
         function IsEmpty(): Boolean;
 
-        { Removes itself from its collection. }
-        function Remove(): Pointer;
-
         { Clears this Item (remove element and related data). }
         procedure Clear();
+
+        { Removes itself from its collection. }
+        procedure Remove();
 
     end;
 
@@ -203,9 +203,76 @@ type
         // See https://docwiki.embarcadero.com/RADStudio/Alexandria/en/Expressions_(Delphi)#Set_Operators
     end;
 
+type
+
+    {
+        The default implementation of ICollectionItem. This implementation
+        includes one Pointer value as a data element in this collection item.
+    }
+    TCollectionItem = class(TInterfacedObject, ICollectionItem)
+    private
+        FElement: Pointer;      // See Element property.
+    protected
+        { See Element property. }
+        procedure SetElement(AElement: Pointer);
+    public
+        { The link to real data stored into this collection item. }
+        property Element: Pointer read FElement write SetElement;
+        { Returns True if this collection item has no link to real data. }
+        function IsEmpty(): Boolean;
+        { Clears this collection item (removes link to real data). }
+        procedure Clear();
+        { Removes this collection item from its collection. }
+        procedure Remove();
+        { Make an instance of empty collection item. }
+        constructor Create(); virtual; overload;
+        { Make an instance of empty collection for specified data. }
+        constructor Create(AElement: Pointer); virtual overload;
+        { Free all related resources. }
+        destructor Destroy; override;
+    end;
+
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
-{ EMPTY }
+{------------------------------------------------------------------------------}
+{ TCollectionItem                                                              }
+{------------------------------------------------------------------------------}
+
+constructor TCollectionItem.Create();
+begin
+    Create(nil);
+end;
+
+constructor TCollectionItem.Create(AElement: Pointer);
+begin
+    Inherited Create();
+    Self.Element := AElement;
+end;
+
+destructor TCollectionItem.Destroy;
+begin
+    Self.Clear();
+end;
+
+function TCollectionItem.IsEmpty(): Boolean;
+begin
+    Result := Self.FElement = nil;
+end;
+
+procedure TCollectionItem.SetElement(AElement: Pointer);
+begin
+    Self.FElement := AElement;
+end;
+
+procedure TCollectionItem.Clear();
+begin
+    Self.FElement := nil;
+end;
+
+procedure TCollectionItem.Remove();
+begin
+    Self.Free();
+end;
 
 END.                                                                     { END }
 
