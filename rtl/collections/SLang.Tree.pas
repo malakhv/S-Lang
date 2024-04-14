@@ -131,6 +131,18 @@ type
         destructor Destroy; override;
     end;
 
+type
+
+    {
+        The Tree data structure.
+    }
+    TTree = class(TInterfacedObject, IList)
+    private
+        FRoot: PTreeNode;
+    public
+
+    end;
+
 function MakeRootNode(): PTreeNode;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
