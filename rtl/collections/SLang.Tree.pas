@@ -92,7 +92,7 @@ type
         function IsLeaf(): Boolean;
         { Returns True, if this tree node has the same parent as specified
           node. }
-        function IsSibling(Node: PTreeNode): Boolean;
+        function IsSibling(const Node: PTreeNode): Boolean;
         { Removes all children nodes from this tree node. }
         procedure Clear();
     end;
@@ -131,17 +131,17 @@ type
         destructor Destroy; override;
     end;
 
-type
+// type
 
     {
         The Tree data structure.
     }
-    TTree = class(TInterfacedObject, IList)
+    {TTree = class(TInterfacedObject, IList)
     private
         FRoot: PTreeNode;
     public
 
-    end;
+    end;}
 
 function MakeRootNode(): PTreeNode;
 
@@ -235,7 +235,7 @@ begin
     Result := Self.ChildCount = 0;
 end;
 
-function TTreeNode.IsSibling(Node: PTreeNode): Boolean;
+function TTreeNode.IsSibling(const Node: PTreeNode): Boolean;
 begin
     Result := Self.Parent = Node^.Parent;
 end;
