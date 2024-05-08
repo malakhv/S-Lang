@@ -227,7 +227,7 @@ type
         { Make an instance of empty collection item. }
         constructor Create(); virtual; overload;
         { Make an instance of empty collection for specified data. }
-        constructor Create(AElement: Pointer); virtual overload;
+        constructor Create(AElement: Pointer); virtual; overload;
         { Free all related resources. }
         destructor Destroy; override;
     end;
