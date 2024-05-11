@@ -25,7 +25,7 @@
 {                                                                              }
 { Project: S-Lang RTL                                                          }
 { Package: S-Lang.Collections                                                  }
-{ Types:   ICollection, IList, ISet                                            }
+{ Types:   ICollection, IList, ISet, ITree                                     }
 {                                                                              }
 { Dependencies: SLang.Classes                                                  }
 {                                                                              }
@@ -201,6 +201,13 @@ type
         // TODO Set Operations: difference, intersection, subset, superset,
         // equality, inequality, union
         // See https://docwiki.embarcadero.com/RADStudio/Alexandria/en/Expressions_(Delphi)#Set_Operators
+    end;
+
+type
+
+    { Teee }
+    ITree = interface(ICollection)
+        ['{812ECE41-8FAF-4496-AECF-63C757D1A784}']
     end;
 
 type

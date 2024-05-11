@@ -41,7 +41,7 @@ UNIT SLang.Tree;                                                        { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.Collections, SLang.List;
+uses SLang.System, SLang.Classes, SLang.Collections, SLang.List;
 
 type
 
@@ -68,6 +68,8 @@ type
         function GetRightChild(): PTreeNode;
         { See Children property. }
         function GetChild(Index: Integer): PTreeNode;
+        { See Size property. }
+        function GetSize(): Integer;
     public
         { The pointer to a real element that stored into this tree node. }
         property Element: Pointer read FElement write FElement;
@@ -87,9 +89,15 @@ type
         { The length of the longest downward path to a leaf from this tree
           node. The height of the root is the height of the tree. }
         property Height: Integer read GetHeight;
+        { The number of nodes in this tree node. For leaf this value equals 1. }
+        property Size: Integer read GetSize;
+        { Add a new element to this tree. }
         function Add(AElement: Pointer): PTreeNode;
         { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
+        { Returns True, if this tree node is parent or child for specified
+          node. }
+        //function IsNeighbor(const Node: PTreeNode): Boolean;
         { Returns True, if this tree node has the same parent as specified
           node. }
         function IsSibling(const Node: PTreeNode): Boolean;
@@ -131,17 +139,30 @@ type
         destructor Destroy; override;
     end;
 
-// type
+type
 
     {
         The Tree data structure.
     }
-    {TTree = class(TInterfacedObject, IList)
+    TTree = class(TInterfacedObject, ITree)
     private
         FRoot: PTreeNode;
     public
-
-    end;}
+        { From ICollection interface. }
+        function Add(const Element: Pointer): Boolean;
+        { From ICollection interface. }
+        function Contains(const Element: Pointer): Boolean;
+        { From ICollection interface. }
+        function GetCount(): Integer;
+        { From ICollection interface. }
+        function IsEmpty(): Boolean;
+        { From ICollection interface. }
+        function Remove(const Element: Pointer): Boolean;
+        { From ICollection interface. }
+        function ToArray(): TPointers;
+        { From ICollection interface. }
+        procedure Clear();
+    end;
 
 function MakeRootNode(): PTreeNode;
 
@@ -150,6 +171,48 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 function MakeRootNode(): PTreeNode;
 begin
     New(Result); Result^.FParent := nil;
+end;
+
+{------------------------------------------------------------------------------}
+{ TTree                                                                        }
+{------------------------------------------------------------------------------}
+
+function TTree.Add(const Element: Pointer): Boolean;
+begin
+    Result := False;
+end;
+
+function TTree.Contains(const Element: Pointer): Boolean;
+begin
+    Result := False;
+end;
+
+function TTree.GetCount(): Integer;
+begin
+    if not Self.IsEmpty() then
+        Result := FRoot.Size
+    else
+        Result := 0;
+end;
+
+function TTree.IsEmpty(): Boolean;
+begin
+    Result := FRoot = nil;
+end;
+
+function TTree.Remove(const Element: Pointer): Boolean;
+begin
+
+end;
+
+function TTree.ToArray(): TPointers;
+begin
+    Result := nil;
+end;
+
+procedure TTree.Clear();
+begin
+    if not Self.IsEmpty then Self.FRoot.Clear();
 end;
 
 {------------------------------------------------------------------------------}
@@ -172,6 +235,14 @@ begin
     if FChildren = nil then Exit;
     for I := 0 to Self.ChildCount -1 do Self[I]^.Clear;
     FChildren.Clear();
+end;
+
+function TTreeNode.GetSize(): Integer;
+var I: Integer;
+begin
+    Result := 1;
+    for I := 0 to Self.ChildCount -1 do
+        Result := Result + Self[I].Size;
 end;
 
 function TTreeNode.Add(AElement: Pointer): PTreeNode;

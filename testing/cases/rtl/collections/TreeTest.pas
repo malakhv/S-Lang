@@ -75,6 +75,7 @@ begin
     Write('':D*4); WriteLn('Depth: ', D);
     Write('':D*4); WriteLn('Height: ', Node^.Height);
     Write('':D*4); WriteLn('ChildCount: ', Integer(Node^.ChildCount));
+    Write('':D*4); WriteLn('Size: ', Integer(Node^.Size));
     Write('':D*4); WriteLn('Element: ', Integer(Node^.Element));
     for I := 0 to Node^.ChildCount - 1 do DumpNode(Node^[i]);
 end;
