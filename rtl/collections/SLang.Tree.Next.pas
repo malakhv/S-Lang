@@ -83,19 +83,27 @@ type
         function GetChild(Index: Integer): TTreeNode;
         { See ChildCount property. }
         function GetChildCount(): Integer;
+        { See Left property. }
+        function GetLeft(): TTreeNode;
+        { See Right property. }
+        function GetRight(): TTreeNode;
+        { Constructs a new TTreeNode instance. }
+        constructor Create(AParent: TTreeNode); virtual;
     public
         { A parent of this tree node, or nil (for root node). }
         property Parent: TTreeNode read FParent;
         { The number of child nodes for this tree node. }
-        property ChildCount: Integer read GetChildCount;
+        property ChildCount: Integer read GetChildCount; // Maybe Count?
         { The list of child nodes of this tree node. }
         property Children[Index: Integer]: TTreeNode read GetChild; default;
+        { The first child node for this tree node. }
+        property Left: PTreeNode read GetLeft;
+        { The last child node for this tree node. }
+        property Right: PTreeNode read GetRight;
         { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
         { Returns True, if this tree node is root node in its collection. }
         function IsRoot(): Boolean;
-        { Constructs a new TTreeNode instance. }
-        constructor Create(); virtual;
         { Free all related resources. }
         destructor Destroy(); override;
     end;
@@ -108,11 +116,11 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 { TTreeNode                                                                    }
 {------------------------------------------------------------------------------}
 
-constructor TTreeNode.Create();
+constructor TTreeNode.Create(AParent: TTreeNode);
 begin
     inherited;
-    FParent := nil;
-    FChildren := TLinkedList.Create();
+    Self.FParent := AParent;
+    Self.FChildren := TLinkedList.Create();
 end;
 
 destructor TTreeNode.Destroy(); override;
@@ -130,6 +138,16 @@ end;
 function TTreeNode.GetChildCount(): Integer;
 begin
     Result := FChildren.Count;
+end;
+
+function TTreeNode.GetLeft(): TTreeNode;
+begin
+    Result := FChildren.First^.Element;
+end;
+
+function TTreeNode.GetRight(): TTreeNode;
+begin
+    Result := FChildren.Last^.Element;
 end;
 
 function TTreeNode.IsLeaf(): Boolean;
