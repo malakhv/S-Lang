@@ -87,6 +87,8 @@ type
         function GetLeft(): TTreeNode;
         { See Right property. }
         function GetRight(): TTreeNode;
+        { Constructs a new TTreeNode instance. }
+        constructor Create(AParent: TTreeNode); virtual;
     public
         { A parent of this tree node, or nil (for root node). }
         property Parent: TTreeNode read FParent;
@@ -98,19 +100,34 @@ type
         property Left: TTreeNode read GetLeft;
         { The last child node for this tree node. }
         property Right: TTreeNode read GetRight;
+
+        { Add a children for this tree node. }
+        // TODO Should be protected
+        function Add(AElement: Pointer): TTreeNode;
+
         { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
         { Returns True, if this tree node is root node in its collection. }
         function IsRoot(): Boolean;
-        { Constructs a new TTreeNode instance. }
-        constructor Create(AParent: TTreeNode); virtual;
         { Free all related resources. }
         destructor Destroy(); override;
     end;
 
+{
+    Makes an empty node without data. For testing only!
+}
+function MakeEmptyNode(): TTreeNode;
+
 {------------------------------------------------------------------------------}
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
+
+function MakeEmptyNode(): TTreeNode;
+begin
+    Result := TTreeNode.Create(nil);
+    // This is worjaround for test! Why????
+    Result.FChildren := TLinkedList.Create();
+end;
 
 {------------------------------------------------------------------------------}
 { TTreeNode                                                                    }
@@ -128,6 +145,18 @@ begin
     FParent := nil;
     FChildren.Clear();
     FChildren := nil;
+    inherited;
+end;
+
+function TTreeNode.Add(AElement: Pointer): TTreeNode;
+begin
+    Result := TTreeNode.Create(Self);
+    Result.Element := AElement;
+    if not Self.FChildren.Add(Result) then
+    begin // Is it possible?
+        Result.Free();
+        Result := nil;
+    end;
 end;
 
 function TTreeNode.GetChild(Index: Integer): TTreeNode;

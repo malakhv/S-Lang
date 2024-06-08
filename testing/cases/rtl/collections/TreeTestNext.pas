@@ -56,7 +56,7 @@ var TreeCase: TTreeCase;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
-uses SLang.Classes;
+uses SLang.Classes, SLang.List;
 
 {------------------------------------------------------------------------------}
 { Common Stuff                                                                 }
@@ -83,18 +83,16 @@ end;
 
 procedure FillNode(var Node: TTreeNode);
 begin
-    {
-    Node^.Add(Pointer(1));
-    Node^.Add(Pointer(3));
-    Node^.Add(Pointer(2));
-    Node^.Add(Pointer(4));
-    Node^[2]^.Add(Pointer(11));
-    Node^[2]^.Add(Pointer(13));
-    Node^[2]^.Add(Pointer(12));
-    Node^[2]^[1]^.Add(Pointer(111));
-    Node^[2]^[1]^.Add(Pointer(113));
-    Node^[2]^[1]^.Add(Pointer(112));
-    }
+    Node.Add(Pointer(1));
+    Node.Add(Pointer(3));
+    Node.Add(Pointer(2));
+    Node.Add(Pointer(4));
+    Node[2].Add(Pointer(11));
+    Node[2].Add(Pointer(13));
+    Node[2].Add(Pointer(12));
+    Node[2][1].Add(Pointer(111));
+    Node[2][1].Add(Pointer(113));
+    Node[2][1].Add(Pointer(112));
 end;
 
 {------------------------------------------------------------------------------}
@@ -104,7 +102,7 @@ end;
 function FillTest(const Input: Pointer; var Output: Pointer): Boolean;
 var Node: TTreeNode;
 begin
-    Node := TTreeNode(Input);
+    Node := Input;
     Node.Clear();
     FillNode(Node);
     DumpNode(Node);
@@ -135,7 +133,8 @@ var I: Integer;
     Pass: Boolean;
 begin
     Result := True;
-    Node := TTreeNode.Create(nil);
+    WriteLn('Should be created!');
+    Node := MakeEmptyNode();
     Node.Element := 0;
     for I := 0 to TreeCase.Count - 1 do
     begin
