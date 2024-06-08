@@ -43,7 +43,7 @@
 { Each node in the tree can be connected to many children (depending on the    }
 { type of tree), but must be connected to exactly one parent, except for the   }
 { root node, which has no parent (i.e., the root node as the top-most node in  }
-{ the tree hierarchy). You could see more details about tree data structure    }                                                         }
+{ the tree hierarchy). You could see more details about tree data structure    }
 { here: https://en.wikipedia.org/wiki/Tree_(data_structure)                    }
 {------------------------------------------------------------------------------}
 
@@ -87,8 +87,6 @@ type
         function GetLeft(): TTreeNode;
         { See Right property. }
         function GetRight(): TTreeNode;
-        { Constructs a new TTreeNode instance. }
-        constructor Create(AParent: TTreeNode); virtual;
     public
         { A parent of this tree node, or nil (for root node). }
         property Parent: TTreeNode read FParent;
@@ -97,13 +95,15 @@ type
         { The list of child nodes of this tree node. }
         property Children[Index: Integer]: TTreeNode read GetChild; default;
         { The first child node for this tree node. }
-        property Left: PTreeNode read GetLeft;
+        property Left: TTreeNode read GetLeft;
         { The last child node for this tree node. }
-        property Right: PTreeNode read GetRight;
+        property Right: TTreeNode read GetRight;
         { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
         { Returns True, if this tree node is root node in its collection. }
         function IsRoot(): Boolean;
+        { Constructs a new TTreeNode instance. }
+        constructor Create(AParent: TTreeNode); virtual;
         { Free all related resources. }
         destructor Destroy(); override;
     end;
@@ -123,7 +123,7 @@ begin
     Self.FChildren := TLinkedList.Create();
 end;
 
-destructor TTreeNode.Destroy(); override;
+destructor TTreeNode.Destroy();
 begin
     FParent := nil;
     FChildren.Clear();

@@ -4,10 +4,11 @@ program test;
 {$H+}
 {$T+}
 
-uses Os, ListTest, TreeTest;
+uses Os, ListTest, TreeTest, TreeTestNext;
 
 begin
     WriteLn('Welcome to S-Lang testing. ','Target OS is ', Os.getTargetOS);
-    ListCase.Run();
+    //ListCase.Run();
+    //TreeCase.Run();
     TreeCase.Run();
 end.
