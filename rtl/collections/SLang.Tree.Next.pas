@@ -94,7 +94,7 @@ type
         { See Size property. }
         function GetSize(): Integer;
         { Constructs a new TTreeNode instance. }
-        constructor Create(const AParent: TTreeNode); virtual;
+        constructor Create(const AParent: TTreeNode); virtual; overload;
     public
         { A parent of this tree node, or nil (for root node). }
         property Parent: TTreeNode read FParent;
@@ -131,6 +131,40 @@ type
         { Returns True, if this tree node has the same parent as specified
           node. }
         function IsSibling(const Node: TTreeNode): Boolean;
+        { Constructs an empty TTreeNode instance. }
+        constructor Create(); overload; override;
+        { Free all related resources. }
+        destructor Destroy(); override;
+    end;
+
+type
+
+    { Tree }
+    TTree = class (TInterfacedObject, ITree)
+    private
+        FRoot: TTreeNode;
+    protected
+        { See Nodes property. }
+        function GetNode(Index: Integer): TTreeNode;
+    public
+        { The list of tree nodes in this tree. }
+        property Nodes[Index: Integer]: TTreeNode read GetNode; default;
+        { From ICollection interface. }
+        function Add(const Element: Pointer): Boolean;
+        { From ICollection interface. }
+        function Contains(const Element: Pointer): Boolean;
+        { From ICollection interface. }
+        function GetCount(): Integer;
+        { From ICollection interface. }
+        function IsEmpty(): Boolean;
+        { From ICollection interface. }
+        function Remove(const Element: Pointer): Boolean;
+        { From ICollection interface. }
+        function ToArray(): TPointers;
+        { From ICollection interface. }
+        procedure Clear();
+        { Constructs a new TTree instance. }
+        constructor Create(); virtual;
         { Free all related resources. }
         destructor Destroy(); override;
     end;
@@ -146,7 +180,7 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 
 function MakeEmptyNode(): TTreeNode;
 begin
-    Result := TTreeNode.Create(nil);
+    Result := TTreeNode.Create(TTreeNode(nil));
     // This is workaround for test! Why????
     Result.FChildren := TLinkedList.Create();
 end;
@@ -155,9 +189,14 @@ end;
 { TTreeNode                                                                    }
 {------------------------------------------------------------------------------}
 
+constructor TTreeNode.Create();
+begin
+    Create(nil);
+end;
+
 constructor TTreeNode.Create(const AParent: TTreeNode);
 begin
-    inherited;
+    inherited Create();
     Self.FParent := AParent;
     Self.FChildren := TLinkedList.Create();
 end;
@@ -249,6 +288,65 @@ function TTreeNode.IsSibling(const Node: TTreeNode): Boolean;
 begin
     Result := (Node <> nil) and (not Self.IsRoot)
         and (Self.Parent = Node.Parent);
+end;
+
+{------------------------------------------------------------------------------}
+{ TTree                                                                        }
+{------------------------------------------------------------------------------}
+
+constructor TTree.Create();
+begin
+    Inherited;
+end;
+
+destructor TTree.Destroy();
+begin
+    Self.Clear();
+    inherited;
+end;
+
+function TTree.Add(const Element: Pointer): Boolean;
+var Node: TTreeNode;
+begin
+    Result := True;
+    Node := TTreeNode.Create(Self.FRoot);
+    Node.Element := Element;
+    if Self.FRoot = nil then FRoot := Node;
+end;
+
+function TTree.GetNode(Index: Integer): TTreeNode;
+begin
+    Result := Self.FRoot[Index];
+end;
+
+function TTree.Contains(const Element: Pointer): Boolean;
+begin
+    Result := False;
+end;
+
+function TTree.GetCount(): Integer;
+begin
+    Result := 0;
+end;
+
+function TTree.IsEmpty(): Boolean;
+begin
+    Result := Self.FRoot = nil;
+end;
+
+function TTree.Remove(const Element: Pointer): Boolean;
+begin
+    Result := False;
+end;
+
+function TTree.ToArray(): TPointers;
+begin
+    Result := nil;
+end;
+
+procedure TTree.Clear();
+begin
+    if Self.FRoot <> nil then Self.FRoot.Clear();
 end;
 
 END.                                                                     { END }

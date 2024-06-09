@@ -222,19 +222,18 @@ type
     protected
         { See Element property. }
         procedure SetElement(AElement: Pointer);
+        { Constructs an empty instance of collection item. }
+        constructor Create(); virtual;
     public
         { The link to real data stored into this collection item. }
         property Element: Pointer read FElement write SetElement;
+        { Equals !!!}
         { Returns True if this collection item has no link to real data. }
         function IsEmpty(): Boolean;
         { Clears this collection item (removes link to real data). }
         procedure Clear();
         { Removes this collection item from its collection. }
         procedure Remove();
-        { Make an instance of empty collection item. }
-        constructor Create(); virtual; overload;
-        { Make an instance of empty collection for specified data. }
-        constructor Create(AElement: Pointer); virtual; overload;
         { Free all related resources. }
         destructor Destroy; override;
     end;
@@ -247,13 +246,8 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 
 constructor TCollectionItem.Create();
 begin
-    Create(nil);
-end;
-
-constructor TCollectionItem.Create(AElement: Pointer);
-begin
-    Inherited Create();
-    Self.Element := AElement;
+    inherited;
+    FElement := nil;
 end;
 
 destructor TCollectionItem.Destroy;
