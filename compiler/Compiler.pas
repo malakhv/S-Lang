@@ -4,7 +4,7 @@ program slang;
 {$H+}
 {$T+}
 
-uses Types, Os, SLang.Collections, SLang.List, SLang.Tree;
+uses Types, Os, SLang.Collections, SLang.List, SLang.Tree, SLang.Strings;
 
 
 procedure DumpNode(Node: TTreeNodeC);
