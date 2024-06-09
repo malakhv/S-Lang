@@ -83,12 +83,18 @@ type
         function GetChild(Index: Integer): TTreeNode;
         { See ChildCount property. }
         function GetChildCount(): Integer;
+        { See Deep property. }
+        function GetDepth(): Integer;
+        { See Height property. }
+        function GetHeight(): Integer;
         { See Left property. }
         function GetLeft(): TTreeNode;
         { See Right property. }
         function GetRight(): TTreeNode;
+        { See Size property. }
+        function GetSize(): Integer;
         { Constructs a new TTreeNode instance. }
-        constructor Create(AParent: TTreeNode); virtual;
+        constructor Create(const AParent: TTreeNode); virtual;
     public
         { A parent of this tree node, or nil (for root node). }
         property Parent: TTreeNode read FParent;
@@ -96,25 +102,41 @@ type
         property ChildCount: Integer read GetChildCount; // Maybe Count?
         { The list of child nodes of this tree node. }
         property Children[Index: Integer]: TTreeNode read GetChild; default;
+        { The number of children of this tree node. A leaf node, by definition,
+          has degree zero. This property is the same as ChildCount. }
+        property Degree: Integer read GetChildCount;
+        { The length of the path to root from this tree node. Thus the root
+          node has depth zero. This is the same as level. }
+        property Depth: Integer read GetDepth;
+        { The length of the longest downward path to a leaf from this tree
+          node. The height of the root is the height of the tree. }
+        property Height: Integer read GetHeight;
         { The first child node for this tree node. }
         property Left: TTreeNode read GetLeft;
         { The last child node for this tree node. }
         property Right: TTreeNode read GetRight;
-
+        { The number of nodes in this tree node. For leaf this value
+          equals 1. }
+        property Size: Integer read GetSize;
         { Add a children for this tree node. }
         // TODO Should be protected
         function Add(AElement: Pointer): TTreeNode;
-
         { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
         { Returns True, if this tree node is root node in its collection. }
         function IsRoot(): Boolean;
+        { Returns True, if this tree node is parent or child for specified
+          node. }
+        function IsNeighbor(const Node: TTreeNode): Boolean;
+        { Returns True, if this tree node has the same parent as specified
+          node. }
+        function IsSibling(const Node: TTreeNode): Boolean;
         { Free all related resources. }
         destructor Destroy(); override;
     end;
 
 {
-    Makes an empty node without data. For testing only!
+    Makes an empty tree node without data. For testing only!
 }
 function MakeEmptyNode(): TTreeNode;
 
@@ -125,7 +147,7 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 function MakeEmptyNode(): TTreeNode;
 begin
     Result := TTreeNode.Create(nil);
-    // This is worjaround for test! Why????
+    // This is workaround for test! Why????
     Result.FChildren := TLinkedList.Create();
 end;
 
@@ -133,7 +155,7 @@ end;
 { TTreeNode                                                                    }
 {------------------------------------------------------------------------------}
 
-constructor TTreeNode.Create(AParent: TTreeNode);
+constructor TTreeNode.Create(const AParent: TTreeNode);
 begin
     inherited;
     Self.FParent := AParent;
@@ -169,6 +191,26 @@ begin
     Result := FChildren.Count;
 end;
 
+function TTreeNode.GetDepth(): Integer;
+begin
+    if Self.FParent <> nil then
+        Result := Self.FParent.Depth + 1
+    else
+        Result := 0
+end;
+
+function TTreeNode.GetHeight(): Integer;
+var I, H: Integer;
+begin
+    Result := 0;
+    If Self.IsLeaf() then Exit;
+    for I := 0 to Self.ChildCount - 1 do
+    begin
+        H := Self[I].Height + 1;
+        if Result < H then Result := H;
+    end;
+end;
+
 function TTreeNode.GetLeft(): TTreeNode;
 begin
     Result := FChildren.First^.Element;
@@ -179,6 +221,14 @@ begin
     Result := FChildren.Last^.Element;
 end;
 
+function TTreeNode.GetSize(): Integer;
+var I: Integer;
+begin
+    Result := 1;
+    for I := 0 to Self.ChildCount -1 do
+        Result := Result + Self[I].Size;
+end;
+
 function TTreeNode.IsLeaf(): Boolean;
 begin
     Result := Self.ChildCount = 0;
@@ -187,6 +237,18 @@ end;
 function TTreeNode.IsRoot(): Boolean;
 begin
     Result := Self.Parent = nil;
+end;
+
+function TTreeNode.IsNeighbor(const Node: TTreeNode): Boolean;
+begin
+    Result := (Node <> nil)
+        and ((Self.Parent = Node) or (Node.Parent = Self));
+end;
+
+function TTreeNode.IsSibling(const Node: TTreeNode): Boolean;
+begin
+    Result := (Node <> nil) and (not Self.IsRoot)
+        and (Self.Parent = Node.Parent);
 end;
 
 END.                                                                     { END }
