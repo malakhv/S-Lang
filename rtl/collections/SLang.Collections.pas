@@ -27,7 +27,7 @@
 { Package: S-Lang.Collections                                                  }
 { Types:   ICollection, IList, ISet, ITree                                     }
 {                                                                              }
-{ Dependencies: SLang.Classes                                                  }
+{ Dependencies: SLang.Types, SLang.Classes                                     }
 {                                                                              }
 { Created: 22.02.24                                                            }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
@@ -52,7 +52,7 @@ UNIT SLang.Collections;                                                 { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.System, SLang.Classes;
+uses SLang.Types, SLang.Classes;
 
 
 {

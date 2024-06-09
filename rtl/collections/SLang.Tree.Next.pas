@@ -27,7 +27,7 @@
 { Package: S-Lang.Collections                                                  }
 { Types:   TTreeNode, TTree                                                    }
 {                                                                              }
-{ Dependencies: SLang.Collections, SLang.List                                  }
+{ Dependencies: SLang.Types, SLang.Classes, SLang.Collections, SLang.List      }
 {                                                                              }
 { Created: 05.06.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
@@ -67,7 +67,7 @@ UNIT SLang.Tree.Next;                                                   { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.System, SLang.Classes, SLang.Collections, SLang.List;
+uses SLang.Types, SLang.Classes, SLang.Collections, SLang.List;
 
 type
 

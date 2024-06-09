@@ -27,7 +27,7 @@
 { Package: S-Lang.Collections                                                  }
 { Types:   Tree                                                                }
 {                                                                              }
-{ Dependencies: No                                                             }
+{ Dependencies: SLang.Types, SLang.Classes, SLang.Collections, SLang.List;     }
 {                                                                              }
 { Created: [DATE]                                                              }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
@@ -41,7 +41,7 @@ UNIT SLang.Tree;                                                        { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.System, SLang.Classes, SLang.Collections, SLang.List;
+uses SLang.Types, SLang.Classes, SLang.Collections, SLang.List;
 
 type
 

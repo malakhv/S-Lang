@@ -26,7 +26,7 @@
 { Package: S-Lang.Testing                                                      }
 { Types:   Not Applicable                                                      }
 {                                                                              }
-{ Dependencies: Testing, List                                                  }
+{ Dependencies: SLang.Types, SLang.List, Testing;                              }
 {                                                                              }
 { Created: 25.02.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
@@ -40,7 +40,7 @@ UNIT ListTest;                                                          { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.System, SLang.List, Testing;
+uses SLang.Types, SLang.List, Testing;
 
 type
     TListCase = class (TTestCase)

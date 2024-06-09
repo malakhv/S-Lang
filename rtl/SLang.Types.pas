@@ -20,19 +20,19 @@
 {------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------}
-{ This Unit includes common definitions and routines for all applications, and }
-{ this unit will use by default.                                               }
+{ This Unit includes additional data types' definitions and common routines to }
+{ working with it.                                                             }
 {                                                                              }
 { Project: S-Lang RTL                                                          }
 { Package: SLang                                                               }
 {                                                                              }
 { Dependencies: No                                                             }
 {                                                                              }
-{ Created: 07.03.2024                                                          }
+{ Created: 09.06.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
 {------------------------------------------------------------------------------}
 
-UNIT SLang.System;                                                      { UNIT }
+UNIT SLang.Types;                                                       { UNIT }
 
 {$MODE DELPHI}
 {$H+}
@@ -40,23 +40,20 @@ UNIT SLang.System;                                                      { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-{ S-Lang version }
-const
-
-    { The version of S-Lang RTL. }
-    RTLVersion = '0.0.1';
-
-    { The version of S-Lang compiler. }
-    CompilerVersion = '0.0.1';
-
-{ Aliases for classical data types. }
+{ Some Arrays }
 type
 
-    { Unsigned Double Word. }
-    DWord = LongWord;
+    { An array of bytes. }
+    TBytes = Array of Byte;
+    PBytes = ^TBytes;
 
-    { Unsigned Quad Word. }
-    QWord = UInt64;
+    { An array of integers. }
+    TIntegers = Array of Integer;
+    PIntegers = ^TIntegers;
+
+    { An array of pointers. }
+    TPointers = Array of Pointer;
+    PPointers = ^TPointers;
 
 {------------------------------------------------------------------------------}
 

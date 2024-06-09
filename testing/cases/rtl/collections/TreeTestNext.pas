@@ -26,7 +26,7 @@
 { Package: S-Lang.Testing                                                      }
 { Types:   Not Applicable                                                      }
 {                                                                              }
-{ Dependencies: SLang.Classes, SLang.Tree, Testing,                            }
+{ Dependencies: SLang.Types, Testing, SLang.Tree.Next                          }
 {                                                                              }
 { Created: 25.03.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
@@ -40,7 +40,7 @@ UNIT TreeTestNext;                                                      { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.System, Testing, SLang.Tree.Next;
+uses SLang.Types, Testing, SLang.Tree.Next;
 
 type
     TTreeCase = class (TTestCase)

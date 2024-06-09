@@ -27,7 +27,7 @@
 { Package: S-Lang.Collections                                                  }
 { Types:   TLinkedList, TArrayList, TStack                                     }
 {                                                                              }
-{ Dependencies: SLang.Classes, SLang.Collections                               }
+{ Dependencies: SLang.Types, SLang.Classes, SLang.Collections                  }
 {                                                                              }
 { Created: 22.02.24                                                            }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
@@ -41,7 +41,7 @@ UNIT SLang.List;                                                        { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.System, SLang.Classes, SLang.Collections;
+uses SLang.Types, SLang.Classes, SLang.Collections;
 
 type
 
