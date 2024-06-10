@@ -93,6 +93,8 @@ type
         function GetRight(): TTreeNode;
         { See Size property. }
         function GetSize(): Integer;
+        { Constructs an empty TTreeNode instance. }
+        constructor Create(); override; overload;
         { Constructs a new TTreeNode instance. }
         constructor Create(const AParent: TTreeNode); virtual; overload;
     public
@@ -131,8 +133,6 @@ type
         { Returns True, if this tree node has the same parent as specified
           node. }
         function IsSibling(const Node: TTreeNode): Boolean;
-        { Constructs an empty TTreeNode instance. }
-        constructor Create(); overload; override;
         { Free all related resources. }
         destructor Destroy(); override;
     end;
@@ -146,11 +146,19 @@ type
     protected
         { See Nodes property. }
         function GetNode(Index: Integer): TTreeNode;
+        { Added child node for specified parent. }
+        function AddNode(const Parent: TTreeNode;
+            const Element: Pointer): TTreeNode; virtual;
     public
+        { The root node of this tree. }
+        property Root: TTreeNode read FRoot;
         { The list of tree nodes in this tree. }
         property Nodes[Index: Integer]: TTreeNode read GetNode; default;
+        { Added child node for specified parent. }
+        function Add(const Parent: TTreeNode;
+            const Element: Pointer): Boolean; overload;
         { From ICollection interface. }
-        function Add(const Element: Pointer): Boolean;
+        function Add(const Element: Pointer): Boolean; overload;
         { From ICollection interface. }
         function Contains(const Element: Pointer): Boolean;
         { From ICollection interface. }
@@ -181,8 +189,6 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 function MakeEmptyNode(): TTreeNode;
 begin
     Result := TTreeNode.Create(TTreeNode(nil));
-    // This is workaround for test! Why????
-    Result.FChildren := TLinkedList.Create();
 end;
 
 {------------------------------------------------------------------------------}
@@ -305,18 +311,38 @@ begin
     inherited;
 end;
 
-function TTree.Add(const Element: Pointer): Boolean;
-var Node: TTreeNode;
+function TTree.AddNode(const Parent: TTreeNode;
+    const Element: Pointer): TTreeNode;
 begin
-    Result := True;
-    Node := TTreeNode.Create(Self.FRoot);
-    Node.Element := Element;
-    if Self.FRoot = nil then FRoot := Node;
+    // If this tree is empty, lets create root node
+    if Self.IsEmpty() then
+    begin
+        FRoot := TTreeNode.Create(Element);
+        Result := FRoot;
+        Exit;
+    end;
+    // If no parent, lets add node to root
+    if Parent = nil then
+        Result := Self.Root.Add(Element)
+    else
+        Result := Parent.Add(Element);
+end;
+
+function TTree.Add(const Element: Pointer): Boolean;
+begin
+    Result := Self.AddNode(FRoot, Element) <> nil;
+end;
+
+function TTree.Add(const Parent: TTreeNode;
+    const Element: Pointer): Boolean; overload;
+begin
+    Result := Self.AddNode(Parent, Element) <> nil;
 end;
 
 function TTree.GetNode(Index: Integer): TTreeNode;
 begin
-    Result := Self.FRoot[Index];
+    if index = 0 then Result := Self.Root
+    else Result := Self.FRoot[Index];
 end;
 
 function TTree.Contains(const Element: Pointer): Boolean;

@@ -64,6 +64,9 @@ type
     ICollectionItem = interface(IInterface)
         ['{1C609401-B669-4938-8959-6AB4394B6EE5}']
 
+        { Indicates whether some collection item is "equal to" this one. }
+        function Equals(Item: ICollectionItem): Boolean;
+
         { Returns True if this Item contains no element. }
         function IsEmpty(): Boolean;
 
@@ -227,13 +230,14 @@ type
     public
         { The link to real data stored into this collection item. }
         property Element: Pointer read FElement write SetElement;
-        { Equals !!!}
-        { Returns True if this collection item has no link to real data. }
+        { From ICollectionItem interface. }
+        function Equals(Item: ICollectionItem): Boolean;
+        { From ICollectionItem interface. }
         function IsEmpty(): Boolean;
-        { Clears this collection item (removes link to real data). }
-        procedure Clear();
-        { Removes this collection item from its collection. }
-        procedure Remove();
+        { From ICollectionItem interface. }
+        procedure Clear(); virtual;
+        { From ICollectionItem interface. }
+        procedure Remove(); virtual;
         { Free all related resources. }
         destructor Destroy; override;
     end;
@@ -253,6 +257,14 @@ end;
 destructor TCollectionItem.Destroy;
 begin
     Self.Clear();
+    inherited;
+end;
+
+function TCollectionItem.Equals(Item: ICollectionItem): Boolean;
+begin
+    Result := (Self.Element <> nil) and (Item <> nil)
+        and (Item is TCollectionItem)
+        and (Self.Element = (Item as TCollectionItem).Element);
 end;
 
 function TCollectionItem.IsEmpty(): Boolean;
