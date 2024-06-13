@@ -253,6 +253,7 @@ function TLinkedList.InsertItem(Index: Integer; const Element: Pointer):
     PListItem;
 var Item: PListItem;
 begin
+    Result := nil;
     Item := Self.ItemOf(Index);
     if Item = nil then Exit;
     New(Result);
@@ -286,6 +287,7 @@ end;
 
 function TLinkedList.ItemOf(const Element: Pointer): PListItem;
 begin
+    Result := nil;
     If Self.IsEmpty() then Exit;
     Result := FFirst;
     while Result <> nil do
@@ -297,6 +299,7 @@ end;
 
 function TLinkedList.ItemOf(Index: Integer): PListItem;
 begin
+    Result := nil;
     If Self.IsEmpty() or (Index < 0) or (Index >= FCount) then Exit;
     Result := FFirst;
     while (Result <> nil) and (Index > 0) do

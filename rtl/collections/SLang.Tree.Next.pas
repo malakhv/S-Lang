@@ -94,9 +94,9 @@ type
         { See Size property. }
         function GetSize(): Integer;
         { Constructs an empty TTreeNode instance. }
-        constructor Create(); override; overload;
+        constructor Create(); overload; override;
         { Constructs a new TTreeNode instance. }
-        constructor Create(const AParent: TTreeNode); virtual; overload;
+        constructor Create(const AParent: TTreeNode);
     public
         { A parent of this tree node, or nil (for root node). }
         property Parent: TTreeNode read FParent;

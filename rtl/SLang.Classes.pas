@@ -96,7 +96,7 @@ end;
 procedure TPair.Swap();
 var Tmp: Pointer;
 begin
-    Tmp := Self.First; Self.First := Self.Second; Self.Second := Self.First;
+    Tmp := Self.First; Self.First := Self.Second; Self.Second := Tmp;
 end;
 
 procedure TPair.Clear();
