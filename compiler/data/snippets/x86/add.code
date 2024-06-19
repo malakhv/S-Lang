@@ -1,0 +1,6 @@
+// Token: ADD
+// EAX = A + B
+// A in memory, B in memory, Result in EAX
+
+mov eax, <A>
+add eax, <B>
