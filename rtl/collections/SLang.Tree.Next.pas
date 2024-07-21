@@ -74,7 +74,7 @@ type
     {
         The node of tree with specified element.
     }
-    TTreeNode = class (TCollectionItem)
+    TTreeNode = class (TItem)
     private
         FParent: TTreeNode;         // See Parent property.
         FChildren: TLinkedList;     // See Children property.

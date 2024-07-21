@@ -54,14 +54,11 @@ INTERFACE                                                          { INTERFACE }
 
 uses SLang.Types, SLang.Classes;
 
-
-{
-    The basic interfaces for all collections
-}
+{ Collection }
 type
 
     { An item in collection with real element. }
-    ICollectionItem = interface(IInterface)
+    IItem = interface(IInterface)
         ['{1C609401-B669-4938-8959-6AB4394B6EE5}']
 
         { Returns True if this Item contains no element. }
@@ -129,6 +126,9 @@ type
 
     end;
 
+{ List }
+type
+
     {
         An ordered collection (also known as a sequence). This collection
         allows to precise control over where in the list each element is
@@ -184,6 +184,9 @@ type
 
     end;
 
+{ Set }
+type
+
     {
         An unordered collection that contains no duplicate elements (and at
         most one Nil element). As implied by its name, this interface models
@@ -203,9 +206,9 @@ type
         // See https://docwiki.embarcadero.com/RADStudio/Alexandria/en/Expressions_(Delphi)#Set_Operators
     end;
 
+{ Tree }
 type
 
-    { Teee }
     ITree = interface(ICollection)
         ['{812ECE41-8FAF-4496-AECF-63C757D1A784}']
     end;
@@ -213,10 +216,10 @@ type
 type
 
     {
-        The default implementation of ICollectionItem. This implementation
+        The default implementation of IItem. This implementation
         includes one Pointer value as a data element in this collection item.
     }
-    TCollectionItem = class(TInterfacedObject, ICollectionItem)
+    TItem = class(TInterfacedObject, IItem)
     private
         FElement: Pointer;      // See Element property.
     protected
@@ -229,11 +232,11 @@ type
         property Element: Pointer read FElement write SetElement;
         { Indicates whether some collection item is "equal to" this one. }
         function Equals(Obj: TObject): Boolean; override;
-        { From ICollectionItem interface. }
+        { From IItem interface. }
         function IsEmpty(): Boolean;
-        { From ICollectionItem interface. }
+        { From IItem interface. }
         procedure Clear(); virtual;
-        { From ICollectionItem interface. }
+        { From IItem interface. }
         procedure Remove(); virtual;
         { Free all related resources. }
         destructor Destroy; override;
@@ -242,44 +245,44 @@ type
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
 {------------------------------------------------------------------------------}
-{ TCollectionItem                                                              }
+{ TItem                                                                        }
 {------------------------------------------------------------------------------}
 
-constructor TCollectionItem.Create();
+constructor TItem.Create();
 begin
     inherited;
     FElement := nil;
 end;
 
-destructor TCollectionItem.Destroy;
+destructor TItem.Destroy;
 begin
     Self.Clear();
     inherited;
 end;
 
-function TCollectionItem.Equals(Obj: TObject): Boolean;
+function TItem.Equals(Obj: TObject): Boolean;
 begin
     Result := (Self.Element <> nil) and (Obj <> nil)
-        and (Obj is TCollectionItem)
-        and (Self.Element = (Obj as TCollectionItem).Element);
+        and (Obj is TItem)
+        and (Self.Element = (Obj as TItem).Element);
 end;
 
-function TCollectionItem.IsEmpty(): Boolean;
+function TItem.IsEmpty(): Boolean;
 begin
     Result := Self.FElement = nil;
 end;
 
-procedure TCollectionItem.SetElement(AElement: Pointer);
+procedure TItem.SetElement(AElement: Pointer);
 begin
     Self.FElement := AElement;
 end;
 
-procedure TCollectionItem.Clear();
+procedure TItem.Clear();
 begin
     Self.FElement := nil;
 end;
 
-procedure TCollectionItem.Remove();
+procedure TItem.Remove();
 begin
     Self.Free();
 end;
