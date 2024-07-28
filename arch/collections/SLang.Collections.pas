@@ -44,18 +44,6 @@
 {                                                                              }
 {------------------------------------------------------------------------------}
 
-{------------------------------------------------------------------------------}
-{                                 Definitions                                  }
-{                                                                              }
-{ Element - An element in collection with real object/value, in other words,   }
-{           an item of the collection (collection item). For more details, see }
-{           IElement and TElement.                                             }
-{                                                                              }
-{ Value   - A real data (object) inside collection item. For more details, see }
-{           TElement.                                                          }
-{                                                                              }
-{------------------------------------------------------------------------------}
-
 UNIT SLang.Collections;                                                 { UNIT }
 
 {$MODE DELPHI}
@@ -69,19 +57,14 @@ uses SLang.Types, SLang.Classes;
 { Collection }
 type
 
-    {
-        An element in collection (collection item) with real object/value.
-
-        See also: TElement.
-    }
-    IElement = interface(IInterface)
+    { An item in collection with real element. }
+    IItem = interface(IInterface)
         ['{1C609401-B669-4938-8959-6AB4394B6EE5}']
 
-        { Returns True if this Element contains no real object/value. }
+        { Returns True if this Item contains no element. }
         function IsEmpty(): Boolean;
 
-        { Clears this Element (remove real object/value from this Element).
-          After this operation, Element is considered empty. }
+        { Clears this Item (remove element and related data). }
         procedure Clear();
 
         { Removes itself from its collection. }
@@ -233,29 +216,27 @@ type
 type
 
     {
-        The default implementation of IElement. This implementation
-        includes one Pointer as a Value inside this collection item.
-
-        See also: IElement.
+        The default implementation of IItem. This implementation
+        includes one Pointer value as a data element in this collection item.
     }
-    TElement = class(TInterfacedObject, IElement)
+    TItem = class(TInterfacedObject, IItem)
     private
-        FValue: Pointer;    // See Value property.
+        FElement: Pointer;      // See Element property.
     protected
-        { See Value property. }
-        procedure SetValue(Val: Pointer);
+        { See Element property. }
+        procedure SetElement(AElement: Pointer);
         { Constructs an empty instance of collection item. }
         constructor Create(); virtual;
     public
-        { The link to real data (object) stored into this collection item. }
-        property Value: Pointer read FValue write SetValue;
+        { The link to real data stored into this collection item. }
+        property Element: Pointer read FElement write SetElement;
         { Indicates whether some collection item is "equal to" this one. }
         function Equals(Obj: TObject): Boolean; override;
-        { From IElement interface. }
+        { From IItem interface. }
         function IsEmpty(): Boolean;
-        { From IElement interface. }
+        { From IItem interface. }
         procedure Clear(); virtual;
-        { From IElement interface. }
+        { From IItem interface. }
         procedure Remove(); virtual;
         { Free all related resources. }
         destructor Destroy; override;
@@ -267,41 +248,41 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 { TItem                                                                        }
 {------------------------------------------------------------------------------}
 
-constructor TElement.Create();
+constructor TItem.Create();
 begin
     inherited;
-    FValue := nil;
+    FElement := nil;
 end;
 
-destructor TElement.Destroy;
+destructor TItem.Destroy;
 begin
     Self.Clear();
     inherited;
 end;
 
-function TElement.Equals(Obj: TObject): Boolean;
+function TItem.Equals(Obj: TObject): Boolean;
 begin
-    Result := (Self.FValue <> nil) and (Obj <> nil)
-        and (Obj is TElement)
-        and (Self.FValue = (Obj as TElement).FValue);
+    Result := (Self.Element <> nil) and (Obj <> nil)
+        and (Obj is TItem)
+        and (Self.Element = (Obj as TItem).Element);
 end;
 
-function TElement.IsEmpty(): Boolean;
+function TItem.IsEmpty(): Boolean;
 begin
-    Result := Self.FValue = nil;
+    Result := Self.FElement = nil;
 end;
 
-procedure TElement.SetValue(Val: Pointer);
+procedure TItem.SetElement(AElement: Pointer);
 begin
-    Self.FValue := Val;
+    Self.FElement := AElement;
 end;
 
-procedure TElement.Clear();
+procedure TItem.Clear();
 begin
-    Self.FValue := nil;
+    Self.FElement := nil;
 end;
 
-procedure TElement.Remove();
+procedure TItem.Remove();
 begin
     Self.Free();
 end;

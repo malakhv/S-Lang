@@ -74,7 +74,7 @@ type
     {
         The node of tree with specified element.
     }
-    TTreeNode = class (TElement)
+    TTreeNode = class (TItem)
     private
         FParent: TTreeNode;         // See Parent property.
         FChildren: TLinkedList;     // See Children property.
@@ -122,7 +122,7 @@ type
         property Size: Integer read GetSize;
         { Add a children for this tree node. }
         // TODO Should be protected
-        function Add(Obj: Pointer): TTreeNode;
+        function Add(AElement: Pointer): TTreeNode;
         { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
         { Returns True, if this tree node is root node in its collection. }
@@ -215,10 +215,10 @@ begin
     inherited;
 end;
 
-function TTreeNode.Add(Obj: Pointer): TTreeNode;
+function TTreeNode.Add(AElement: Pointer): TTreeNode;
 begin
     Result := TTreeNode.Create(Self);
-    Result.Value := Obj;
+    Result.Element := AElement;
     if not Self.FChildren.Add(Result) then
     begin // Is it possible?
         Result.Free();
