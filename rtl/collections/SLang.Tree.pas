@@ -149,15 +149,15 @@ type
         FRoot: PTreeNode;
     public
         { From ICollection interface. }
-        function Add(const Element: Pointer): Boolean;
+        function Add(const Value: Pointer): Boolean;
         { From ICollection interface. }
-        function Contains(const Element: Pointer): Boolean;
+        function Contains(const Value: Pointer): Boolean;
         { From ICollection interface. }
         function GetCount(): Integer;
         { From ICollection interface. }
         function IsEmpty(): Boolean;
         { From ICollection interface. }
-        function Remove(const Element: Pointer): Boolean;
+        function Remove(const Value: Pointer): Boolean;
         { From ICollection interface. }
         function ToArray(): TPointers;
         { From ICollection interface. }
@@ -177,12 +177,12 @@ end;
 { TTree                                                                        }
 {------------------------------------------------------------------------------}
 
-function TTree.Add(const Element: Pointer): Boolean;
+function TTree.Add(const Value: Pointer): Boolean;
 begin
     Result := False;
 end;
 
-function TTree.Contains(const Element: Pointer): Boolean;
+function TTree.Contains(const Value: Pointer): Boolean;
 begin
     Result := False;
 end;
@@ -200,7 +200,7 @@ begin
     Result := FRoot = nil;
 end;
 
-function TTree.Remove(const Element: Pointer): Boolean;
+function TTree.Remove(const Value: Pointer): Boolean;
 begin
 
 end;
@@ -273,12 +273,12 @@ end;
 
 function TTreeNode.GetLeftChild(): PTreeNode;
 begin
-    Result := PTreeNode(FChildren.First^.Element);
+    Result := PTreeNode(FChildren.First^.Value);
 end;
 
 function TTreeNode.GetRightChild(): PTreeNode;
 begin
-    Result := PTreeNode(FChildren.Last^.Element);
+    Result := PTreeNode(FChildren.Last^.Value);
 end;
 
 function TTreeNode.GetDepth(): Integer;
@@ -397,12 +397,12 @@ end;
 
 function TTreeNodeC.GetLeftChild(): TTreeNodeC;
 begin
-    Result := TTreeNodeC(FChildren.First^.Element);
+    Result := TTreeNodeC(FChildren.First^.Value);
 end;
 
 function TTreeNodeC.GetRightChild(): TTreeNodeC;
 begin
-    Result := TTreeNodeC(FChildren.Last^.Element);
+    Result := TTreeNodeC(FChildren.Last^.Value);
 end;
 
 function TTreeNodeC.IsLeaf(): Boolean;

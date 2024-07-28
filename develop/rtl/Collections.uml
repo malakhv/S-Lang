@@ -36,4 +36,56 @@ TItem <|-- TElement
 class TNode
 TNode  <|-- TElement
 
+interface ICollection {
+    <i>The root interface in the collection hierarchy.</i>
+    <i>A collection represents a group of objects,</i>
+    <i>known as its elements.</i>
+    __
+    +{method} Add(const Element: Pointer): Boolean
+    +{method} Contains(const Element: Pointer): Boolean
+    +{method} GetCount(): Integer
+    +{method} IsEmpty(): Boolean
+    +{method} Remove(const Element: Pointer): Boolean
+    +{method} ToArray(): TPointers
+    +{method} Clear()
+}
+
+interface IList {
+    <i>An ordered collection (also known as a sequence).</i>
+    __
+    +{method} Get(Index: Integer): Pointer
+    +{method} IndexOf(const Value: Pointer): Integer
+    +{method} Insert(Index: Integer; const Value: Pointer): Boolean
+    +{method} Move(FromIndex, ToIndex: Integer): Boolean
+    +{method} Remove(Index: Integer): Pointer
+    +{method} Swap(Index1, Index2: Integer): Boolean
+    +{method} Update(Index: Integer; const Value: Pointer): Boolean
+}
+IList <|-- ICollection
+
+class TLinkedList {
+    <i>The double linked list.</i>
+    __
+    - FFirst: PListItem;
+    - FLast: PListItem;
+    - FCount: Integer;
+    - FUnique: Boolean;
+    __
+    #{method} AddItem(const Value: Pointer): PListItem
+    #{method} InsertItem(Index: Integer; const Value: Pointer): PListItem
+    #{method} ItemOf(const Value: Pointer): PListItem
+    #{method} ItemOf(Index: Integer): PListItem
+    #{method} RemoveItem(Item: PListItem): Pointer
+    __
+    +{field} First: PListItem
+    +{field} Last: PListItem
+    +{field} Count: Integer
+    +{field} Unique: Boolean
+    __
+    +{method} AddFirst(const Value: Pointer): Boolean
+    __ICollection__
+    __IList__
+}
+TLinkedList <|.. IList
+
 @endtuml

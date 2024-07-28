@@ -258,12 +258,12 @@ end;
 
 function TTreeNode.GetLeft(): TTreeNode;
 begin
-    Result := FChildren.First^.Element;
+    Result := FChildren.First^.Value;
 end;
 
 function TTreeNode.GetRight(): TTreeNode;
 begin
-    Result := FChildren.Last^.Element;
+    Result := FChildren.Last^.Value;
 end;
 
 function TTreeNode.GetSize(): Integer;

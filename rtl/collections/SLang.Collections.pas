@@ -112,11 +112,11 @@ type
           be added. }
         function Add(const Element: Pointer): Boolean;
 
-        { Returns True if this collection contains the specified element.
+        { Returns True if this collection contains the specified object/value.
 
           More formally, returns true if and only if this collection contains
           at least one specified element. }
-        function Contains(const Element: Pointer): Boolean;
+        function Contains(const Value: Pointer): Boolean;
 
         { Returns the number of elements in this collection. }
         function GetCount(): Integer;

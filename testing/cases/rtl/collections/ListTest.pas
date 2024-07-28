@@ -71,7 +71,7 @@ begin
         WriteLn('   Item:    ', Integer(Item));
         WriteLn('   Prev:    ', Integer(Item^.Prev));
         WriteLn('   Next:    ', Integer(Item^.Next));
-        WriteLn('   Element: ', Integer(Item^.Element));
+        WriteLn('   Value: ', Integer(Item^.Value));
     end else
         WriteLn('   Item is NIL');
 end;
@@ -211,8 +211,8 @@ begin
 
     Result := CheckCount(List);
     Result := Result and (List.Count = 2)
-        and (List.First^.Element = Pointer(1))
-        and (List.Last^.Element = Pointer(6));
+        and (List.First^.Value = Pointer(1))
+        and (List.Last^.Value = Pointer(6));
 
     Output := List;
 end;
@@ -227,7 +227,7 @@ begin
     List.Add(Pointer(5));
     List.MoveToLast(0);
 
-    Result := (List.Get(0) = Pointer(5)) and (List.Last^.Element = Pointer(1));
+    Result := (List.Get(0) = Pointer(5)) and (List.Last^.Value = Pointer(1));
     Output := List;
 end;
 
@@ -289,7 +289,7 @@ begin
 
     if not CheckCount(List) then Exit;
     Result := (List.Count = 1) and (List.First = List.Last)
-        and (List.Last^.Element = V);
+        and (List.Last^.Value = V);
 
     Output := List;
 end;
@@ -313,7 +313,7 @@ begin
     First := List.First;
     Last := List.Last;
     Result := (List.Count = 2)
-        and (First^.Element = V2) and (Last^.Element = V1)
+        and (First^.Value = V2) and (Last^.Value = V1)
         and (First^.Prev = nil) and (First^.Next = Last)
         and (Last^.Prev = First) and (Last^.Next = nil);
 end;
@@ -333,7 +333,7 @@ begin
     V := Pointer(TEST_ITEM_COUNT - 1);
     while Item <> nil do
     begin
-        if Item^.Element <> V then Exit;
+        if Item^.Value <> V then Exit;
         Dec(V);
         Item := Item^.Next;
     end;
