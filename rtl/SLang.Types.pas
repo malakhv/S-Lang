@@ -55,9 +55,83 @@ type
     TPointers = Array of Pointer;
     PPointers = ^TPointers;
 
+{ Standard data types as an object. }
+type
+
+    { The object of Boolean. }
+    TBoolObj = class (TObject)
+    private
+        FValue: Boolean;
+    public
+        { The real "primitive" (standard, in Pascal terms) value inside this
+          object. }
+        property Value: Boolean read FValue write FValue;
+        { Indicates whether some TBoolObj instance is "equal to" this one. }
+        function Equals(BoolObj: TBoolObj): Boolean;
+        { Makes a TBoolObj instance from Boolean value. }
+        class function From(Bool: Boolean): TBoolObj; overload;
+        { Makes a TBoolObj instance from Integer value. }
+        class function From(Int: Integer): TBoolObj; overload;
+    end;
+
+    { The object of Integer. }
+    TIntObj = class (TObject)
+    private
+        FValue: Integer;
+    public
+        { The real "primitive" (standard, in Pascal terms) value inside this
+          object. }
+        property Value: Integer read FValue write FValue;
+        { Indicates whether some TIntObj instance is "equal to" this one. }
+        function Equals(IntObj: TIntObj): Boolean;
+        {function Compare(IntObj: TIntObj): Byte;}
+        { Makes a TIntObj instance from Integer value. }
+        class function From(Int: Integer): TIntObj; overload;
+        { Makes a TIntObj instance from Boolean value. }
+        class function From(Bool: Boolean): TIntObj; overload;
+    end;
+
 {------------------------------------------------------------------------------}
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
+
+{------------------------------------------------------------------------------}
+{ TBoolObj                                                                     }
+{------------------------------------------------------------------------------}
+
+class function TBoolObj.From(Bool: Boolean): TBoolObj;
+begin
+    Result := TBoolObj.Create(); Result.FValue := Bool;
+end;
+
+class function TBoolObj.From(Int: Integer): TBoolObj;
+begin
+    Result := TBoolObj.From(Boolean(Int));
+end;
+
+function TBoolObj.Equals(BoolObj: TBoolObj): Boolean;
+begin
+    Result := (BoolObj <> nil) and (Self.FValue = BoolObj.FValue);
+end;
+
+{------------------------------------------------------------------------------}
+{ TIntObj                                                                      }
+{------------------------------------------------------------------------------}
+
+class function TIntObj.From(Int: Integer): TIntObj;
+begin
+    Result := TIntObj.Create(); Result.FValue := Int;
+end;
+
+class function TIntObj.From(Bool: Boolean): TIntObj;
+begin
+    Result := TIntObj.From(Ord(Bool));
+end;
+
+function TIntObj.Equals(IntObj: TIntObj): Boolean;
+begin
+    Result := (IntObj <> nil) and (Self.FValue = IntObj.FValue);
+end;
 
 END.                                                                     { END }
 
