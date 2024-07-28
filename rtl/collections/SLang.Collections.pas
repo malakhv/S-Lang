@@ -47,13 +47,14 @@
 {------------------------------------------------------------------------------}
 {                                 Definitions                                  }
 {                                                                              }
-{ Element - An element in collection with real object/value, in other words,   }
-{           an item of the collection (collection item). For more details, see }
-{           IElement and TElement.                                             }
+{ Element - An element in collection with real object, in other words, an item }
+{           of the collection (collection item). For more details, see the     }
+{           IElement interface and TElement class.                             }
 {                                                                              }
-{ Value   - A real data (object) inside collection item. For more details, see }
-{           TElement.                                                          }
+{ Object  - A real data as element of a collection (inside collection item).   }
 {                                                                              }
+{ Value   - A link to real data (object) inside collection item. For more      }
+{           details, see TElement.                                             }
 {------------------------------------------------------------------------------}
 
 UNIT SLang.Collections;                                                 { UNIT }
@@ -70,18 +71,18 @@ uses SLang.Types, SLang.Classes;
 type
 
     {
-        An element in collection (collection item) with real object/value.
+        An element in collection (collection item) with real object.
 
         See also: TElement.
     }
     IElement = interface(IInterface)
         ['{1C609401-B669-4938-8959-6AB4394B6EE5}']
 
-        { Returns True if this Element contains no real object/value. }
+        { Returns True if this Element contains no real object. }
         function IsEmpty(): Boolean;
 
-        { Clears this Element (remove real object/value from this Element).
-          After this operation, Element is considered empty. }
+        { Clears this Element (remove real object from this Element). After
+          this operation, Element is considered empty. }
         procedure Clear();
 
         { Removes itself from its collection. }
@@ -98,25 +99,25 @@ type
     ICollection = interface(IInterface)
         ['{30A60589-647B-46F5-BBB3-0F589D8F9928}']
 
-        { Ensures that this collection contains the specified object/value.
-  
+        { Adds specified object to this collection.
+
           Returns True if this collection changed as a result of the call,
           otherwise False (if this collection does not permit duplicates and
-          already contains the specified object/value, for exemple).
+          already contains the specified object, for exemple).
 
           Collections that support this operation may place limitations on what
-          elements may be added to this collection - some collections will
+          objects may be added to this collection - some collections will
           refuse to add Nil value and others will impose restrictions on the
           type of objects that may be added. Collection classes should clearly
           specify in their documentation any restrictions on what elements may
           be added. }
-        function Add(const Value: Pointer): Boolean;
+        function Add(const Obj: Pointer): Boolean;
 
-        { Returns True if this collection contains the specified object/value.
+        { Returns True if this collection contains the specified object.
 
           More formally, returns true if and only if this collection contains
-          at least one specified object/value. }
-        function Contains(const Value: Pointer): Boolean;
+          at least one specified object. }
+        function Contains(const Obj: Pointer): Boolean;
 
         { Returns the number of elements in this collection. }
         function GetCount(): Integer;
@@ -124,19 +125,18 @@ type
         { Returns True if this collection contains no elements. }
         function IsEmpty(): Boolean;
 
-        { Removes a single instance of the specified object/value from this
+        { Removes a single instance of the specified object from this
           collection, if it is present.
 
-          Returns true if this collection contained the specified object/value
+          Returns true if this collection contained the specified object
           (or equivalently, if this collection changed as a result of the
           call). }
-        function Remove(const Value: Pointer): Boolean;
+        function Remove(const Obj: Pointer): Boolean;
 
-        { Returns an array containing all of the objects/values in this
-          collection.
+        { Returns an array containing all of the objects in this collection.
 
           If this collection makes any guarantees as to what order its
-          elements, this method must return the elements in the same order. }
+          elements, this method must return the objects in the same order. }
         function ToArray(): TPointers;
 
         { Removes all of the elements from this collection. The collection will
@@ -159,20 +159,20 @@ type
     IList = interface(ICollection)
         ['{ABDF916A-8CA6-47B8-945F-0E08F5A1330E}']
 
-        { Returns the element at the specified position in this list. }
+        { Returns the object at the specified position in this list. }
         function Get(Index: Integer): Pointer;
 
-        { Returns the index of the first occurrence of the specified element in
-          this list, or -1 if this list does not contain the element. }
-        function IndexOf(const Element: Pointer): Integer;
+        { Returns the index of the first occurrence of the specified object in
+          this list, or -1 if this list does not contain the object. }
+        function IndexOf(const Obj: Pointer): Integer;
 
-        { Inserts the specified element at the specified position in this list.
+        { Inserts the specified object at the specified position in this list.
           Shifts the element currently at that position (if any) and any
           subsequent elements to the right (adds one to their indices).
 
           Returns True if this list changed as a result of the call, otherwise
           False (if Index is invalid, for exemple). }
-        function Insert(Index: Integer; const Element: Pointer): Boolean;
+        function Insert(Index: Integer; const Obj: Pointer): Boolean;
 
         { Moves element with specified index to a new position in this list.
 
@@ -194,12 +194,12 @@ type
           False (if Index1 or Index2 is invalid, for exemple). }
         function Swap(Index1, Index2: Integer): Boolean;
 
-        { Replaces the element at the specified position in this list.
+        { Replaces the object at the specified position in this list.
 
           Returns True if this list changed as a result of the call, otherwise
           False (if Index is invalid, for exemple).
         }
-        function Update(Index: Integer; const Element: Pointer): Boolean;
+        function Update(Index: Integer; const Obj: Pointer): Boolean;
 
     end;
 

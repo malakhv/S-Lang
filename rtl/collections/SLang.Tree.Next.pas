@@ -148,7 +148,7 @@ type
         function GetNode(Index: Integer): TTreeNode;
         { Added child node for specified parent. }
         function AddNode(const Parent: TTreeNode;
-            const Element: Pointer): TTreeNode; virtual;
+            const Obj: Pointer): TTreeNode; virtual;
     public
         { The root node of this tree. }
         property Root: TTreeNode read FRoot;
@@ -156,17 +156,17 @@ type
         property Nodes[Index: Integer]: TTreeNode read GetNode; default;
         { Added child node for specified parent. }
         function Add(const Parent: TTreeNode;
-            const Element: Pointer): Boolean; overload;
+            const Obj: Pointer): Boolean; overload;
         { From ICollection interface. }
-        function Add(const Element: Pointer): Boolean; overload;
+        function Add(const Obj: Pointer): Boolean; overload;
         { From ICollection interface. }
-        function Contains(const Element: Pointer): Boolean;
+        function Contains(const Obj: Pointer): Boolean;
         { From ICollection interface. }
         function GetCount(): Integer;
         { From ICollection interface. }
         function IsEmpty(): Boolean;
         { From ICollection interface. }
-        function Remove(const Element: Pointer): Boolean;
+        function Remove(const Obj: Pointer): Boolean;
         { From ICollection interface. }
         function ToArray(): TPointers;
         { From ICollection interface. }
@@ -311,32 +311,30 @@ begin
     inherited;
 end;
 
-function TTree.AddNode(const Parent: TTreeNode;
-    const Element: Pointer): TTreeNode;
+function TTree.AddNode(const Parent: TTreeNode; const Obj: Pointer): TTreeNode;
 begin
     // If this tree is empty, lets create root node
     if Self.IsEmpty() then
     begin
-        FRoot := TTreeNode.Create(Element);
+        FRoot := TTreeNode.Create(Obj);
         Result := FRoot;
         Exit;
     end;
     // If no parent, lets add node to root
     if Parent = nil then
-        Result := Self.Root.Add(Element)
+        Result := Self.Root.Add(Obj)
     else
-        Result := Parent.Add(Element);
+        Result := Parent.Add(Obj);
 end;
 
-function TTree.Add(const Element: Pointer): Boolean;
+function TTree.Add(const Obj: Pointer): Boolean;
 begin
-    Result := Self.AddNode(FRoot, Element) <> nil;
+    Result := Self.AddNode(FRoot, Obj) <> nil;
 end;
 
-function TTree.Add(const Parent: TTreeNode;
-    const Element: Pointer): Boolean; overload;
+function TTree.Add(const Parent: TTreeNode; const Obj: Pointer): Boolean;
 begin
-    Result := Self.AddNode(Parent, Element) <> nil;
+    Result := Self.AddNode(Parent, Obj) <> nil;
 end;
 
 function TTree.GetNode(Index: Integer): TTreeNode;
@@ -345,7 +343,7 @@ begin
     else Result := Self.FRoot[Index];
 end;
 
-function TTree.Contains(const Element: Pointer): Boolean;
+function TTree.Contains(const Obj: Pointer): Boolean;
 begin
     Result := False;
 end;
@@ -360,7 +358,7 @@ begin
     Result := Self.FRoot = nil;
 end;
 
-function TTree.Remove(const Element: Pointer): Boolean;
+function TTree.Remove(const Obj: Pointer): Boolean;
 begin
     Result := False;
 end;

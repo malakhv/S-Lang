@@ -79,18 +79,16 @@ type
         function CheckIndex(Index: Integer): Boolean;
     protected
         { Appends the specified element to the end of this list. }
-        function AddItem(const Value: Pointer): PListItem; virtual;
+        function AddItem(const Obj: Pointer): PListItem; virtual;
         { Inserts the specified element at the specified position. }
-        function InsertItem(Index: Integer; const Value: Pointer): PListItem;
+        function InsertItem(Index: Integer; const Obj: Pointer): PListItem;
             virtual;
         { Finds an item by its element in this list. }
-        function ItemOf(const Value: Pointer): PListItem; overload;
+        function ItemOf(const Obj: Pointer): PListItem; overload;
         { Finds an item by its index in this list. }
         function ItemOf(Index: Integer): PListItem; overload;
         { Removes specified item from this list. }
         function RemoveItem(Item: PListItem): Pointer; virtual;
-        { From IList interface. }
-        //function GetCount(): Integer;
     public
 
         { The first item into this list. }
@@ -103,20 +101,20 @@ type
         property Unique: Boolean read FUnique;
 
         { From ICollection interface. }
-        function Add(const Value: Pointer): Boolean;
+        function Add(const Obj: Pointer): Boolean;
         { Inserts the specified element at the beginning of this list. }
-        function AddFirst(const Value: Pointer): Boolean;
+        function AddFirst(const Obj: Pointer): Boolean;
         { From IList interface. }
-        function Insert(Index: Integer; const Value: Pointer): Boolean;
+        function Insert(Index: Integer; const Obj: Pointer): Boolean;
 
         { From ICollection interface. }
-        function Contains(const Value: Pointer): Boolean;
+        function Contains(const Obj: Pointer): Boolean;
         { From IList interface. }
         function Get(Index: Integer): Pointer;
         { From IList interface. }
-        function IndexOf(const Value: Pointer): Integer;
+        function IndexOf(const Obj: Pointer): Integer;
         { From IList interface. }
-        function Update(Index: Integer; const Value: Pointer): Boolean;
+        function Update(Index: Integer; const Obj: Pointer): Boolean;
 
         { From ICollection interface. }
         function GetCount(): Integer;
@@ -131,7 +129,7 @@ type
         function MoveToLast(FromIndex: Integer): Boolean;
 
         { From ICollection interface. }
-        function Remove(const Value: Pointer): Boolean; overload;
+        function Remove(const Obj: Pointer): Boolean; overload;
         { From IList interface. }
         function Remove(Index: Integer): Pointer; overload;
         { Removes the first element from this linked list. }
@@ -176,7 +174,7 @@ type
         function Pop(): Pointer;
 
         { Pushes an element onto the top of this stack. }
-        procedure Push(const Value: Pointer);
+        procedure Push(const Obj: Pointer);
 
     end;
 
@@ -234,10 +232,10 @@ begin
     Result := (Index >= 0) and (Index < Self.FCount);
 end;
 
-function TLinkedList.AddItem(const Value: Pointer): PListItem;
+function TLinkedList.AddItem(const Obj: Pointer): PListItem;
 begin
     New(Result);
-    Result^.Value := Value;
+    Result^.Value := Obj;
     Result^.Next := nil;
     if FLast <> nil then
     begin
@@ -249,7 +247,7 @@ begin
     Inc(FCount);
 end;
 
-function TLinkedList.InsertItem(Index: Integer; const Value: Pointer):
+function TLinkedList.InsertItem(Index: Integer; const Obj: Pointer):
     PListItem;
 var Item: PListItem;
 begin
@@ -257,7 +255,7 @@ begin
     Item := Self.ItemOf(Index);
     if Item = nil then Exit;
     New(Result);
-    Result^.Value := Value;
+    Result^.Value := Obj;
     Result^.Next := Item;
     if Item^.HasPrev() then
     begin
@@ -285,14 +283,14 @@ begin
     Dec(FCount);
 end;
 
-function TLinkedList.ItemOf(const Value: Pointer): PListItem;
+function TLinkedList.ItemOf(const Obj: Pointer): PListItem;
 begin
     Result := nil;
     If Self.IsEmpty() then Exit;
     Result := FFirst;
     while Result <> nil do
     begin
-        if Result^.Value = Value then Exit;
+        if Result^.Value = Obj then Exit;
         Result := Result^.Next;
     end;
 end;
@@ -323,24 +321,24 @@ begin
     Result := FCount;
 end;
 
-function TLinkedList.Add(const Value: Pointer): Boolean;
+function TLinkedList.Add(const Obj: Pointer): Boolean;
 begin
-    Result := Self.AddItem(Value) <> nil;
+    Result := Self.AddItem(Obj) <> nil;
 end;
 
-function TLinkedList.AddFirst(const Value: Pointer): Boolean;
+function TLinkedList.AddFirst(const Obj: Pointer): Boolean;
 begin
-    Result := Self.Insert(0, Value);
+    Result := Self.Insert(0, Obj);
 end;
 
-function TLinkedList.Insert(Index: Integer; const Value: Pointer): Boolean;
+function TLinkedList.Insert(Index: Integer; const Obj: Pointer): Boolean;
 begin
-    Result := Self.InsertItem(Index, Value) <> nil;
+    Result := Self.InsertItem(Index, Obj) <> nil;
 end;
 
-function TLinkedList.Contains(const Value: Pointer): Boolean;
+function TLinkedList.Contains(const Obj: Pointer): Boolean;
 begin
-    Result := Self.ItemOf(Value) <> nil;
+    Result := Self.ItemOf(Obj) <> nil;
 end;
 
 function TLinkedList.Get(Index: Integer): Pointer;
@@ -353,9 +351,9 @@ begin
         Result := nil;
 end;
 
-function TLinkedList.Remove(const Value: Pointer): Boolean;
+function TLinkedList.Remove(const Obj: Pointer): Boolean;
 begin
-    Result := Self.RemoveItem(Self.ItemOf(Value)) <> nil;
+    Result := Self.RemoveItem(Self.ItemOf(Obj)) <> nil;
 end;
 
 function TLinkedList.Remove(Index: Integer): Pointer;
@@ -373,7 +371,7 @@ begin
     Result := Self.RemoveItem(FLast);
 end;
 
-function TLinkedList.IndexOf(const Value: Pointer): Integer;
+function TLinkedList.IndexOf(const Obj: Pointer): Integer;
 var Item: PListItem;
 begin
     Result := -1;
@@ -382,7 +380,7 @@ begin
     while Item <> nil do
     begin
         Inc(Result);
-        if Item^.Value = Value then Break;
+        if Item^.Value = Obj then Break;
         Item := Item^.Next;
     end;
 end;
@@ -425,12 +423,12 @@ begin
     Item2^.Value := Tmp;
 end;
 
-function TLinkedList.Update(Index: Integer; const Value: Pointer): Boolean;
+function TLinkedList.Update(Index: Integer; const Obj: Pointer): Boolean;
 var Item: PListItem;
 begin
     Item := Self.ItemOf(Index);
-    Result := (Item <> nil) and (Item^.Value <> Value);
-    if Result then Item^.Value := Value;
+    Result := (Item <> nil) and (Item^.Value <> Obj);
+    if Result then Item^.Value := Obj;
 end;
 
 function TLinkedList.ToArray(): TPointers;
@@ -477,9 +475,9 @@ begin
     Result := Self.Peek(); Self.RemoveFirst();
 end;
 
-procedure TStack.Push(const Value: Pointer);
+procedure TStack.Push(const Obj: Pointer);
 begin
-    Self.AddFirst(Value);
+    Self.AddFirst(Obj);
 end;
 
 END.                                                                     { END }
