@@ -26,7 +26,7 @@
 { Package: S-Lang.Testing                                                      }
 { Types:   Not Applicable                                                      }
 {                                                                              }
-{ Dependencies: SLang.Types, SLang.Tree, Testing                               }
+{ Dependencies: SLang.Types, Testing, SLang.Tree.Next                          }
 {                                                                              }
 { Created: 25.03.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
@@ -40,7 +40,7 @@ UNIT TreeTest;                                                          { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
-uses SLang.Types, SLang.Tree, Testing;
+uses SLang.Types, Testing, SLang.Tree;
 
 type
     TTreeCase = class (TTestCase)
@@ -56,7 +56,7 @@ var TreeCase: TTreeCase;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
-uses SLang.Classes;
+uses SLang.Classes, SLang.List;
 
 {------------------------------------------------------------------------------}
 { Common Stuff                                                                 }
@@ -64,34 +64,34 @@ uses SLang.Classes;
 
 const TEST_ITEM_COUNT = 10000;
 
-procedure DumpNode(Node: PTreeNode);
+procedure DumpNode(Node: TTreeNode);
 var I, D: Integer;
 begin
     WriteLn();
     if Node = nil then WriteLn('NIL');
-    D := Node^.Depth;
+    D := Node.Depth;
     Write('':D*4); WriteLn('Node: ', Integer(Node));
-    Write('':D*4); WriteLn('Parent: ', Integer(Node^.Parent));
+    Write('':D*4); WriteLn('Parent: ', Integer(Node.Parent));
+    Write('':D*4); WriteLn('Degree: ', Integer(Node.Degree));
     Write('':D*4); WriteLn('Depth: ', D);
-    Write('':D*4); WriteLn('Height: ', Node^.Height);
-    Write('':D*4); WriteLn('ChildCount: ', Integer(Node^.ChildCount));
-    Write('':D*4); WriteLn('Size: ', Integer(Node^.Size));
-    Write('':D*4); WriteLn('Element: ', Integer(Node^.Element));
-    for I := 0 to Node^.ChildCount - 1 do DumpNode(Node^[i]);
+    Write('':D*4); WriteLn('Height: ', Node.Height);
+    Write('':D*4); WriteLn('Size: ', Integer(Node.Size));
+    Write('':D*4); WriteLn('Element: ', Integer(Node.Value));
+    for I := 0 to Node.ChildCount - 1 do DumpNode(Node[i]);
 end;
 
-procedure FillNode(var Node: PTreeNode);
+procedure FillNode(var Node: TTreeNode);
 begin
-    Node^.Add(Pointer(1));
-    Node^.Add(Pointer(3));
-    Node^.Add(Pointer(2));
-    Node^.Add(Pointer(4));
-    Node^[2]^.Add(Pointer(11));
-    Node^[2]^.Add(Pointer(13));
-    Node^[2]^.Add(Pointer(12));
-    Node^[2]^[1]^.Add(Pointer(111));
-    Node^[2]^[1]^.Add(Pointer(113));
-    Node^[2]^[1]^.Add(Pointer(112));
+    Node.Add(Pointer(1));
+    Node.Add(Pointer(3));
+    Node.Add(Pointer(2));
+    Node.Add(Pointer(4));
+    Node[2].Add(Pointer(11));
+    Node[2].Add(Pointer(13));
+    Node[2].Add(Pointer(12));
+    Node[2][1].Add(Pointer(111));
+    Node[2][1].Add(Pointer(113));
+    Node[2][1].Add(Pointer(112));
 end;
 
 {------------------------------------------------------------------------------}
@@ -99,10 +99,10 @@ end;
 {------------------------------------------------------------------------------}
 
 function FillTest(const Input: Pointer; var Output: Pointer): Boolean;
-var Node: PTreeNode;
+var Node: TTreeNode;
 begin
-    Node := PTreeNode(Input);
-    Node^.Clear();
+    Node := Input;
+    Node.Clear();
     FillNode(Node);
     DumpNode(Node);
     Output := Node;
@@ -126,14 +126,15 @@ end;
 
 function TTreeCase.Run(): Boolean;
 var I: Integer;
-    Node: PTreeNode;
+    Node: TTreeNode;
     Step: PTestStep;
     Ignore: Pointer;
     Pass: Boolean;
 begin
     Result := True;
-    Node := MakeRootNode();
-    Node^.Element := 0;
+    WriteLn('Should be created!');
+    Node := MakeEmptyNode();
+    Node.Value := 0;
     for I := 0 to TreeCase.Count - 1 do
     begin
         Step := TreeCase.Get(I);

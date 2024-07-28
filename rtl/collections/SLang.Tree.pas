@@ -20,17 +20,43 @@
 {------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------}
-{ This Unit includes basic data types' definitions and common routines to      }
-{ working with it.                                                             }
+{ This Unit contains definitions of data types and some methods to working     }
+{ with trees.                                                                  }
 {                                                                              }
 { Project: S-Lang RTL                                                          }
 { Package: S-Lang.Collections                                                  }
-{ Types:   Tree                                                                }
+{ Types:   TTreeNode, TTree                                                    }
 {                                                                              }
-{ Dependencies: SLang.Types, SLang.Classes, SLang.Collections, SLang.List;     }
+{ Dependencies: SLang.Types, SLang.Classes, SLang.Collections, SLang.List      }
 {                                                                              }
-{ Created: [DATE]                                                              }
+{ Created: 05.06.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
+{------------------------------------------------------------------------------}
+
+{------------------------------------------------------------------------------}
+{                                  Overview                                    }
+{                                                                              }
+{ This module, being part of the standard library, provides basic features for }
+{ working with trees - a widely used abstract data type that represents a      }
+{ hierarchical tree structure with a set of connected nodes.                   }
+{                                                                              }
+{ Each node in the tree can be connected to many children (depending on the    }
+{ type of tree), but must be connected to exactly one parent, except for the   }
+{ root node, which has no parent (i.e., the root node as the top-most node in  }
+{ the tree hierarchy). You could see more details about tree data structure    }
+{ here: https://en.wikipedia.org/wiki/Tree_(data_structure)                    }
+{------------------------------------------------------------------------------}
+
+{------------------------------------------------------------------------------}
+{                                 Definitions                                  }
+{                                                                              }
+{ Ancestor  - A node reachable by repeated proceeding from child to parent.    }
+{                                                                              }
+{ Degree    - For a given node, its number of children. A leaf, by definition, }
+{             has degree zero.                                                 }
+{                                                                              }
+{ Distance  - The number of edges along the shortest path between two nodes.   }
+{                                                                              }
 {------------------------------------------------------------------------------}
 
 UNIT SLang.Tree;                                                        { UNIT }
@@ -46,245 +72,174 @@ uses SLang.Types, SLang.Classes, SLang.Collections, SLang.List;
 type
 
     {
-        The node of tree with specified element. For more details about tree
-        data structure, please see
-        https://en.wikipedia.org/wiki/Tree_(data_structure).
+        The node of tree with specified element.
     }
-    PTreeNode = ^TTreeNode;
-    TTreeNode = record              // In fact, this record is 12 bytes in size.
+    TTreeNode = class (TElement)
     private
-        FElement: Pointer;          // See Element property.
-        FParent: PTreeNode;         // See Parent property.
+        FParent: TTreeNode;         // See Parent property.
         FChildren: TLinkedList;     // See Children property.
-        { See Height property. }
-        function GetHeight(): Integer;
-        { See Deep property. }
-        function GetDepth(): Integer;
+    protected
+        { See Children property. }
+        function GetChild(Index: Integer): TTreeNode;
         { See ChildCount property. }
         function GetChildCount(): Integer;
+        { See Deep property. }
+        function GetDepth(): Integer;
+        { See Height property. }
+        function GetHeight(): Integer;
         { See Left property. }
-        function GetLeftChild(): PTreeNode;
+        function GetLeft(): TTreeNode;
         { See Right property. }
-        function GetRightChild(): PTreeNode;
-        { See Children property. }
-        function GetChild(Index: Integer): PTreeNode;
+        function GetRight(): TTreeNode;
         { See Size property. }
         function GetSize(): Integer;
+        { Constructs an empty TTreeNode instance. }
+        constructor Create(); overload; override;
+        { Constructs a new TTreeNode instance. }
+        constructor Create(const AParent: TTreeNode);
     public
-        { The pointer to a real element that stored into this tree node. }
-        property Element: Pointer read FElement write FElement;
         { A parent of this tree node, or nil (for root node). }
-        property Parent: PTreeNode read FParent;
+        property Parent: TTreeNode read FParent;
         { The number of child nodes for this tree node. }
-        property ChildCount: Integer read GetChildCount;
+        property ChildCount: Integer read GetChildCount; // Maybe Count?
         { The list of child nodes of this tree node. }
-        property Children[Index: Integer]: PTreeNode read GetChild; default;
-        { The first child node for this tree node. }
-        property Left: PTreeNode read GetLeftChild;
-        { The last child node for this tree node. }
-        property Right: PTreeNode read GetRightChild;
+        property Children[Index: Integer]: TTreeNode read GetChild; default;
+        { The number of children of this tree node. A leaf node, by definition,
+          has degree zero. This property is the same as ChildCount. }
+        property Degree: Integer read GetChildCount;
         { The length of the path to root from this tree node. Thus the root
           node has depth zero. This is the same as level. }
         property Depth: Integer read GetDepth;
         { The length of the longest downward path to a leaf from this tree
           node. The height of the root is the height of the tree. }
         property Height: Integer read GetHeight;
-        { The number of nodes in this tree node. For leaf this value equals 1. }
+        { The first child node for this tree node. }
+        property Left: TTreeNode read GetLeft;
+        { The last child node for this tree node. }
+        property Right: TTreeNode read GetRight;
+        { The number of nodes in this tree node. For leaf this value
+          equals 1. }
         property Size: Integer read GetSize;
-        { Add a new element to this tree. }
-        function Add(AElement: Pointer): PTreeNode;
+        { Add a children for this tree node. }
+        // TODO Should be protected
+        function Add(Obj: Pointer): TTreeNode;
         { Returns True, if this tree node has no child nodes. }
         function IsLeaf(): Boolean;
+        { Returns True, if this tree node is root node in its collection. }
+        function IsRoot(): Boolean;
         { Returns True, if this tree node is parent or child for specified
           node. }
-        //function IsNeighbor(const Node: PTreeNode): Boolean;
+        function IsNeighbor(const Node: TTreeNode): Boolean;
         { Returns True, if this tree node has the same parent as specified
           node. }
-        function IsSibling(const Node: PTreeNode): Boolean;
-        { Removes all children nodes from this tree node. }
-        procedure Clear();
-    end;
-
-    { https://en.wikipedia.org/wiki/Tree_(data_structure) }
-    //TTree = class;
-    TTreeNodeC = class (TObject)
-    private
-        //FOwner: TTree;
-        FElement: Pointer;
-        FParent: TTreeNodeC;
-        FChildren: TLinkedList;
-    protected
-        function GetHeight(): Integer;
-        function GetDeep(): Integer;
-        function GetChildCount(): Integer;
-        function GetLeftChild(): TTreeNodeC;
-        function GetRightChild(): TTreeNodeC;
-        function GetChild(Index: Integer): TTreeNodeC;
-    public
-        property Element: Pointer read FElement write FElement;
-        property Parent: TTreeNodeC read FParent;
-        property Height: Integer read GetHeight;
-        property Deep: Integer read GetDeep;
-        property Left: TTreeNodeC read GetLeftChild;
-        property Right: TTreeNodeC read GetRightChild;
-        property ChildCount: Integer read GetChildCount;
-        property Children[Index: Integer]: TTreeNodeC read GetChild; default;
-        function Add(AElement: Pointer): TTreeNodeC;
-        function Remove(): Pointer; overload;
-        function Remove(Index: Integer): Pointer; overload;
-        function IsLeaf(): Boolean;
-        function IsSibling(Node: TTreeNodeC): Boolean;
-        procedure Clear();
-        constructor Create(AElement: Pointer); virtual;
-        destructor Destroy; override;
+        function IsSibling(const Node: TTreeNode): Boolean;
+        { Free all related resources. }
+        destructor Destroy(); override;
     end;
 
 type
 
-    {
-        The Tree data structure.
-    }
-    TTree = class(TInterfacedObject, ITree)
+    { Tree }
+    TTree = class (TInterfacedObject, ITree)
     private
-        FRoot: PTreeNode;
+        FRoot: TTreeNode;
+    protected
+        { See Nodes property. }
+        function GetNode(Index: Integer): TTreeNode;
+        { Added child node for specified parent. }
+        function AddNode(const Parent: TTreeNode;
+            const Obj: Pointer): TTreeNode; virtual;
     public
+        { The root node of this tree. }
+        property Root: TTreeNode read FRoot;
+        { The list of tree nodes in this tree. }
+        property Nodes[Index: Integer]: TTreeNode read GetNode; default;
+        { Added child node for specified parent. }
+        function Add(const Parent: TTreeNode;
+            const Obj: Pointer): Boolean; overload;
         { From ICollection interface. }
-        function Add(const Value: Pointer): Boolean;
+        function Add(const Obj: Pointer): Boolean; overload;
         { From ICollection interface. }
-        function Contains(const Value: Pointer): Boolean;
+        function Contains(const Obj: Pointer): Boolean;
         { From ICollection interface. }
         function GetCount(): Integer;
         { From ICollection interface. }
         function IsEmpty(): Boolean;
         { From ICollection interface. }
-        function Remove(const Value: Pointer): Boolean;
+        function Remove(const Obj: Pointer): Boolean;
         { From ICollection interface. }
         function ToArray(): TPointers;
         { From ICollection interface. }
         procedure Clear();
+        { Constructs a new TTree instance. }
+        constructor Create(); virtual;
+        { Free all related resources. }
+        destructor Destroy(); override;
     end;
 
-function MakeRootNode(): PTreeNode;
+{
+    Makes an empty tree node without data. For testing only!
+}
+function MakeEmptyNode(): TTreeNode;
+
+{------------------------------------------------------------------------------}
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
-function MakeRootNode(): PTreeNode;
+function MakeEmptyNode(): TTreeNode;
 begin
-    New(Result); Result^.FParent := nil;
-end;
-
-{------------------------------------------------------------------------------}
-{ TTree                                                                        }
-{------------------------------------------------------------------------------}
-
-function TTree.Add(const Value: Pointer): Boolean;
-begin
-    Result := False;
-end;
-
-function TTree.Contains(const Value: Pointer): Boolean;
-begin
-    Result := False;
-end;
-
-function TTree.GetCount(): Integer;
-begin
-    if not Self.IsEmpty() then
-        Result := FRoot.Size
-    else
-        Result := 0;
-end;
-
-function TTree.IsEmpty(): Boolean;
-begin
-    Result := FRoot = nil;
-end;
-
-function TTree.Remove(const Value: Pointer): Boolean;
-begin
-
-end;
-
-function TTree.ToArray(): TPointers;
-begin
-    Result := nil;
-end;
-
-procedure TTree.Clear();
-begin
-    if not Self.IsEmpty then Self.FRoot.Clear();
+    Result := TTreeNode.Create(TTreeNode(nil));
 end;
 
 {------------------------------------------------------------------------------}
 { TTreeNode                                                                    }
 {------------------------------------------------------------------------------}
 
-function RemoveNode(Node: PTreeNode): Pointer;
+constructor TTreeNode.Create();
 begin
-    if Node = nil then Exit;
-    Result := Node^.Element;
-    if Node^.Parent <> nil then
-        Node^.Parent^.FChildren.Remove(Node);
-    Node^.Clear();
-    Dispose(Node);
+    Create(nil);
 end;
 
-procedure TTreeNode.Clear();
-var I: Integer;
+constructor TTreeNode.Create(const AParent: TTreeNode);
 begin
-    if FChildren = nil then Exit;
-    for I := 0 to Self.ChildCount -1 do Self[I]^.Clear;
+    inherited Create();
+    Self.FParent := AParent;
+    Self.FChildren := TLinkedList.Create();
+end;
+
+destructor TTreeNode.Destroy();
+begin
+    FParent := nil;
     FChildren.Clear();
+    FChildren := nil;
+    inherited;
 end;
 
-function TTreeNode.GetSize(): Integer;
-var I: Integer;
+function TTreeNode.Add(Obj: Pointer): TTreeNode;
 begin
-    Result := 1;
-    for I := 0 to Self.ChildCount -1 do
-        Result := Result + Self[I].Size;
-end;
-
-function TTreeNode.Add(AElement: Pointer): PTreeNode;
-begin
-    New(Result);
-    Result^.Element := AElement;
-    Result^.FParent := @Self;
-
-    if Self.FChildren = nil then
-        Self.FChildren := TLinkedList.Create();
-
+    Result := TTreeNode.Create(Self);
+    Result.Value := Obj;
     if not Self.FChildren.Add(Result) then
-    begin
-        Dispose(Result); Result := nil;
+    begin // Is it possible?
+        Result.Free();
+        Result := nil;
     end;
+end;
+
+function TTreeNode.GetChild(Index: Integer): TTreeNode;
+begin
+    Result := FChildren.Get(Index);
 end;
 
 function TTreeNode.GetChildCount(): Integer;
 begin
-    if FChildren = nil then Result := 0
-    else Result := FChildren.Count;
-end;
-
-function TTreeNode.GetChild(Index: Integer): PTreeNode;
-begin
-    Result := PTreeNode(FChildren.Get(Index));
-end;
-
-function TTreeNode.GetLeftChild(): PTreeNode;
-begin
-    Result := PTreeNode(FChildren.First^.Value);
-end;
-
-function TTreeNode.GetRightChild(): PTreeNode;
-begin
-    Result := PTreeNode(FChildren.Last^.Value);
+    Result := FChildren.Count;
 end;
 
 function TTreeNode.GetDepth(): Integer;
 begin
     if Self.FParent <> nil then
-        Result := Self.FParent^.Depth + 1
+        Result := Self.FParent.Depth + 1
     else
         Result := 0
 end;
@@ -296,9 +251,27 @@ begin
     If Self.IsLeaf() then Exit;
     for I := 0 to Self.ChildCount - 1 do
     begin
-        H := Self[I]^.Height + 1;
+        H := Self[I].Height + 1;
         if Result < H then Result := H;
     end;
+end;
+
+function TTreeNode.GetLeft(): TTreeNode;
+begin
+    Result := FChildren.First^.Value;
+end;
+
+function TTreeNode.GetRight(): TTreeNode;
+begin
+    Result := FChildren.Last^.Value;
+end;
+
+function TTreeNode.GetSize(): Integer;
+var I: Integer;
+begin
+    Result := 1;
+    for I := 0 to Self.ChildCount -1 do
+        Result := Result + Self[I].Size;
 end;
 
 function TTreeNode.IsLeaf(): Boolean;
@@ -306,223 +279,99 @@ begin
     Result := Self.ChildCount = 0;
 end;
 
-function TTreeNode.IsSibling(const Node: PTreeNode): Boolean;
+function TTreeNode.IsRoot(): Boolean;
 begin
-    Result := Self.Parent = Node^.Parent;
+    Result := Self.Parent = nil;
+end;
+
+function TTreeNode.IsNeighbor(const Node: TTreeNode): Boolean;
+begin
+    Result := (Node <> nil)
+        and ((Self.Parent = Node) or (Node.Parent = Self));
+end;
+
+function TTreeNode.IsSibling(const Node: TTreeNode): Boolean;
+begin
+    Result := (Node <> nil) and (not Self.IsRoot)
+        and (Self.Parent = Node.Parent);
 end;
 
 {------------------------------------------------------------------------------}
-{ TTreeNode                                                                    }
+{ TTree                                                                        }
 {------------------------------------------------------------------------------}
 
-constructor TTreeNodeC.Create(AElement: Pointer);
+constructor TTree.Create();
 begin
-    inherited Create();
-    FElement := AElement;
-    FChildren := TLinkedList.Create;
+    Inherited;
 end;
 
-destructor TTreeNodeC.Destroy();
+destructor TTree.Destroy();
 begin
-    Clear();
-    FChildren.Free();
+    Self.Clear();
+    inherited;
 end;
 
-procedure TTreeNodeC.Clear();
-var I: Integer;
+function TTree.AddNode(const Parent: TTreeNode; const Obj: Pointer): TTreeNode;
 begin
-    for I := 0 to Self.ChildCount -1 do Self[I].Free();
-    FChildren.Clear();
-end;
-
-function TTreeNodeC.Add(AElement: Pointer): TTreeNodeC;
-var Node: TTreeNodeC;
-begin
-    Node := TTreeNodeC.Create(AElement);
-    Node.FParent := Self;
-    if FChildren.Add(Node) then
-        Result := Node
+    // If this tree is empty, lets create root node
+    if Self.IsEmpty() then
+    begin
+        FRoot := TTreeNode.Create(Obj);
+        Result := FRoot;
+        Exit;
+    end;
+    // If no parent, lets add node to root
+    if Parent = nil then
+        Result := Self.Root.Add(Obj)
     else
-        Node.Free();
+        Result := Parent.Add(Obj);
 end;
 
-function TTreeNodeC.Remove(Index: Integer): Pointer;
-var Node: TTreeNodeC;
+function TTree.Add(const Obj: Pointer): Boolean;
+begin
+    Result := Self.AddNode(FRoot, Obj) <> nil;
+end;
+
+function TTree.Add(const Parent: TTreeNode; const Obj: Pointer): Boolean;
+begin
+    Result := Self.AddNode(Parent, Obj) <> nil;
+end;
+
+function TTree.GetNode(Index: Integer): TTreeNode;
+begin
+    if index = 0 then Result := Self.Root
+    else Result := Self.FRoot[Index];
+end;
+
+function TTree.Contains(const Obj: Pointer): Boolean;
+begin
+    Result := False;
+end;
+
+function TTree.GetCount(): Integer;
+begin
+    Result := 0;
+end;
+
+function TTree.IsEmpty(): Boolean;
+begin
+    Result := Self.FRoot = nil;
+end;
+
+function TTree.Remove(const Obj: Pointer): Boolean;
+begin
+    Result := False;
+end;
+
+function TTree.ToArray(): TPointers;
 begin
     Result := nil;
-    Node := Self[Index];
-    if Node = nil then Exit;
-    Result := Node.Element;
-    Node.Clear();
-    Node.Free();
-    FChildren.Remove(Index);
 end;
 
-function TTreeNodeC.Remove(): Pointer;
+procedure TTree.Clear();
 begin
-    Result := Self.Element;
-    if Self.Parent <> nil then Self.Parent.FChildren.Remove(Self);
-    Self.Clear();
-    Self.Free();
+    if Self.FRoot <> nil then Self.FRoot.Clear();
 end;
-
-function TTreeNodeC.GetDeep(): Integer;
-begin
-    Result := 0;
-    if Self.Parent <> nil then
-        Result := Self.Parent.Deep + 1;
-end;
-
-function TTreeNodeC.GetHeight(): Integer;
-var I, H: Integer;
-begin
-    Result := 0;
-    If Self.IsLeaf() then Exit;
-    for I := 0 to Self.ChildCount - 1 do
-    begin
-        H := Self[I].Height + 1;
-        if Result < H then Result := H;
-    end;
-end;
-
-function TTreeNodeC.GetChildCount(): Integer;
-begin
-    Result := FChildren.Count;
-end;
-
-function TTreeNodeC.GetChild(Index: Integer): TTreeNodeC;
-begin
-    Result := TTreeNodeC(FChildren.Get(Index));
-end;
-
-function TTreeNodeC.GetLeftChild(): TTreeNodeC;
-begin
-    Result := TTreeNodeC(FChildren.First^.Value);
-end;
-
-function TTreeNodeC.GetRightChild(): TTreeNodeC;
-begin
-    Result := TTreeNodeC(FChildren.Last^.Value);
-end;
-
-function TTreeNodeC.IsLeaf(): Boolean;
-begin
-    Result := Self.ChildCount = 0;
-end;
-
-function TTreeNodeC.IsSibling(Node: TTreeNodeC): Boolean;
-begin
-    Result := Self.Parent = Node.Parent;
-end;
-
-{------------------------------------------------------------------------------}
-{ TTreeNode                                                                    }
-{------------------------------------------------------------------------------}
-{
-function TTreeNode.Add(Element: Pointer): Boolean;
-begin
-    if Self.Nodes = nil then Self.Nodes := TLinkedList.Create();
-    Result := Self.Nodes.Add(Element);
-end;
-
-function TTreeNode.Remove(Element: Pointer): Boolean;
-begin
-    Result := (Self.Nodes <> nil) and (Self.Nodes.Remove(Element));
-end;
-
-function TTreeNode.IsEmpty(): Boolean;
-begin
-    Result := Self.Element = nil;
-end;
-
-function TTreeNode.HasNodes(): Boolean;
-begin
-    Result := (Self.Nodes <> nil) and not Nodes.IsEmpty();
-end;
-
-function TTreeNode.HasParent(): Boolean;
-begin
-    Result := Self.Parent <> nil;
-end;
-
-function TTreeNode.Deep(): Integer;
-var Node: PTreeNode;
-begin
-    Result := 0;
-    Node := Self.Parent;
-    while Node <> nil do
-    begin
-        Inc(Result);
-        Node := Node^.Parent;
-    end;
-end;
-
-procedure TTreeNode.Clear();
-begin
-    Self.Element := nil;
-    Self.Parent := nil;
-    Self.Nodes.Clear();
-    Self.Nodes.Free();
-end;
-}
-{------------------------------------------------------------------------------}
-{ TTreeNode<V>                                                                 }
-{------------------------------------------------------------------------------}
-
-{constructor TTreeNode<V>.Create(AValue: V);
-begin
-    inherited Create(V);
-    FParent := nil;
-end;
-
-function TTreeNode<V>.AddNode(ANode: TTreeNode<V>): TTreeNode<V>;
-var L: Integer;
-begin
-    L := Length(FNodes);
-    SetLength(FNodes, L + 1);
-    FNodes[L] := ANode;
-    Result := ANode;
-end;
-
-function TTreeNode<V>.AddValue(AValue: V): TTreeNode<V>;
-var N: TTreeNode<V>;
-begin
-    N := TTreeNode<V>.Create(V);
-    Result := Self.AddNode(N);
-end;
-
-function TTreeNode<V>.GetParent(): TTreeNode<V>;
-begin
-    Result := FParent;
-end;
-
-function TTreeNode<V>.GetParentValue(): V;
-begin
-    if Self.HasParent() then
-        Result := Self.Parent.Value
-    else
-        // TODO Exception?
-        Result := nil;
-end;
-
-function TTreeNode<V>.HasParent(): Boolean;
-begin
-    Result := FParent <> nil;
-end;
-
-procedure TTreeNode<V>.SetParent(AParent: TTreeNode<V>);
-begin
-    Self.FParent := AParent;
-end;
-
-procedure TTreeNode<V>.Clear();
-begin
-
-end;}
-
-{------------------------------------------------------------------------------}
-{ Common Stuff                                                                 }
-{------------------------------------------------------------------------------}
 
 END.                                                                     { END }
 
