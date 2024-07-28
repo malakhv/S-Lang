@@ -1,0 +1,39 @@
+@startuml
+
+interface IElement {
+    <i>An element in collection</i>
+    <i>(collection item) with real</i>
+    <i>object/value.</i>
+    __
+    +{method} IsEmpty(): Boolean
+    +{method} Clear()
+    +{method} Remove()
+}
+
+class TElement {
+    <i>The default implementation</i>
+    <i>of IElement.</i>
+    __
+
+    - FValue: Pointer
+    __
+    +{field} Value: Pointer
+    __IElement__
+    +{method} IsEmpty(): Boolean
+    +{method} Clear()
+    +{method} Remove()
+    __
+    #{method} Create()
+    #{method} SetValue(Val: Pointer)
+    +{method} Equals(Obj: TObject): Boolean
+    +{method} \~Destroy()
+}
+TElement <|.. IElement
+
+class TItem
+TItem <|-- TElement
+
+class TNode
+TNode  <|-- TElement
+
+@endtuml
