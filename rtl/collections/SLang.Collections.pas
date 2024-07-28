@@ -98,24 +98,24 @@ type
     ICollection = interface(IInterface)
         ['{30A60589-647B-46F5-BBB3-0F589D8F9928}']
 
-        { Ensures that this collection contains the specified element.
+        { Ensures that this collection contains the specified object/value.
   
           Returns True if this collection changed as a result of the call,
           otherwise False (if this collection does not permit duplicates and
-          already contains the specified element, for exemple).
+          already contains the specified object/value, for exemple).
 
           Collections that support this operation may place limitations on what
           elements may be added to this collection - some collections will
-          refuse to add Nil elements and others will impose restrictions on the
-          type of elements that may be added. Collection classes should clearly
+          refuse to add Nil value and others will impose restrictions on the
+          type of objects that may be added. Collection classes should clearly
           specify in their documentation any restrictions on what elements may
           be added. }
-        function Add(const Element: Pointer): Boolean;
+        function Add(const Value: Pointer): Boolean;
 
         { Returns True if this collection contains the specified object/value.
 
           More formally, returns true if and only if this collection contains
-          at least one specified element. }
+          at least one specified object/value. }
         function Contains(const Value: Pointer): Boolean;
 
         { Returns the number of elements in this collection. }
@@ -124,14 +124,16 @@ type
         { Returns True if this collection contains no elements. }
         function IsEmpty(): Boolean;
 
-        { Removes a single instance of the specified element from this
+        { Removes a single instance of the specified object/value from this
           collection, if it is present.
 
-          Returns true if this collection contained the specified element (or
-          equivalently, if this collection changed as a result of the call). }
-        function Remove(const Element: Pointer): Boolean;
+          Returns true if this collection contained the specified object/value
+          (or equivalently, if this collection changed as a result of the
+          call). }
+        function Remove(const Value: Pointer): Boolean;
 
-        { Returns an array containing all of the elements in this collection.
+        { Returns an array containing all of the objects/values in this
+          collection.
 
           If this collection makes any guarantees as to what order its
           elements, this method must return the elements in the same order. }
