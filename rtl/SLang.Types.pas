@@ -56,6 +56,7 @@ type
     PPointers = ^TPointers;
 
 { Standard data types as an object. }
+// TODO Do we want to move this to Number unit?
 const
 
     { True as string. }
