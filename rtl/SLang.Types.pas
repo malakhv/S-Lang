@@ -65,6 +65,19 @@ const
 
 type
 
+    { The abstract number as an object. }
+    TNumber = class abstract (TObject)
+    public
+        { Returns the value of this object as a Boolean. }
+        function ToBoolean(): Boolean; virtual; abstract;
+        { Returns the value of this object as a Byte. }
+        function ToByte(): Byte; virtual; abstract;
+        { Returns the value of this object as an Integer. }
+        function ToInteget(): Integer; virtual; abstract;
+        { Returns the value of this object as a Real. }
+        function ToReal(): Real; virtual; abstract;
+    end;
+
     { The object of Boolean. }
     TBoolObj = class (TObject)
     private
