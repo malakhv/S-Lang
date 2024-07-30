@@ -74,6 +74,22 @@ type
         class function From(Int: Integer): TBoolObj; overload;
     end;
 
+    { The object of Byte. }
+    TByteObj = class (TObject)
+    private
+        FValue: Byte;
+    public
+        { The real "primitive" (standard, in Pascal terms) value inside this
+          object. }
+        property Value: Byte read FValue write FValue;
+        { Indicates whether some TByteObj instance is "equal to" this one. }
+        function Equals(Obj: TByteObj): Boolean;
+        { Makes a TByteObj instance from Integer value. }
+        class function From(Val: Byte): TByteObj; overload;
+        { Makes a TByteObj instance from Boolean value. }
+        class function From(Val: Boolean): TByteObj; overload;
+    end;
+
     { The object of Integer. }
     TIntObj = class (TObject)
     private
@@ -112,6 +128,25 @@ end;
 function TBoolObj.Equals(BoolObj: TBoolObj): Boolean;
 begin
     Result := (BoolObj <> nil) and (Self.FValue = BoolObj.FValue);
+end;
+
+{------------------------------------------------------------------------------}
+{ TByteObj                                                                     }
+{------------------------------------------------------------------------------}
+
+class function TByteObj.From(Val: Byte): TByteObj;
+begin
+    Result := TByteObj.Create(); Result.FValue := Val;
+end;
+
+class function TByteObj.From(Val: Boolean): TByteObj;
+begin
+    Result := TByteObj.From(Ord(Val));
+end;
+
+function TByteObj.Equals(Obj: TByteObj): Boolean;
+begin
+    Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
 end;
 
 {------------------------------------------------------------------------------}
