@@ -67,11 +67,11 @@ type
           object. }
         property Value: Boolean read FValue write FValue;
         { Indicates whether some TBoolObj instance is "equal to" this one. }
-        function Equals(BoolObj: TBoolObj): Boolean;
+        function Equals(Obj: TBoolObj): Boolean;
         { Makes a TBoolObj instance from Boolean value. }
-        class function From(Bool: Boolean): TBoolObj; overload;
+        class function From(Val: Boolean): TBoolObj; overload;
         { Makes a TBoolObj instance from Integer value. }
-        class function From(Int: Integer): TBoolObj; overload;
+        class function From(Val: Integer): TBoolObj; overload;
     end;
 
     { The object of Byte. }
@@ -99,12 +99,11 @@ type
           object. }
         property Value: Integer read FValue write FValue;
         { Indicates whether some TIntObj instance is "equal to" this one. }
-        function Equals(IntObj: TIntObj): Boolean;
-        {function Compare(IntObj: TIntObj): Byte;}
+        function Equals(Obj: TIntObj): Boolean;
         { Makes a TIntObj instance from Integer value. }
-        class function From(Int: Integer): TIntObj; overload;
+        class function From(Val: Integer): TIntObj; overload;
         { Makes a TIntObj instance from Boolean value. }
-        class function From(Bool: Boolean): TIntObj; overload;
+        class function From(Val: Boolean): TIntObj; overload;
     end;
 
 {------------------------------------------------------------------------------}
@@ -115,19 +114,19 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 { TBoolObj                                                                     }
 {------------------------------------------------------------------------------}
 
-class function TBoolObj.From(Bool: Boolean): TBoolObj;
+class function TBoolObj.From(Val: Boolean): TBoolObj;
 begin
-    Result := TBoolObj.Create(); Result.FValue := Bool;
+    Result := TBoolObj.Create(); Result.FValue := Val;
 end;
 
-class function TBoolObj.From(Int: Integer): TBoolObj;
+class function TBoolObj.From(Val: Integer): TBoolObj;
 begin
-    Result := TBoolObj.From(Boolean(Int));
+    Result := TBoolObj.From(Boolean(Val));
 end;
 
-function TBoolObj.Equals(BoolObj: TBoolObj): Boolean;
+function TBoolObj.Equals(Obj: TBoolObj): Boolean;
 begin
-    Result := (BoolObj <> nil) and (Self.FValue = BoolObj.FValue);
+    Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
 end;
 
 {------------------------------------------------------------------------------}
@@ -153,19 +152,19 @@ end;
 { TIntObj                                                                      }
 {------------------------------------------------------------------------------}
 
-class function TIntObj.From(Int: Integer): TIntObj;
+class function TIntObj.From(Val: Integer): TIntObj;
 begin
-    Result := TIntObj.Create(); Result.FValue := Int;
+    Result := TIntObj.Create(); Result.FValue := Val;
 end;
 
-class function TIntObj.From(Bool: Boolean): TIntObj;
+class function TIntObj.From(Val: Boolean): TIntObj;
 begin
-    Result := TIntObj.From(Ord(Bool));
+    Result := TIntObj.From(Ord(Val));
 end;
 
-function TIntObj.Equals(IntObj: TIntObj): Boolean;
+function TIntObj.Equals(Obj: TIntObj): Boolean;
 begin
-    Result := (IntObj <> nil) and (Self.FValue = IntObj.FValue);
+    Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
 end;
 
 END.                                                                     { END }
