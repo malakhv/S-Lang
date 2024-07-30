@@ -56,13 +56,6 @@ type
     PPointers = ^TPointers;
 
 { Standard data types as an object. }
-const
-
-    { True as string. }
-    STR_TRUE = 'true';
-    { False as string. }
-    STR_FALSE = 'false';
-
 type
 
     { The object of Boolean. }
@@ -75,14 +68,16 @@ type
         property Value: Boolean read FValue write FValue;
         { Indicates whether some TBoolObj instance is "equal to" this one. }
         function Equals(Obj: TBoolObj): Boolean; virtual;
-        { Returns a string representation of the value in this object. }
-        function ToString(): String; override;
+
         { Construct a new TBoolObj instance with default (False) value. }
         constructor Create(); overload; virtual;
         { Construct a new TBoolObj instance from specified value. }
-        constructor From(Val: Boolean); overload; virtual;
-        { Construct a new TBoolObj instance from specified value. }
-        constructor From(Val: Integer); overload; virtual;
+        constructor Create(Val: Boolean); overload; virtual;
+
+        { Makes a TBoolObj instance from Boolean value. }
+        class function From(Val: Boolean): TBoolObj; overload;
+        { Makes a TBoolObj instance from Integer value. }
+        class function From(Val: Integer): TBoolObj; overload;        
     end;
 
     { The object of Byte. }
@@ -127,17 +122,12 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 
 constructor TBoolObj.Create();
 begin
-    Self.From(False);
+    Self.Create(False);
 end;
 
-constructor TBoolObj.From(Val: Boolean);
+constructor TBoolObj.Create(Val: Boolean);
 begin
     inherited Create(); Self.FValue := Val;
-end;
-
-constructor TBoolObj.From(Val: Integer);
-begin
-    Self.From(Boolean(Val));
 end;
 
 function TBoolObj.Equals(Obj: TBoolObj): Boolean;
@@ -145,9 +135,14 @@ begin
     Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
 end;
 
-function TBoolObj.ToString(): String;
+class function TBoolObj.From(Val: Boolean): TBoolObj;
 begin
-    if Self.FValue then Result := STR_TRUE else Result := STR_FALSE;
+    Result := TBoolObj.Create(Val);
+end;
+
+class function TBoolObj.From(Val: Integer): TBoolObj;
+begin
+    Result := TBoolObj.From(Boolean(Val));
 end;
 
 {------------------------------------------------------------------------------}
