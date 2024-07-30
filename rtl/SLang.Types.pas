@@ -67,7 +67,7 @@ type
           object. }
         property Value: Boolean read FValue write FValue;
         { Indicates whether some TBoolObj instance is "equal to" this one. }
-        function Equals(Obj: TBoolObj): Boolean;
+        function Equals(Obj: TBoolObj): Boolean; virtual;
         { Makes a TBoolObj instance from Boolean value. }
         class function From(Val: Boolean): TBoolObj; overload;
         { Makes a TBoolObj instance from Integer value. }
@@ -83,7 +83,7 @@ type
           object. }
         property Value: Byte read FValue write FValue;
         { Indicates whether some TByteObj instance is "equal to" this one. }
-        function Equals(Obj: TByteObj): Boolean;
+        function Equals(Obj: TByteObj): Boolean; virtual;
         { Makes a TByteObj instance from Integer value. }
         class function From(Val: Byte): TByteObj; overload;
         { Makes a TByteObj instance from Boolean value. }
@@ -99,7 +99,7 @@ type
           object. }
         property Value: Integer read FValue write FValue;
         { Indicates whether some TIntObj instance is "equal to" this one. }
-        function Equals(Obj: TIntObj): Boolean;
+        function Equals(Obj: TIntObj): Boolean; virtual;
         { Makes a TIntObj instance from Integer value. }
         class function From(Val: Integer): TIntObj; overload;
         { Makes a TIntObj instance from Boolean value. }
