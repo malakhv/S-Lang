@@ -25,8 +25,9 @@
 {                                                                              }
 { Project: S-Lang RTL                                                          }
 { Package: SLang                                                               }
+{ Unit Level: 0                                                                }
 {                                                                              }
-{ Dependencies: No                                                             }
+{ Dependencies: A Unit with level 0 must have no dependencies.                 }
 {                                                                              }
 { Created: 07.03.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
