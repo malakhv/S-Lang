@@ -47,6 +47,9 @@ const
     { The version of S-Lang RTL. }
     RTLVersion = '0.0.1';
 
+    { The version of S-Lang VCL. }
+    VCLVersion = '0.0.1'
+
     { The version of S-Lang compiler. }
     CompilerVersion = '0.0.1';
 
