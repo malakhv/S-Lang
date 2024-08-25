@@ -62,6 +62,9 @@ type
     { Unsigned Quad Word. }
     QWord = UInt64;
 
+    {  }
+    Float = Real;
+
 {------------------------------------------------------------------------------}
 
 IMPLEMENTATION                                                { IMPLEMENTATION }

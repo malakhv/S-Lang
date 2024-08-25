@@ -131,6 +131,28 @@ type
         class function From(Val: Boolean): TIntObj; overload;
     end;
 
+    { The object of Boolean. }
+    TRealObj = class (TObject)
+    private
+        FValue: Real;
+    public
+        { The real "primitive" (standard, in Pascal terms) value inside this
+          object. }
+        property Value: Boolean read FValue write FValue;
+        { Indicates whether some TBoolObj instance is "equal to" this one. }
+        function Equals(Obj: TRealObj): Boolean; virtual;
+        { Returns a string representation of the value in this object. }
+        function ToString(): String; override;
+        { Construct a new TRealObj instance with default (False) value. }
+        constructor Create(); overload; virtual;
+        { Construct a new TRealObj instance from specified value. }
+        constructor From(Val: Real); overload; virtual;
+        { Construct a new TRealObj instance from specified value. }
+        constructor From(Val: Integer); overload; virtual;
+        { Construct a new TRealObj instance from specified value. }
+        constructor From(Val: Boolean); overload; virtual;
+    end;
+
 {------------------------------------------------------------------------------}
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
@@ -200,6 +222,36 @@ end;
 function TIntObj.Equals(Obj: TIntObj): Boolean;
 begin
     Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
+end;
+
+
+{------------------------------------------------------------------------------}
+{ TRealObj                                                                     }
+{------------------------------------------------------------------------------}
+
+constructor TRealObj.Create();
+begin
+    Self.From(False);
+end;
+
+constructor TRealObj.From(Val: Boolean);
+begin
+    inherited Create(); Self.FValue := Val;
+end;
+
+constructor TRealObj.From(Val: Integer);
+begin
+    Self.From(Real(Val));
+end;
+
+function TRealObj.Equals(Obj: TRealObj): Boolean;
+begin
+    Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
+end;
+
+function TRealObj.ToString(): String;
+begin
+    if Self.FValue then Result := STR_TRUE else Result := STR_FALSE;
 end;
 
 END.                                                                     { END }
