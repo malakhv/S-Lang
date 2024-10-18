@@ -20,8 +20,8 @@
 {------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------}
-{ This Unit includes common definitions and routines for all applications, and }
-{ its will use by default for all programs.                                    }
+{ This Unit includes common definitions and routines for all programs, and its }
+{ will use by default for all programs.                                        }
 {                                                                              }
 { Project: S-Lang RTL                                                          }
 { Package: SLang                                                               }
@@ -34,6 +34,18 @@
 {------------------------------------------------------------------------------}
 
 UNIT SLang.System;                                                      { UNIT }
+
+{------------------------------------------------------------------------------}
+{                                 System Unit                                  }
+{                                                                              }
+{ The System unit will be include as a first dependecy for all programs, by    }
+{ default.                                                                     }
+{                                                                              }
+{ Predefined constants, types, procedures, and functions (such as True, False, }
+{ Integer, or Writeln) do not have actual declarations. Instead they are built }
+{ into the compiler and are treated as if they were declared at the beginning  }
+{ of the System unit.                                                          }
+{------------------------------------------------------------------------------}
 
 {$MODE DELPHI}
 {$H+}
