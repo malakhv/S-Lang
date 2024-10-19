@@ -87,7 +87,6 @@ type
 
         { Removes itself from its collection. }
         procedure Remove();
-
     end;
 
     {
