@@ -18,7 +18,7 @@ IF EXIST build\ (
 )
 mkdir build
 
-fpc ./Test.pas -FEbuild ^
+fpc ./SelfTest.pas -FEbuild ^
     -Fu%COMPILER_ROOT%/lang ^
     -Fu%COMPILER_ROOT%/cpu/intel ^
     -Fu%COMPILER_ROOT%/cpu/Cpu.pas ^
@@ -27,4 +27,4 @@ fpc ./Test.pas -FEbuild ^
     -Fu%RTL_ROOT% ^
     -Fu%RTL_ROOT%/collections ^
     -Fu%TESTCASES_ROOT%/rtl/collections ^
-    -otest.exe
+    -oSelfTest.exe

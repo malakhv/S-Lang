@@ -1,4 +1,4 @@
-program test;
+program SelfTest;
 
 {$MODE DELPHI}
 {$H+}

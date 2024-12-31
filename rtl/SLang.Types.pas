@@ -138,11 +138,9 @@ type
     public
         { The real "primitive" (standard, in Pascal terms) value inside this
           object. }
-        property Value: Boolean read FValue write FValue;
+        property Value: Real read FValue write FValue;
         { Indicates whether some TBoolObj instance is "equal to" this one. }
         function Equals(Obj: TRealObj): Boolean; virtual;
-        { Returns a string representation of the value in this object. }
-        function ToString(): String; override;
         { Construct a new TRealObj instance with default (False) value. }
         constructor Create(); overload; virtual;
         { Construct a new TRealObj instance from specified value. }
@@ -234,24 +232,24 @@ begin
     Self.From(False);
 end;
 
-constructor TRealObj.From(Val: Boolean);
+constructor TRealObj.From(Val: Real);
 begin
     inherited Create(); Self.FValue := Val;
 end;
 
 constructor TRealObj.From(Val: Integer);
 begin
-    Self.From(Real(Val));
+    inherited Create(); Self.FValue := Val;
+end;
+
+constructor TRealObj.From(Val: Boolean);
+begin
+    Self.From(Ord(Val));
 end;
 
 function TRealObj.Equals(Obj: TRealObj): Boolean;
 begin
     Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
-end;
-
-function TRealObj.ToString(): String;
-begin
-    if Self.FValue then Result := STR_TRUE else Result := STR_FALSE;
 end;
 
 END.                                                                     { END }
