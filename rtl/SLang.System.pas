@@ -60,7 +60,7 @@ const
     RTLVersion = '0.0.1';
 
     { The version of S-Lang VCL. }
-    VCLVersion = '0.0.1'
+    VCLVersion = '0.0.1';
 
     { The version of S-Lang compiler. }
     CompilerVersion = '0.0.1';
@@ -74,8 +74,9 @@ type
     { Unsigned Quad Word. }
     QWord = UInt64;
 
-    {  }
-    Float = Real;
+    { Right now, we are using data type from external compiler, but it
+        should be built-in type. }
+    Float = Double;
 
 {------------------------------------------------------------------------------}
 

@@ -40,6 +40,8 @@ UNIT SLang.Types;                                                       { UNIT }
 
 INTERFACE                                                          { INTERFACE }
 
+USES SLang.System;
+
 { Some Arrays }
 type
 
@@ -132,19 +134,19 @@ type
     end;
 
     { The object of Boolean. }
-    TRealObj = class (TObject)
+    TFloatObj = class (TObject)
     private
-        FValue: Real;
+        FValue: Float;
     public
         { The real "primitive" (standard, in Pascal terms) value inside this
           object. }
-        property Value: Real read FValue write FValue;
+        property Value: Float read FValue write FValue;
         { Indicates whether some TBoolObj instance is "equal to" this one. }
-        function Equals(Obj: TRealObj): Boolean; virtual;
+        function Equals(Obj: TFloatObj): Boolean; virtual;
         { Construct a new TRealObj instance with default (False) value. }
         constructor Create(); overload; virtual;
         { Construct a new TRealObj instance from specified value. }
-        constructor From(Val: Real); overload; virtual;
+        constructor From(Val: Float); overload; virtual;
         { Construct a new TRealObj instance from specified value. }
         constructor From(Val: Integer); overload; virtual;
         { Construct a new TRealObj instance from specified value. }
@@ -224,30 +226,30 @@ end;
 
 
 {------------------------------------------------------------------------------}
-{ TRealObj                                                                     }
+{ TFloatObj                                                                    }
 {------------------------------------------------------------------------------}
 
-constructor TRealObj.Create();
+constructor TFloatObj.Create();
 begin
     Self.From(False);
 end;
 
-constructor TRealObj.From(Val: Real);
+constructor TFloatObj.From(Val: Float);
 begin
     inherited Create(); Self.FValue := Val;
 end;
 
-constructor TRealObj.From(Val: Integer);
+constructor TFloatObj.From(Val: Integer);
 begin
     inherited Create(); Self.FValue := Val;
 end;
 
-constructor TRealObj.From(Val: Boolean);
+constructor TFloatObj.From(Val: Boolean);
 begin
     Self.From(Ord(Val));
 end;
 
-function TRealObj.Equals(Obj: TRealObj): Boolean;
+function TFloatObj.Equals(Obj: TFloatObj): Boolean;
 begin
     Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
 end;
