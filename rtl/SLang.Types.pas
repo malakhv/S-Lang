@@ -71,14 +71,16 @@ type
     { The abstract number as an object. }
     TNumber = class abstract (TObject)
     public
+        { Indicates whether some TNumber instance is "equal to" this one. }
+        function Equals(Number: TNumber): Boolean; virtual; abstract;
         { Returns the value of this object as a Boolean. }
         function ToBoolean(): Boolean; virtual; abstract;
         { Returns the value of this object as a Byte. }
         function ToByte(): Byte; virtual; abstract;
         { Returns the value of this object as an Integer. }
         function ToInteget(): Integer; virtual; abstract;
-        { Returns the value of this object as a Real. }
-        function ToReal(): Real; virtual; abstract;
+        { Returns the value of this object as a Float. }
+        function ToFloat(): Float; virtual; abstract;
     end;
 
     { The object of Boolean. }
@@ -143,13 +145,13 @@ type
         property Value: Float read FValue write FValue;
         { Indicates whether some TBoolObj instance is "equal to" this one. }
         function Equals(Obj: TFloatObj): Boolean; virtual;
-        { Construct a new TRealObj instance with default (False) value. }
+        { Construct a new TFloatObj instance with default (False) value. }
         constructor Create(); overload; virtual;
-        { Construct a new TRealObj instance from specified value. }
+        { Construct a new TFloatObj instance from specified value. }
         constructor From(Val: Float); overload; virtual;
-        { Construct a new TRealObj instance from specified value. }
+        { Construct a new TFloatObj instance from specified value. }
         constructor From(Val: Integer); overload; virtual;
-        { Construct a new TRealObj instance from specified value. }
+        { Construct a new TFloatObj instance from specified value. }
         constructor From(Val: Boolean); overload; virtual;
     end;
 
