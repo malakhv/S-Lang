@@ -57,7 +57,41 @@ type
     TPointers = Array of Pointer;
     PPointers = ^TPointers;
 
-{ Standard data types as an object. }
+{
+    Simple data types as a record.
+}
+type
+
+    { Record of Word. }
+    WordRec = packed record
+    case Integer of
+        0: (Value: Word);
+        1: (Lo, Hi: Byte);
+        2: (Bytes: Array [0..SizeOf(Word) - 1] of Byte);
+    end;
+    PWordRec = ^WordRec;
+
+    { Record of DWord. }
+    DWordRec = packed record
+    case Integer of
+        0: (Value: DWord);
+        1: (Lo, Hi: Word);
+        2: (Bytes: Array [0..SizeOf(DWord) - 1] of Byte);
+    end;
+    PDWordRec = ^DWordRec;
+
+    { Record of QWord. }
+    QWordRec = packed record
+    case Integer of
+        0: (Value: QWord);
+        1: (Lo, Hi: DWord);
+        2: (Bytes: Array [0..SizeOf(QWord) - 1] of Byte);
+    end;
+    PQWordRec = ^QWordRec;
+
+{
+    Simple data types as an object.
+}
 // TODO Do we want to move this to Number unit?
 const
 
