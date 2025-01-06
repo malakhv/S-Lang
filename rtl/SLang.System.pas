@@ -47,6 +47,7 @@ UNIT SLang.System;                                                      { UNIT }
 { of the System unit.                                                          }
 {------------------------------------------------------------------------------}
 
+{$ASMMODE INTEL}
 {$MODE DELPHI}
 {$H+}
 {$T+}
@@ -119,6 +120,14 @@ const
 
 type
 
+    { Pointer to Byte. }
+    PByte = ^Byte;
+
+    { Pointer to Word. }
+    PWord = ^Word;
+
+type
+
     { Unsigned Double Word. }
     DWord = LongWord;
 
@@ -130,8 +139,69 @@ type
     Float = Real;
 
 {------------------------------------------------------------------------------}
+{                                  Endianness                                  }
+{                                                                              }
+{ Endianness means the order in which the bytes of a value larger than one     }
+{ byte are stored in memory. This affects, e.g., integer values and pointers   }
+{ while, e.g., arrays of single-byte characters are not affected. Endianness   }
+{ depends on the hardware, especially the CPU.                                 }
+{------------------------------------------------------------------------------}
+
+{ Returns True for big-endian hardware platform. }
+function IsBigEndian(): Boolean;
+
+{ Returns True for little-endian hardware platform. }
+function IsLittleEndian(): Boolean;
+
+{ Swaps endianness of the Word value. }
+function SwapEndian(Value: Word): Word; overload;
+
+{ Swaps endianness of the DWord value. }
+function SwapEndian(Value: DWord): DWord; overload;
+
+{ Swaps endianness of the QWord value. }
+function SwapEndian(Value: QWord): QWord; overload;
+
+{------------------------------------------------------------------------------}
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
+
+{------------------------------------------------------------------------------}
+{ Endianness                                                                   }
+{------------------------------------------------------------------------------}
+
+function IsBigEndian(): Boolean;
+var W: Word;
+begin
+    W := 1; Result := PByte(@W)^ = 0;
+end;
+
+function IsLittleEndian(): Boolean;
+var W: Word;
+begin
+    W := 256; Result := PByte(@W)^ = 0;
+end;
+
+function SwapEndian(Value: Word): Word; overload;
+begin
+    Result := (Value shr 8) or (Value shl 8);
+end;
+
+function SwapEndian(Value: DWord): DWord; overload;
+asm
+    bswap eax
+end;
+
+function SwapEndian(Value: QWord): QWord; overload;
+begin
+    Result := Value;
+end;
+
+{------------------------------------------------------------------------------}
+
+INITIALIZATION                                                { INITIALIZATION }
+
+
 
 END.                                                                     { END }
 
