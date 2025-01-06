@@ -118,21 +118,53 @@ const
 {                                                                              }
 {------------------------------------------------------------------------------}
 
+// TODO When will the compiler be able to compile itself, need to remove
+//      definitions of DWord, QWord and LongInt, because these types should be
+//      predefined types.
+
+// See https://wiki.freepascal.org/Data_type
+
+{
+    Platform-independent integer types (signed). Byte and Word are
+    predefined (or built-in) types.
+}
 type
 
-    { Pointer to Byte. }
-    PByte = ^Byte;
+    { Signed 64-bit integer. }
+    LongInt = Int64;
 
-    { Pointer to Word. }
-    PWord = ^Word;
+    { Pointer to ShortInt. }
+    PShortInt = ^ShortInt;
+    { Pointer to SmallInt. }
+    PSmallInt = ^SmallInt;
+    { Pointer to Integer. }
+    PInteger = ^Integer;
+    { Pointer to LongInt. }
+    PLongInt = ^LongInt;
 
+{
+    Platform-independent integer types (unsigned). Byte and Word are
+    predefined (or built-in) types.
+}
 type
 
     { Unsigned Double Word. }
     DWord = LongWord;
-
     { Unsigned Quad Word. }
     QWord = UInt64;
+    { Unsigned big integer. It's just an alias for QWord. }
+    BigInt = QWord;
+
+    { Pointer to Byte. }
+    PByte = ^Byte;
+    { Pointer to Word. }
+    PWord = ^Word;
+    { Pointer to DWord. }
+    PDWord = ^DWord;
+    { Pointer to QWord. }
+    PQWord = ^QWord;
+
+type
 
     { Right now, we are using data type from external compiler, but it
         should be built-in type. }
