@@ -45,6 +45,7 @@ type
     {
         Container to ease passing around a tuple of two objects.
     }
+    // TODO Need to move to SLang.Types unit
     PPair = ^TPair;
     TPair = record
         { Pair's data. }
