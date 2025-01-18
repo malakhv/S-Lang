@@ -167,7 +167,7 @@ type
 type
 
     { Right now, we are using data type from external compiler, but it
-        should be built-in type. }
+      should be built-in type. }
     Float = Real;
 
 {------------------------------------------------------------------------------}
@@ -195,6 +195,23 @@ function SwapEndian(Value: DWord): DWord; overload;
 function SwapEndian(Value: QWord): QWord; overload;
 
 {------------------------------------------------------------------------------}
+{                                Date and Time                                 }
+{                                                                              }
+{------------------------------------------------------------------------------}
+
+type
+
+    { Base type to work with date and time. }
+    TDateTime = type Double;
+    PDateTime = ^TDateTime;
+
+    { The date. It represents a special type of TDateTime value that has
+      no decimal part. }
+    TDate = type TDateTime;
+
+    { The time. It represents a special type of TDateTime value that has only
+      a fractional part (and no integral part). }
+    TTime = type TDateTime;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 

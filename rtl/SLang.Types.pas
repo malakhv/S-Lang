@@ -26,7 +26,7 @@
 { Project: S-Lang RTL                                                          }
 { Package: SLang                                                               }
 {                                                                              }
-{ Dependencies: No                                                             }
+{ Dependencies: SLang.System                                                   }
 {                                                                              }
 { Created: 09.06.2024                                                          }
 { Authors: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]              }
