@@ -215,7 +215,11 @@ end;
 
 procedure TListItem.Clear();
 begin
-    Self.Value := nil; Self.Prev := nil; Self.Next := nil;
+    // Corresponding with IList interface
+    Self.Value := nil;
+    //TODO  Do we really want to do it?
+    //      This may break the list!
+    Self.Prev := nil; Self.Next := nil;
 end;
 
 {------------------------------------------------------------------------------}
