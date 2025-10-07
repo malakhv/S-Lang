@@ -73,6 +73,10 @@ type
         function HasNext(): Boolean;
         { Returns True if this item is not a first. }
         function HasPrev(): Boolean;
+        { Returns True if this is a first item in a list. }
+        function IsFirst(): Boolean;
+        { Returns True if this is a last item in a list. }
+        function IsLast(): Boolean;
     end;
 
 type
