@@ -52,6 +52,7 @@ type
     private
         FPrev: TListItem;   // See Prev property
         FNext: TListItem;   // See Next property
+        FOwner: IList;      // See Owner property
     protected
         { See Index property. }
         function GetIndex(): Integer; abstract; virtual;
@@ -60,6 +61,8 @@ type
         property Next: TListItem read FNext;
         { The previous item into a list, or nil. }
         property Prev: TListItem read FPrev;
+        { The collection containing this item. }
+        property Owner: IList read FList;
         { Returns the index of this item. }
         property Index: Integer read GetIndex;
         { Returns True if this item is not a last. }
