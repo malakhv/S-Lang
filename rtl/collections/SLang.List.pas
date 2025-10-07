@@ -46,6 +46,31 @@ uses SLang.Types, SLang.Classes, SLang.Collections;
 type
 
     {
+        An item in the list.
+    }
+    TListItem = class(TElement)
+    private
+        FPrev: TListItem;   // See Prev property
+        FNext: TListItem;   // See Next property
+    protected
+        { See Index property. }
+        function GetIndex(): Integer; abstract; virtual;
+    public
+        { The next item into a list, or nil. }
+        property Next: TListItem read FNext;
+        { The previous item into a list, or nil. }
+        property Prev: TListItem read FPrev;
+        { Returns the index of this item. }
+        property Index: Integer read GetIndex;
+        { Returns True if this item is not a last. }
+        function HasNext(): Boolean;
+        { Returns True if this item is not a first. }
+        function HasPrev(): Boolean;
+    end;
+
+type
+
+    {
         The item into a linked list with specified element.
     }
     PListItem = ^TListItem;
