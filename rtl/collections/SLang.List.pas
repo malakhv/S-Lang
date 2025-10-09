@@ -80,6 +80,28 @@ type
     end;
 
 type
+    
+    {
+        The abstract list.
+    }
+    TList = class(TInterfacedObject, IList) abstract
+    private
+        FCount: Integer;    // See Count property
+    protected
+        { See First propety. }
+        function GetFirst(): TListItem; abstract; virtual;
+        { See Last propety. }
+        function GetLast(): TListItem; abstract; virtual;
+    public
+        { The number of items into this list. }
+        property Count: Integer read FCount;
+        { The first item into this list. }
+        property First: TListItem read FFirst;
+        { The last item into this list. }
+        property Last: TListItem read FLast;
+    end;
+
+type
 
     {
         The item into a linked list with specified element.
