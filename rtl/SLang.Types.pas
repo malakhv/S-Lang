@@ -89,6 +89,15 @@ type
     end;
     PQWordRec = ^QWordRec;
 
+    { Record of Integer }
+    IntRec = package record
+    case Integer of
+        0: (Value: Integer);
+        1: (Words: Array [0..(SizeOf(Integer) - 1) div SizeOf(Word)] of Word);
+        2: (Bytes: Array [0..SizeOf(Integer) - 1] of Byte);
+    end;
+    PIntRec = ^IntRec;
+
 {
     Simple data types as an object.
 }
