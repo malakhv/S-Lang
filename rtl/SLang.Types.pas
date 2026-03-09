@@ -127,7 +127,7 @@ type
     end;
 
     { The object of Boolean. }
-    TBoolObj = class (TObject)
+    TBoolean = class (TObject)
     private
         FValue: Boolean;
     public
@@ -203,30 +203,30 @@ type
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
 {------------------------------------------------------------------------------}
-{ TBoolObj                                                                     }
+{ TBoolean                                                                     }
 {------------------------------------------------------------------------------}
 
-constructor TBoolObj.Create();
+constructor TBoolean.Create();
 begin
     Self.From(False);
 end;
 
-constructor TBoolObj.From(Val: Boolean);
+constructor TBoolean.From(Val: Boolean);
 begin
     inherited Create(); Self.FValue := Val;
 end;
 
-constructor TBoolObj.From(Val: Integer);
+constructor TBoolean.From(Val: Integer);
 begin
     Self.From(Boolean(Val));
 end;
 
-function TBoolObj.Equals(Obj: TBoolObj): Boolean;
+function TBoolean.Equals(Obj: TBoolObj): Boolean;
 begin
     Result := (Obj <> nil) and (Self.FValue = Obj.FValue);
 end;
 
-function TBoolObj.ToString(): String;
+function TBoolean.ToString(): String;
 begin
     if Self.FValue then Result := STR_TRUE else Result := STR_FALSE;
 end;
