@@ -64,7 +64,8 @@ type
     TPairs = Array of TPair;
     PPairs = ^TPairs;
 
-    function ToPair(const First, Second: Pointer): PPair;
+{ Makes a TPair from two pointers. }
+function MakePair(const First, Second: Pointer): PPair;
 
 IMPLEMENTATION                                                { IMPLEMENTATION }
 
@@ -76,7 +77,7 @@ IMPLEMENTATION                                                { IMPLEMENTATION }
 { TPair                                                                        }
 {------------------------------------------------------------------------------}
 
-function ToPair(const First, Second: Pointer): PPair;
+function MakePair(const First, Second: Pointer): PPair;
 begin
     New(Result);
     Result^.First := First;
