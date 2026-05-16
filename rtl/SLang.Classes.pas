@@ -91,7 +91,7 @@ end;
 
 function TPair.IsEmpty(): Boolean;
 begin
-    Result := (Self.First <> nil) and (Self.Second <> nil);
+    Result := (Self.First = nil) and (Self.Second = nil);
 end;
 
 procedure TPair.Swap();
